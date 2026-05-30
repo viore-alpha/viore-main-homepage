@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Allow: /global
+
+Sitemap: https://vioreai.com/sitemap.xml
