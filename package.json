@@ -33,11 +33,23 @@
   "name": "react",
   "private": true,
   "scripts": {
-    "build": "vite build",
+    "build": "node scripts/workflow/clean-out.mjs && vite build --emptyOutDir=false",
     "dev": "vite",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit --project tsconfig.app.json"
+    "type-check": "tsc --noEmit --project tsconfig.app.json",
+    "verify": "npm run type-check && npm run build",
+    "verify:full": "npm run lint && npm run verify",
+    "lazy:setup": "node scripts/workflow/lazy-setup.mjs",
+    "work:sync": "node scripts/workflow/sync-develop.mjs",
+    "work:sync:install": "node scripts/workflow/sync-develop.mjs --install",
+    "work:new": "node scripts/workflow/new-feature.mjs",
+    "work:publish": "node scripts/workflow/publish-branch.mjs",
+    "work:hooks": "node scripts/workflow/install-hooks.mjs",
+    "lazy:start": "node scripts/workflow/lazy-start.mjs",
+    "lazy:finish": "node scripts/workflow/lazy-finish.mjs",
+    "lazy:deploy": "node scripts/workflow/lazy-ship.mjs",
+    "lazy:ship": "node scripts/workflow/lazy-ship.mjs"
   },
   "type": "module",
   "version": "0.0.0"
