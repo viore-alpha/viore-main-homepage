@@ -12,13 +12,23 @@ const Footer = () => {
           className="h-4 w-auto object-contain opacity-50"
         />
         <p className="text-[12px] text-viore-faint">{t('footer_copyright')}</p>
-        <a
-          href="mailto:sj@vioreai.com"
-          rel="nofollow"
-          className="text-[12px] text-viore-faint hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
-        >
-          sj@vioreai.com
-        </a>
+        <div className="flex items-center gap-4 text-[12px] text-viore-faint">
+          <a
+            href="https://alphadoc.ai/legal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
+          >
+            {t('footer_legal_notice')}
+          </a>
+          <a
+            href="mailto:sj@vioreai.com"
+            rel="nofollow"
+            className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
+          >
+            sj@vioreai.com
+          </a>
+        </div>
       </div>
     </footer>
   );
