@@ -52,14 +52,11 @@ npm run verify:full
 
 Do not claim deployment is complete unless the GitHub Pages workflow succeeded or clearly report what blocked verification.
 
-### LazyCodex / OMO
+### Repo workflow scripts
 
-LazyCodex is installed globally into Codex as `omo@sisyphuslabs`.
+The `lazy:*` npm commands are local scripts in this repository, not a dependency on external LazyCodex/OMO tooling.
 
 - Use the existing repo workflow commands for branch, finish, and deploy automation.
-- Use LazyCodex/OMO for complex planning, review, code intelligence, and verified long-running work.
-- Useful installed commands include `omo --help`, `$ulw-plan`, `$start-work`, `$ulw-loop`, and `/init-deep`.
-- On this Windows machine the command shims live in `C:\Users\gossa\.local\bin`.
 
 ### Keep out of git
 
