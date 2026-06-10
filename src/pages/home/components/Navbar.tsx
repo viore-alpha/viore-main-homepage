@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const navLinks = [
   { key: 'nav_main', href: '/' },
@@ -11,8 +10,7 @@ const navLinks = [
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [pathname, setPathname] = useState(window.location.pathname);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -21,6 +19,22 @@ const Navbar = () => {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  useEffect(() => {
+    const onNavigate = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', onNavigate);
+    window.addEventListener('viore:navigate', onNavigate);
+    return () => {
+      window.removeEventListener('popstate', onNavigate);
+      window.removeEventListener('viore:navigate', onNavigate);
+    };
+  }, []);
+
+  const navigate = (to: string) => {
+    window.history.pushState(null, '', to);
+    window.dispatchEvent(new Event('viore:navigate'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const toggleLang = () => {
     const isKo = i18n.language === 'ko';
@@ -33,7 +47,7 @@ const Navbar = () => {
     }
   };
 
-  const isGlobal = location.pathname === '/global';
+  const isGlobal = pathname === '/global';
 
   return (
     <>

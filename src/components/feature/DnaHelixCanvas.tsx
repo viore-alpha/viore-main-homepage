@@ -90,6 +90,7 @@ const DnaHelixCanvas = () => {
     let autoTime = 0, lastFrame = performance.now();
     let mouseX = 0, smoothMouseX = 0;
     let rafId = 0;
+    let isRunning = false;
 
     // ── resize ──────────────────────────────────────────
     function resize() {
@@ -244,7 +245,14 @@ const DnaHelixCanvas = () => {
     }
 
     // ── RAF loop ─────────────────────────────────────────
+    function drawStatic() {
+      const gA = targetScrollY * CFG.scrollRotate;
+      ctx!.clearRect(0, 0, W, H);
+      drawCells(buildCells(gA, 0));
+    }
+
     function frame(now: number) {
+      if (!isRunning) return;
       const dt = Math.min(now - lastFrame, 50); // cap dt to avoid spiral
       lastFrame = now;
       scrollY   += (targetScrollY - scrollY) * CFG.scrollLerp;
@@ -265,9 +273,31 @@ const DnaHelixCanvas = () => {
     const onMouseLeave = () => { mouseX = 0; };
     const isTouch = window.matchMedia('(hover: none)').matches;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const shouldAnimate = !reduced;
+
+    const start = () => {
+      if (!shouldAnimate || isRunning || document.hidden) return;
+      isRunning = true;
+      lastFrame = performance.now();
+      rafId = requestAnimationFrame(frame);
+    };
+
+    const stop = () => {
+      isRunning = false;
+      cancelAnimationFrame(rafId);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        stop();
+      } else if (shouldAnimate) {
+        start();
+      }
+    };
 
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', onScroll, { passive: true });
+    document.addEventListener('visibilitychange', onVisibilityChange);
     if (!isTouch) {
       window.addEventListener('mousemove',  onMouseMove);
       window.addEventListener('mouseleave', onMouseLeave);
@@ -277,18 +307,17 @@ const DnaHelixCanvas = () => {
     onScroll();
     scrollY = targetScrollY;
 
-    if (reduced) {
-      const gA = scrollY * CFG.scrollRotate;
-      ctx.clearRect(0, 0, W, H);
-      drawCells(buildCells(gA, 0));
+    if (shouldAnimate) {
+      start();
     } else {
-      rafId = requestAnimationFrame(frame);
+      drawStatic();
     }
 
     return () => {
-      cancelAnimationFrame(rafId);
+      stop();
       window.removeEventListener('resize', resize);
       window.removeEventListener('scroll', onScroll);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       if (!isTouch) {
         window.removeEventListener('mousemove',  onMouseMove);
         window.removeEventListener('mouseleave', onMouseLeave);

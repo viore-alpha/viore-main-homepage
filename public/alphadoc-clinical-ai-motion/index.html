@@ -270,14 +270,13 @@ body{
   .fx,.fx-card,.fx-src{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;}
   .alpha-thinking-orb,.streaming-cursor,.alpha-caret,.alpha-empty-padaki-logo,.alpha-empty-title-char,.alpha-empty-caption-char,.alpha-empty-suggestion-chip{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;}
 }
-.replay-hint{position:absolute;right:18px;bottom:16px;z-index:60;font-size:12px;color:rgba(17,17,19,0.32);font-weight:600;user-select:none;pointer-events:none;}
 
 @media (max-width: 520px){
   body{justify-content:flex-start;}
   .device{
     width:min(390px,100vw);
-    height:450px;
-    min-height:430px;
+    height:330px;
+    min-height:0;
     border-radius:24px;
   }
   .viewport{
@@ -304,8 +303,8 @@ body{
     display:none;
   }
   .alpha-chat-scroll{
-    top:56px;
-    padding-top:18px;
+    top:0;
+    padding-top:0;
   }
   .alpha-chat-scroll.empty{
     padding-bottom:56px;
@@ -315,7 +314,7 @@ body{
   }
   .alpha-empty-state{
     max-width:390px;
-    transform:translateY(30px);
+    transform:translateY(10px);
   }
   .alpha-empty-headline{
     flex-direction:column;
@@ -572,7 +571,6 @@ body{
       </div>
     </div>
   </div>
-  <div class="replay-hint" id="replayHint"></div>
 </div>
 
 <script>
@@ -734,7 +732,6 @@ async function runSequence(){
   $('e-padaki').classList.remove('in');
   ['e-title','e-cap1','e-cap2'].forEach(id=>$(id).innerHTML='');
   $('e-cards').querySelectorAll('.alpha-empty-suggestion-chip').forEach(c=>c.classList.remove('in'));
-  $('replayHint').textContent='';
 
   await sleep(reduceMotion?0:300);
   // 1) 오프닝 (Empty State 물 흐르듯 등장)
@@ -772,7 +769,6 @@ async function runSequence(){
   await streamAnswer(ex2,A2,A2s);
 
   await sleep(reduceMotion?0:3600);
-  $('replayHint').textContent='↻ 다시 재생';
   await sleep(reduceMotion?0:1300);
   runSequence();
 }
