@@ -1,10 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import { copyFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 import AutoImport from "unplugin-auto-import/vite";
 
 const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
+const githubPagesFallback = () => ({
+  name: "github-pages-spa-fallback",
+  closeBundle() {
+    const indexPath = resolve(__dirname, "out/index.html");
+    const fallbackPath = resolve(__dirname, "out/404.html");
+    if (existsSync(indexPath)) copyFileSync(indexPath, fallbackPath);
+  },
+});
+
 // https://vite.dev/config/
 export default defineConfig({
   define: {
@@ -16,6 +26,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    githubPagesFallback(),
     AutoImport({
       imports: [
         {
