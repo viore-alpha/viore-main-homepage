@@ -117,3 +117,205 @@ input:focus, textarea:focus, select:focus {
   to   { opacity: 1; transform: translateY(0); }
 }
 .count-anim { animation: countUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes alphadocOpening {
+  0%, 31% { opacity: 1; transform: translateY(0) scale(1); }
+  36%, 100% { opacity: 0; transform: translateY(-16px) scale(0.985); }
+}
+
+@keyframes alphadocFlowIn {
+  0% { opacity: 0; transform: translateY(18px); filter: blur(3px); }
+  100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+}
+
+@keyframes alphadocFeaturePop {
+  0% { opacity: 0; transform: translateY(18px) scale(0.94); }
+  65% { opacity: 1; transform: translateY(-2px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes alphadocChatSequence {
+  0%, 29% { opacity: 0; transform: translateY(24px); }
+  34%, 92% { opacity: 1; transform: translateY(0); }
+  98%, 100% { opacity: 0; transform: translateY(-10px); }
+}
+
+@keyframes alphadocBubbleIn {
+  0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes alphadocQuestionOne {
+  0%, 32% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  37%, 91% { opacity: 1; transform: translateY(0) scale(1); }
+  97%, 100% { opacity: 0; transform: translateY(-8px) scale(1); }
+}
+
+@keyframes alphadocAnswerOne {
+  0%, 40% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  45%, 91% { opacity: 1; transform: translateY(0) scale(1); }
+  97%, 100% { opacity: 0; transform: translateY(-8px) scale(1); }
+}
+
+@keyframes alphadocAttachmentRow {
+  0%, 55% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  59%, 91% { opacity: 1; transform: translateY(0) scale(1); }
+  97%, 100% { opacity: 0; transform: translateY(-8px) scale(1); }
+}
+
+@keyframes alphadocQuestionTwo {
+  0%, 61% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  66%, 91% { opacity: 1; transform: translateY(0) scale(1); }
+  97%, 100% { opacity: 0; transform: translateY(-8px) scale(1); }
+}
+
+@keyframes alphadocAnswerTwo {
+  0%, 70% { opacity: 0; transform: translateY(12px) scale(0.98); }
+  75%, 91% { opacity: 1; transform: translateY(0) scale(1); }
+  97%, 100% { opacity: 0; transform: translateY(-8px) scale(1); }
+}
+
+@keyframes alphadocTypeReveal {
+  0% { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes alphadocTypeOne {
+  0%, 33% { clip-path: inset(0 100% 0 0); }
+  41%, 100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes alphadocTypeTwo {
+  0%, 62% { clip-path: inset(0 100% 0 0); }
+  70%, 100% { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes alphadocCaret {
+  0%, 45% { opacity: 1; }
+  46%, 100% { opacity: 0; }
+}
+
+@keyframes alphadocInputPlaceholder {
+  0%, 38% { opacity: 1; }
+  42%, 100% { opacity: 0; }
+}
+
+@keyframes alphadocInputTyping {
+  0%, 39% { opacity: 0; clip-path: inset(0 100% 0 0); }
+  43% { opacity: 1; clip-path: inset(0 100% 0 0); }
+  52%, 82% { opacity: 1; clip-path: inset(0 0 0 0); }
+  88%, 100% { opacity: 0; clip-path: inset(0 0 0 0); }
+}
+
+.alphadoc-chat-motion {
+  animation-duration: 16s;
+  animation-iteration-count: infinite;
+}
+
+.alphadoc-opening {
+  animation: alphadocOpening 16s ease-in-out infinite;
+}
+
+.alphadoc-flow-item {
+  opacity: 0;
+  animation: alphadocFlowIn 0.86s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.alphadoc-flow-item:nth-child(1) { animation-delay: 0.08s; }
+.alphadoc-flow-item:nth-child(2) { animation-delay: 0.22s; }
+.alphadoc-flow-item:nth-child(3) { animation-delay: 0.38s; }
+
+.alphadoc-feature-pop {
+  opacity: 0;
+  animation-name: alphadocFeaturePop;
+  animation-duration: 0.74s;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: both;
+}
+
+.alphadoc-chat-sequence {
+  opacity: 0;
+  animation: alphadocChatSequence 16s ease-in-out infinite;
+}
+
+.alphadoc-question-one,
+.alphadoc-answer-one,
+.alphadoc-attachment-row,
+.alphadoc-question-two,
+.alphadoc-answer-two {
+  opacity: 0;
+  animation-duration: 16s;
+  animation-iteration-count: infinite;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.alphadoc-question-one { animation-name: alphadocQuestionOne; }
+.alphadoc-answer-one { animation-name: alphadocAnswerOne; }
+.alphadoc-attachment-row { animation-name: alphadocAttachmentRow; }
+.alphadoc-question-two { animation-name: alphadocQuestionTwo; }
+.alphadoc-answer-two { animation-name: alphadocAnswerTwo; }
+
+.alphadoc-typewriter {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.alphadoc-question-one .alphadoc-typewriter {
+  animation: alphadocTypeOne 16s steps(var(--typing-characters)) infinite;
+}
+
+.alphadoc-question-two .alphadoc-typewriter {
+  animation: alphadocTypeTwo 16s steps(var(--typing-characters)) infinite;
+}
+
+.alphadoc-typewriter::after {
+  content: '';
+  display: inline-block;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.12em;
+  width: 1px;
+  background: #2C2C2C;
+  animation: alphadocCaret 0.62s step-end infinite;
+}
+
+.alphadoc-input-placeholder {
+  animation: alphadocInputPlaceholder 16s ease-in-out infinite;
+}
+
+.alphadoc-input-typing {
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: alphadocInputTyping 16s steps(18) infinite;
+}
+
+@media (max-width: 640px) {
+  .alphadoc-typewriter {
+    display: inline;
+    white-space: normal;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .alphadoc-opening,
+  .alphadoc-flow-item,
+  .alphadoc-feature-pop,
+  .alphadoc-chat-sequence,
+  .alphadoc-question-one,
+  .alphadoc-answer-one,
+  .alphadoc-attachment-row,
+  .alphadoc-question-two,
+  .alphadoc-answer-two,
+  .alphadoc-typewriter,
+  .alphadoc-typewriter::after,
+  .alphadoc-input-placeholder,
+  .alphadoc-input-typing {
+    animation: none !important;
+    opacity: 1;
+  }
+}
