@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { copyFileSync, existsSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 import AutoImport from "unplugin-auto-import/vite";
 
@@ -11,7 +11,11 @@ const githubPagesFallback = () => ({
   closeBundle() {
     const indexPath = resolve(__dirname, "out/index.html");
     const fallbackPath = resolve(__dirname, "out/404.html");
-    if (existsSync(indexPath)) copyFileSync(indexPath, fallbackPath);
+    const globalRoutePath = resolve(__dirname, "out/global/index.html");
+    if (!existsSync(indexPath)) return;
+    copyFileSync(indexPath, fallbackPath);
+    mkdirSync(resolve(__dirname, "out/global"), { recursive: true });
+    copyFileSync(indexPath, globalRoutePath);
   },
 });
 
