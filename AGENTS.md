@@ -5,6 +5,15 @@ Merge with project-specific instructions as needed.
 
 This repo is `viore-alpha/viore-main-homepage`. It deploys through GitHub Pages from `main` using `.github/workflows/deploy-pages.yml`.
 
+### Karpathy-inspired agent discipline
+
+For non-trivial code, UI, workflow, deploy, or review work, apply the repository skill at `.agents/skills/karpathy-guidelines/SKILL.md`.
+
+- Think before coding: surface assumptions, uncertainty, tradeoffs, and pushback before making changes.
+- Simplicity first: solve the requested problem with the smallest clear change; avoid speculative features and abstractions.
+- Surgical changes: touch only files required by the task; mention unrelated cleanup instead of doing it.
+- Goal-driven execution: define success criteria, verify them with the repo's normal checks, and report what was or was not verified.
+
 ### Natural language triggers
 
 When the user says the following, run the matching command without asking again.
