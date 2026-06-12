@@ -20,7 +20,7 @@ const schemas = [
     image: VIORE_LOGO_URL,
     email: 'sj@vioreai.com',
     description:
-      'Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.',
+      '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
     disambiguatingDescription:
       'Viore Inc. is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.',
     foundingDate: '2024',
@@ -47,10 +47,11 @@ const schemas = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    name: 'Viore',
+    name: '바이오레',
+    alternateName: ['Viore', 'Viore Inc.', '주식회사 바이오레'],
     url: SITE_URL,
     description:
-      'Viore Inc. official website. Viore is the developer and official operator of Alphadoc.',
+      '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
     inLanguage: 'en-US',
     publisher: {
       '@id': ORGANIZATION_ID,
@@ -80,9 +81,9 @@ const schemas = [
     '@type': 'WebPage',
     '@id': `${GLOBAL_URL}#webpage`,
     url: GLOBAL_URL,
-    name: 'Viore Inc. | Alphadoc Operator · Medical AI Startup',
+    name: '의료인들의 하루를 바꾸는 AI',
     description:
-      'Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.',
+      '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
     inLanguage: 'en-US',
     isPartOf: {
       '@id': WEBSITE_ID,
