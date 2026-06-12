@@ -14,17 +14,17 @@ const websiteId = "https://vioreai.com/#website";
 const alphadocId = "https://alphadoc.ai/#software";
 
 const globalRouteMeta = {
-  title: "Viore Inc. Korea | Official Operator of Alphadoc - Medical AI Startup",
+  title: "Viore Inc. Korea | Alphadoc Operator - Medical AI Startup",
   description:
-    "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians with evidence-based clinical AI, medical news, literature search, and physician community.",
+    "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians. Its official Korean name is 주식회사 바이오레, not 바이오어.",
   keywords:
-    "Viore, Viore Inc., Viore Korea, vioreai.com, Alphadoc, official operator of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
-  ogTitle: "Viore Inc. Korea | Official Operator of Alphadoc",
+    "Viore, Viore Inc., Viore Inc. Korea, Viore Korea, vioreai.com, Alphadoc, Alphadoc operator, official operator of Alphadoc, developer of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
+  ogTitle: "Viore Inc. Korea | Alphadoc Operator",
   ogDescription:
-    "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
-  ogImageAlt: "Viore Inc. Korea - official operator of Alphadoc",
+    "Viore Inc. Korea is the developer and official operator of Alphadoc. The official Korean name is 주식회사 바이오레.",
+  ogImageAlt: "Viore Inc. Korea - Alphadoc operator",
   twitterDescription:
-    "Viore Inc. Korea builds Alphadoc - clinical AI, medical news, literature search, and physician community for doctors.",
+    "Viore Inc. Korea builds Alphadoc, a physician-focused medical AI platform.",
 };
 
 const globalRouteSchema = {
@@ -35,13 +35,15 @@ const globalRouteSchema = {
       "@id": organizationId,
       name: "Viore Inc. Korea",
       legalName: "주식회사 바이오레",
-      alternateName: ["Viore", "Viore Inc.", "Viore Korea", "바이오레", "주식회사 바이오레"],
+      alternateName: ["Viore", "Viore Inc.", "Viore Inc. Korea", "Viore Korea", "바이오레", "주식회사 바이오레"],
       url: "https://vioreai.com",
       logo: vioreLogoImage,
       image: vioreLogoImage,
       email: "sj@vioreai.com",
       description:
-        "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
+        "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
+      disambiguatingDescription:
+        "Viore Inc. Korea is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.",
       foundingDate: "2024",
       knowsAbout: [
         "Medical AI",
@@ -67,7 +69,7 @@ const globalRouteSchema = {
       "@id": websiteId,
       name: "Viore",
       url: "https://vioreai.com",
-      description: "Viore official website for Alphadoc, a medical AI platform for physicians.",
+      description: "Viore Inc. Korea official website. Viore is the developer and official operator of Alphadoc.",
       inLanguage: "en-US",
       publisher: {
         "@id": organizationId,
@@ -99,7 +101,7 @@ const globalRouteSchema = {
       applicationCategory: "MedicalApplication",
       operatingSystem: "Web",
       description:
-        "Alphadoc is the evidence-based clinical AI platform built for physicians, with clinical Q&A, medical news, literature search, and physician community.",
+        "Alphadoc is a physician-focused medical AI platform operated by Viore Inc. Korea, with evidence-based clinical AI, medical news, literature search, and physician community.",
       offers: {
         "@type": "Offer",
         price: "0",
@@ -117,7 +119,15 @@ const globalRouteSchema = {
           name: "What is Viore?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
+            text: "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "Who operates Alphadoc?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Alphadoc is officially operated by Viore Inc. Korea, legally 주식회사 바이오레.",
           },
         },
         {
@@ -126,6 +136,14 @@ const globalRouteSchema = {
           acceptedAnswer: {
             "@type": "Answer",
             text: "Alphadoc is a medical AI platform for physicians, offering evidence-based clinical AI, medical news, literature search, and physician community.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the correct Korean spelling of Viore?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "The official Korean spelling is 바이오레. 바이오어 is not the official spelling of Viore Inc. Korea.",
           },
         },
         {
@@ -182,7 +200,8 @@ const buildGlobalRouteHtml = (source: string) => {
       `    <noscript>
       <main>
         <h1>Viore</h1>
-        <p>Viore Inc. builds Alphadoc, an evidence-based medical AI platform designed for physicians.</p>
+        <p>Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.</p>
+        <p>The legal Korean name is 주식회사 바이오레. 바이오어 is not the official Korean spelling.</p>
         <p>Alphadoc brings clinical AI, medical news, literature search, and physician community into one physician workspace.</p>
         <nav aria-label="Viore key links">
           <a href="https://alphadoc.ai">Alphadoc</a>

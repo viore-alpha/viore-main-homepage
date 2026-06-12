@@ -152,6 +152,7 @@ export const resources = {
       footer_vision: '비전',
       footer_contact: '문의',
       footer_legal_notice: '법무고지',
+      footer_identity: '주식회사 바이오레(Viore Inc. Korea)는 알파닥(Alphadoc)의 개발사이자 공식 운영사입니다. 공식 한글 표기는 바이오어가 아닌 바이오레입니다.',
       footer_copyright: '© 2026 Viore Inc. All rights reserved.',
 
       // Lang toggle
@@ -314,6 +315,7 @@ export const resources = {
       footer_vision: 'Vision',
       footer_contact: 'Contact',
       footer_legal_notice: 'Legal Notice',
+      footer_identity: 'Viore Inc. Korea is the developer and official operator of Alphadoc. The official Korean spelling is 바이오레, not 바이오어.',
       footer_copyright: '© 2026 Viore Inc. All rights reserved.',
 
       lang_ko: 'KO',
