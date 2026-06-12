@@ -3,6 +3,31 @@ import { useSectionReveal } from '@/hooks/useSectionReveal';
 import { AlphadocDemoFrame } from './alphadoc/AlphadocDemoFrame';
 import { AlphadocFeatureCard } from './alphadoc/AlphadocFeatureCard';
 import { ALPHADOC_CONTENT } from './alphadoc/alphadocContent';
+import type { AlphadocContent } from './alphadoc/alphadocContent';
+
+type AlphadocCtaProps = {
+  readonly content: AlphadocContent;
+  readonly className?: string;
+};
+
+const AlphadocCta = ({ content, className = '' }: AlphadocCtaProps) => (
+  <div className={`flex flex-wrap items-center gap-2.5 ${className}`}>
+    <a
+      href="https://alphadoc.ai"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#111113] px-4 text-[13px] font-bold text-white shadow-[0_12px_24px_rgba(17,17,19,0.12)] transition-[background-color,transform] duration-180 hover:bg-[#2C2C2C] active:scale-[0.98]"
+    >
+      {content.ctaLabel}
+      <span className="text-[14px] leading-none" aria-hidden>
+        →
+      </span>
+    </a>
+    <span className="inline-flex h-10 items-center rounded-full border border-black/[0.08] bg-white/72 px-4 text-[12px] font-semibold text-[#8A8A8E]">
+      {content.note}
+    </span>
+  </div>
+);
 
 const AlphadocSection = () => {
   const { i18n } = useTranslation();
@@ -42,22 +67,6 @@ const AlphadocSection = () => {
             {content.headline}
           </h2>
           <p className="mt-6 max-w-[620px] text-[16px] leading-8 text-[#5F5F63]">{content.body}</p>
-          <div className="mt-7 flex flex-wrap gap-2.5">
-            <a
-              href="https://alphadoc.ai"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#111113] px-4 text-[13px] font-bold text-white shadow-[0_12px_24px_rgba(17,17,19,0.12)] transition-[background-color,transform] duration-180 hover:bg-[#2C2C2C] active:scale-[0.98]"
-            >
-              {content.ctaLabel}
-              <span className="text-[14px] leading-none" aria-hidden>
-                →
-              </span>
-            </a>
-            <span className="inline-flex h-10 items-center rounded-full border border-black/[0.08] bg-white/72 px-4 text-[12px] font-semibold text-[#8A8A8E]">
-              {content.note}
-            </span>
-          </div>
         </div>
 
         <div className="mt-24 flex flex-col gap-24 lg:mt-32 lg:gap-32 xl:gap-36">
@@ -77,6 +86,11 @@ const AlphadocSection = () => {
             </article>
           ))}
         </div>
+
+        <AlphadocCta
+          content={content}
+          className={`${revealClassName} mt-16 justify-start sm:justify-center lg:mt-20`}
+        />
       </div>
     </section>
   );
