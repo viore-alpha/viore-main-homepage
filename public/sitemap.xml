@@ -8,7 +8,7 @@
   <!-- Korean homepage (ko) -->
   <url>
     <loc>https://vioreai.com/</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ko"      href="https://vioreai.com/"/>
@@ -19,7 +19,7 @@
   <!-- English global page (en) -->
   <url>
     <loc>https://vioreai.com/global</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-06-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="ko"      href="https://vioreai.com/"/>

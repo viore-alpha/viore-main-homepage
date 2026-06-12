@@ -74,7 +74,7 @@ const schemas = [
       '@type': 'Organization',
       name: 'Viore Inc.',
     },
-    dateModified: '2026-05-16',
+    dateModified: '2026-06-12',
   },
   {
     '@context': 'https://schema.org',
@@ -124,7 +124,7 @@ const GlobalSEO = () => {
     // Use a microtask to run after HomeSEO's useEffect has injected Korean schemas
     const timer = setTimeout(() => {
       // Remove Korean schemas injected by HomeSEO
-      document.querySelectorAll('[id^="schema-home-"]').forEach((el) => el.remove());
+      document.querySelectorAll('[id^="schema-home"]').forEach((el) => el.remove());
 
       // Inject English schemas
       schemas.forEach((schema, i) => {

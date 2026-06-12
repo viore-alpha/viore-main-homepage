@@ -20,7 +20,7 @@ const KO_META = {
   ogTitle: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼',
   ogDescription:
     '의사의 하루를 바꾸는 메디컬AI 플랫폼 바이오레. 한국 의사에게 허락된 시간은 단 4.3분 — 알파닥으로 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티를 하나의 공간에서.',
-  ogUrl: 'https://vioreai.com',
+  ogUrl: 'https://vioreai.com/',
   ogImage: SQ_LOGO,
   ogImageAlt: '바이오레 Viore — 의사의 하루를 바꾸는 메디컬AI 플랫폼',
   twitterTitle: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼',
