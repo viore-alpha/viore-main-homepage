@@ -4,9 +4,14 @@ import DnaHelixCanvas from '@/components/feature/DnaHelixCanvas';
 const HomePage = lazy(() => import('./pages/home/page'));
 const GlobalPage = lazy(() => import('./pages/home/GlobalPage'));
 
+const normalizePathname = (pathname: string) => {
+  const withoutTrailingSlash = pathname.replace(/\/+$/, '');
+  return withoutTrailingSlash || '/';
+};
+
 const getPathname = () => {
   const basePath = __BASE_PATH__ === '/' ? '' : __BASE_PATH__.replace(/\/$/, '');
-  return window.location.pathname.replace(basePath, '') || '/';
+  return normalizePathname(window.location.pathname.replace(basePath, '') || '/');
 };
 
 function App() {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://vioreai.com';
-const GLOBAL_URL = `${SITE_URL}/global`;
+const GLOBAL_URL = `${SITE_URL}/global/`;
 
 const schemas = [
   {
@@ -123,8 +123,8 @@ const GlobalSEO = () => {
 
     // Use a microtask to run after HomeSEO's useEffect has injected Korean schemas
     const timer = setTimeout(() => {
-      // Remove Korean schemas injected by HomeSEO
-      document.querySelectorAll('[id^="schema-home"]').forEach((el) => el.remove());
+      // Remove static/home schemas before injecting route-specific English schemas
+      document.querySelectorAll('[id^="schema-home"], #schema-global').forEach((el) => el.remove());
 
       // Inject English schemas
       schemas.forEach((schema, i) => {

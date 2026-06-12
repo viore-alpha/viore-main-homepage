@@ -8,9 +8,11 @@ const navLinks = [
   { key: 'nav_direction', href: '#vision' },
 ];
 
+const getNormalizedPathname = () => window.location.pathname.replace(/\/+$/, '') || '/';
+
 const Navbar = () => {
   const { t, i18n } = useTranslation();
-  const [pathname, setPathname] = useState(window.location.pathname);
+  const [pathname, setPathname] = useState(getNormalizedPathname);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -21,7 +23,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const onNavigate = () => setPathname(window.location.pathname);
+    const onNavigate = () => setPathname(getNormalizedPathname());
     window.addEventListener('popstate', onNavigate);
     window.addEventListener('viore:navigate', onNavigate);
     return () => {
@@ -40,7 +42,7 @@ const Navbar = () => {
     const isKo = i18n.language === 'ko';
     if (isKo) {
       // EN 전환 → /global 이동 (GlobalPage가 i18n을 en으로 자동 처리)
-      navigate('/global');
+      navigate('/global/');
     } else {
       // KO 전환 → / 이동 (GlobalPage unmount 시 ko 복원)
       navigate('/');

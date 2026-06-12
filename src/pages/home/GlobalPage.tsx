@@ -40,7 +40,7 @@ const EN_META = {
   ogTitle: 'Viore | Medical AI Platform That Transforms Physicians\' Day',
   ogDescription:
     'Viore builds Alphadoc — the evidence-based clinical AI platform designed for physicians. Smarter decisions, meaningful care, all in one place.',
-  ogUrl: 'https://vioreai.com/global',
+  ogUrl: 'https://vioreai.com/global/',
   ogImage: WIDE_LOGO,
   ogImageAlt: 'Viore — Medical AI Platform for Physicians · Alphadoc',
   twitterTitle: 'Viore | Medical AI Platform That Transforms Physicians\' Day',
