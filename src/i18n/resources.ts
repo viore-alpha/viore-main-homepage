@@ -103,17 +103,6 @@ export const resources = {
       alphadoc_demo_a1: 'eGFR 30–45 범위에서 SGLT-2 억제제는 혈당강하 효과가 제한되나, 심신장 보호 목적으로 지속 사용 가능해요. Empagliflozin(EMPA-REG), Dapagliflozin(DAPA-CKD)이 가장 강력한 RCT 근거를 보유하고 있어요.',
       alphadoc_demo_placeholder: '임상 질문을 자연어로 입력하세요...',
 
-      // ── How We Build ──
-      howwebuild_label: 'HOW WE BUILD',
-      howwebuild_headline: '의료인들과 같이 함께 나아가요.',
-      howwebuild_body: '바이오레는 제품을 사무실에서만 만들지 않아요.\n모든 기능은 자문위원 의사들과 함께 설계하고 검토해요.\n의사가 진짜 쓰고 싶은 화면이 나올 때까지 다시, 또 다시 다듬어요.',
-      howwebuild_p1_title: '근거가 먼저예요',
-      howwebuild_p1_desc: '모든 임상 응답에는 근거 논문을 함께 보여드려요.',
-      howwebuild_p2_title: '의사가 함께 만들어요',
-      howwebuild_p2_desc: '모든 기능은 자문위원의 검토를 거쳐요.',
-      howwebuild_p3_title: '천천히, 단단하게',
-      howwebuild_p3_desc: '화려한 기능보다 매일 쓰고 싶은 화면을 먼저 만들어요.',
-
       // ── Advisory Board ──
       advisory_label: 'CLINICAL ADVISORY BOARD',
       advisory_headline: '바이오레는 현직 의사 및 교수님들과 함께 만들고 있어요.',
@@ -128,12 +117,6 @@ export const resources = {
       vision_stack_1: '임상언어를 이해하는 AI 엔진',
       vision_stack_2: '의사가 매일 머무는 포털',
       vision_stack_3: '국경을 뛰어넘는 글로벌 의료 커뮤니티',
-
-      // ── Careers ──
-      careers_label: 'WE ARE HIRING',
-      careers_headline: '의료와 AI의 경계에서, 같이 나아 가실 분을 찾고 있어요.',
-      careers_body: '바이오레는 이제 막 태동을 시작했어요.\n의사의 하루를 함께 다시 설계할 분을 기다려요.',
-      careers_cta: '이야기 나누기',
 
       // ── Closing ──
       closing_num: '5분',
@@ -282,17 +265,6 @@ export const resources = {
       alphadoc_demo_a1: 'In eGFR 30–45, SGLT-2 inhibitors have limited glucose-lowering efficacy but can be continued for cardio-renal protection. Empagliflozin (EMPA-REG) and Dapagliflozin (DAPA-CKD) hold the strongest RCT evidence.',
       alphadoc_demo_placeholder: 'Enter a clinical question in natural language...',
 
-      // ── How We Build ──
-      howwebuild_label: 'HOW WE BUILD',
-      howwebuild_headline: 'Moving forward together with medical professionals.',
-      howwebuild_body: 'Viore doesn\'t build products only in an office.\nEvery feature is designed and reviewed with our clinical advisors.\nWe iterate until the screen is one doctors truly want to use.',
-      howwebuild_p1_title: 'Evidence first',
-      howwebuild_p1_desc: 'Every clinical answer comes with source papers.',
-      howwebuild_p2_title: 'Built with doctors',
-      howwebuild_p2_desc: 'Every feature goes through advisory review.',
-      howwebuild_p3_title: 'Slow and solid',
-      howwebuild_p3_desc: 'We prioritize screens doctors want to open daily over flashy features.',
-
       // ── Advisory Board ──
       advisory_label: 'CLINICAL ADVISORY BOARD',
       advisory_headline: 'Built with practicing doctors and professors.',
@@ -307,12 +279,6 @@ export const resources = {
       vision_stack_1: 'An AI engine that understands medical language',
       vision_stack_2: 'A workspace where physicians live daily',
       vision_stack_3: 'A community connecting specialties and nations',
-
-      // ── Careers ──
-      careers_label: 'WE ARE HIRING',
-      careers_headline: 'Looking for people to join us at the frontier of medicine & AI.',
-      careers_body: 'Viore is a small team just getting started.\nWe\'re waiting for people who want to join early and help redesign the physician\'s day.',
-      careers_cta: 'Send us an email',
 
       // ── Closing ──
       closing_num: '5 min',
