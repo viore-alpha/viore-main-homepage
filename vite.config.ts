@@ -16,31 +16,31 @@ const websiteId = "https://vioreai.com/#website";
 const alphadocId = "https://alphadoc.ai/#software";
 
 const globalRouteMeta = {
-  title: "Viore Inc. Korea | Alphadoc Operator - Medical AI Startup",
+  title: "Viore Inc. | Alphadoc Operator - Medical AI Startup",
   description:
-    "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians. Its official Korean name is 주식회사 바이오레, not 바이오어.",
+    "Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians. Its official Korean name is 주식회사 바이오레, not 바이오어.",
   keywords:
-    "Viore, Viore Inc., Viore Inc. Korea, Viore Korea, vioreai.com, Alphadoc, Alphadoc operator, official operator of Alphadoc, developer of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
-  ogTitle: "Viore Inc. Korea | Alphadoc Operator",
+    "Viore, Viore Inc., vioreai.com, Alphadoc, Alphadoc operator, official operator of Alphadoc, developer of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
+  ogTitle: "Viore Inc. | Alphadoc Operator",
   ogDescription:
-    "Viore Inc. Korea is the developer and official operator of Alphadoc. The official Korean name is 주식회사 바이오레.",
-  ogImageAlt: "Viore Inc. Korea - Alphadoc operator",
+    "Viore Inc. is the developer and official operator of Alphadoc. The official Korean name is 주식회사 바이오레.",
+  ogImageAlt: "Viore Inc. - Alphadoc operator",
   twitterDescription:
-    "Viore Inc. Korea builds Alphadoc, a physician-focused medical AI platform.",
+    "Viore Inc. builds Alphadoc, a physician-focused medical AI platform.",
 };
 
 const vioreRouteMeta = {
   title: "바이오레 공식 홈페이지 | 주식회사 바이오레 Viore · 알파닥 운영사",
   description:
-    "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.",
+    "바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.",
   keywords:
-    "바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc. Korea, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님",
+    "바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님",
   ogTitle: "바이오레 공식 홈페이지 | 주식회사 바이오레",
   ogDescription:
     "바이오레는 알파닥을 개발·운영하는 한국 의료 AI 스타트업입니다. 비오레(Bioré) 화장품 브랜드와 무관합니다.",
   ogImageAlt: "바이오레 공식 홈페이지 - 주식회사 바이오레",
   twitterDescription:
-    "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며 알파닥 운영사입니다.",
+    "바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명이며 알파닥 운영사입니다.",
 };
 
 const medicalAiRouteMeta = {
@@ -48,7 +48,7 @@ const medicalAiRouteMeta = {
   description:
     "주식회사 바이오레는 국내 의료 AI 스타트업입니다. 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하며, 근거 기반 임상 AI와 의학 정보 워크플로를 만듭니다.",
   keywords:
-    "국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 바이오레, 주식회사 바이오레, Viore Inc. Korea, 알파닥, Alphadoc, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, 근거 기반 임상 AI, 의료 정보 검색, 디지털 헬스케어 스타트업",
+    "국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 바이오레, 주식회사 바이오레, Viore Inc., 알파닥, Alphadoc, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, 근거 기반 임상 AI, 의료 정보 검색, 디지털 헬스케어 스타트업",
   ogTitle: "국내 의료 AI 스타트업 | 주식회사 바이오레",
   ogDescription:
     "주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥을 개발·운영하는 국내 의료 AI 스타트업입니다.",
@@ -63,17 +63,17 @@ const globalRouteSchema = {
     {
       "@type": "Organization",
       "@id": organizationId,
-      name: "Viore Inc. Korea",
+      name: "Viore Inc.",
       legalName: "주식회사 바이오레",
-      alternateName: ["Viore", "Viore Inc.", "Viore Inc. Korea", "Viore Korea", "바이오레", "주식회사 바이오레"],
+      alternateName: ["Viore", "Viore Inc.", "바이오레", "주식회사 바이오레"],
       url: "https://vioreai.com",
       logo: vioreLogoImage,
       image: vioreLogoImage,
       email: "sj@vioreai.com",
       description:
-        "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
+        "Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
       disambiguatingDescription:
-        "Viore Inc. Korea is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.",
+        "Viore Inc. is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.",
       foundingDate: "2024",
       knowsAbout: [
         "Medical AI",
@@ -99,7 +99,7 @@ const globalRouteSchema = {
       "@id": websiteId,
       name: "Viore",
       url: "https://vioreai.com",
-      description: "Viore Inc. Korea official website. Viore is the developer and official operator of Alphadoc.",
+      description: "Viore Inc. official website. Viore is the developer and official operator of Alphadoc.",
       inLanguage: "en-US",
       publisher: {
         "@id": organizationId,
@@ -131,7 +131,7 @@ const globalRouteSchema = {
       applicationCategory: "MedicalApplication",
       operatingSystem: "Web",
       description:
-        "Alphadoc is a physician-focused medical AI platform operated by Viore Inc. Korea, with evidence-based clinical AI, medical news, literature search, and physician community.",
+        "Alphadoc is a physician-focused medical AI platform operated by Viore Inc., with evidence-based clinical AI, medical news, literature search, and physician community.",
       offers: {
         "@type": "Offer",
         price: "0",
@@ -149,7 +149,7 @@ const globalRouteSchema = {
           name: "What is Viore?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
+            text: "Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.",
           },
         },
         {
@@ -157,7 +157,7 @@ const globalRouteSchema = {
           name: "Who operates Alphadoc?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "Alphadoc is officially operated by Viore Inc. Korea, legally 주식회사 바이오레.",
+            text: "Alphadoc is officially operated by Viore Inc., legally 주식회사 바이오레.",
           },
         },
         {
@@ -173,7 +173,7 @@ const globalRouteSchema = {
           name: "What is the correct Korean spelling of Viore?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "The official Korean spelling is 바이오레. 바이오어 is not the official spelling of Viore Inc. Korea.",
+            text: "The official Korean spelling is 바이오레. 바이오어 is not used by Viore Inc.",
           },
         },
         {
@@ -197,13 +197,13 @@ const vioreRouteSchema = {
       "@id": organizationId,
       name: "주식회사 바이오레",
       legalName: "주식회사 바이오레",
-      alternateName: ["바이오레", "Viore", "Viore Inc.", "Viore Inc. Korea"],
+      alternateName: ["바이오레", "Viore", "Viore Inc."],
       url: "https://vioreai.com",
       logo: vioreLogoImage,
       image: vioreLogoImage,
       email: "sj@vioreai.com",
       description:
-        "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며, 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
+        "바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명이며, 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
       disambiguatingDescription:
         "바이오레는 비오레(Bioré) 화장품 브랜드와 무관한 한국 의료 AI 스타트업입니다. 바이오어는 공식 표기가 아닙니다.",
       foundingDate: "2024",
@@ -288,7 +288,7 @@ const vioreRouteSchema = {
           name: "바이오레는 어떤 회사인가요?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
+            text: "바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
           },
         },
         {
@@ -312,7 +312,7 @@ const vioreRouteSchema = {
           name: "알파닥 운영사는 어디인가요?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc. Korea)입니다.",
+            text: "알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc.)입니다.",
           },
         },
       ],
@@ -328,7 +328,7 @@ const medicalAiRouteSchema = {
       "@id": organizationId,
       name: "주식회사 바이오레",
       legalName: "주식회사 바이오레",
-      alternateName: ["바이오레", "Viore", "Viore Inc.", "Viore Inc. Korea"],
+      alternateName: ["바이오레", "Viore", "Viore Inc."],
       url: "https://vioreai.com",
       logo: vioreLogoImage,
       image: vioreLogoImage,
@@ -421,7 +421,7 @@ const medicalAiRouteSchema = {
           name: "바이오레는 국내 의료 AI 스타트업인가요?",
           acceptedAnswer: {
             "@type": "Answer",
-            text: "네. 주식회사 바이오레(Viore Inc. Korea)는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.",
+            text: "네. 주식회사 바이오레(Viore Inc.)는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.",
           },
         },
         {
@@ -494,12 +494,12 @@ const buildGlobalRouteHtml = (source: string) => {
       `    <noscript>
       <main>
         <h1>Viore</h1>
-        <p>Viore Inc. Korea is the developer and official operator of Alphadoc, a medical AI platform for physicians.</p>
+        <p>Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.</p>
         <p>The legal Korean name is 주식회사 바이오레. 바이오어 is not the official Korean spelling.</p>
         <p>Alphadoc brings clinical AI, medical news, literature search, and physician community into one physician workspace.</p>
         <nav aria-label="Viore key links">
           <a href="https://alphadoc.ai">Alphadoc</a>
-          <a href="/">Viore Korea</a>
+          <a href="/">Viore</a>
         </nav>
       </main>
     </noscript>`,
@@ -550,7 +550,7 @@ const buildVioreRouteHtml = (source: string) => {
       `    <noscript>
       <main>
         <h1>바이오레 공식 홈페이지</h1>
-        <p>바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다.</p>
+        <p>바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다.</p>
         <p>바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.</p>
         <p>바이오레는 비오레(Bioré) 화장품 브랜드와 무관합니다. 바이오어는 공식 표기가 아닙니다.</p>
         <nav aria-label="바이오레 공식 링크">

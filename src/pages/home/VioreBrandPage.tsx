@@ -7,7 +7,7 @@ import VioreSEO from './components/VioreSEO';
 const identityRows = [
   ['공식 한글명', '바이오레'],
   ['법인명', '주식회사 바이오레'],
-  ['영문 표기', 'Viore Inc. Korea'],
+  ['영문 표기', 'Viore Inc.'],
   ['공식 도메인', 'vioreai.com'],
   ['제품', '알파닥 Alphadoc'],
   ['역할', '알파닥 개발사 및 공식 운영사'],
@@ -17,7 +17,7 @@ const searchQuestions = [
   {
     question: '바이오레는 무엇인가요?',
     answer:
-      '바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.',
+      '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.',
   },
   {
     question: '바이오레와 비오레는 같은 브랜드인가요?',
@@ -27,7 +27,7 @@ const searchQuestions = [
   {
     question: '알파닥 운영사는 어디인가요?',
     answer:
-      '알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc. Korea)입니다.',
+      '알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc.)입니다.',
   },
 ];
 
@@ -60,7 +60,7 @@ const VioreBrandPage = () => {
               바이오레
             </h1>
             <p className="mt-8 max-w-2xl text-[20px] leading-[1.8] text-viore-muted md:text-[24px]">
-              바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다.
+              바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다.
               바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.
             </p>
             <div className="mt-10 flex flex-col gap-3 sm:flex-row">

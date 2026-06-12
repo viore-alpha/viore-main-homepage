@@ -12,9 +12,9 @@ const OG_IMAGE = `${SITE_URL}/brand/viore/og-image.png`;
 const meta = {
   title: '바이오레 공식 홈페이지 | 주식회사 바이오레 Viore · 알파닥 운영사',
   description:
-    '바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.',
+    '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.',
   keywords:
-    '바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc. Korea, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님',
+    '바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님',
 };
 
 const schema = {
@@ -25,13 +25,13 @@ const schema = {
       '@id': ORGANIZATION_ID,
       name: '주식회사 바이오레',
       legalName: '주식회사 바이오레',
-      alternateName: ['바이오레', 'Viore', 'Viore Inc.', 'Viore Inc. Korea'],
+      alternateName: ['바이오레', 'Viore', 'Viore Inc.'],
       url: SITE_URL,
       logo: VIORE_LOGO_URL,
       image: VIORE_LOGO_URL,
       email: 'sj@vioreai.com',
       description:
-        '바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며, 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+        '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명이며, 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
       disambiguatingDescription:
         '바이오레는 비오레(Bioré) 화장품 브랜드와 무관한 한국 의료 AI 스타트업입니다. 바이오어는 공식 표기가 아닙니다.',
       foundingDate: '2024',
@@ -116,7 +116,7 @@ const schema = {
           name: '바이오레는 어떤 회사인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+            text: '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
           },
         },
         {
@@ -140,7 +140,7 @@ const schema = {
           name: '알파닥 운영사는 어디인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc. Korea)입니다.',
+            text: '알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc.)입니다.',
           },
         },
       ],

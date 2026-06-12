@@ -14,7 +14,7 @@ const meta = {
   description:
     '주식회사 바이오레는 국내 의료 AI 스타트업입니다. 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하며, 근거 기반 임상 AI와 의학 정보 워크플로를 만듭니다.',
   keywords:
-    '국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 바이오레, 주식회사 바이오레, Viore Inc. Korea, 알파닥, Alphadoc, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, 근거 기반 임상 AI, 의료 정보 검색, 디지털 헬스케어 스타트업',
+    '국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 바이오레, 주식회사 바이오레, Viore Inc., 알파닥, Alphadoc, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, 근거 기반 임상 AI, 의료 정보 검색, 디지털 헬스케어 스타트업',
 };
 
 const schema = {
@@ -25,7 +25,7 @@ const schema = {
       '@id': ORGANIZATION_ID,
       name: '주식회사 바이오레',
       legalName: '주식회사 바이오레',
-      alternateName: ['바이오레', 'Viore', 'Viore Inc.', 'Viore Inc. Korea'],
+      alternateName: ['바이오레', 'Viore', 'Viore Inc.'],
       url: SITE_URL,
       logo: VIORE_LOGO_URL,
       image: VIORE_LOGO_URL,
@@ -118,7 +118,7 @@ const schema = {
           name: '바이오레는 국내 의료 AI 스타트업인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '네. 주식회사 바이오레(Viore Inc. Korea)는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.',
+            text: '네. 주식회사 바이오레(Viore Inc.)는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.',
           },
         },
         {

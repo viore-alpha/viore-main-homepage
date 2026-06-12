@@ -22,7 +22,7 @@ const focusAreas = [
 const categoryRows = [
   ['카테고리', '국내 의료 AI 스타트업'],
   ['회사명', '주식회사 바이오레'],
-  ['영문명', 'Viore Inc. Korea'],
+  ['영문명', 'Viore Inc.'],
   ['제품명', '알파닥 Alphadoc'],
   ['대상 사용자', '의료인 및 보건의료 전문가'],
   ['공식 웹사이트', 'vioreai.com'],
