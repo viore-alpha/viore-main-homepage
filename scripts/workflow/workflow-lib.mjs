@@ -120,6 +120,13 @@ export const verifyFull = () => {
   run('npm', ['run', 'verify:full']);
 };
 
+export const submitIndexNow = () => {
+  const result = run('npm', ['run', 'seo:indexnow'], { allowFailure: true });
+  if (result.status !== 0) {
+    process.stderr.write('IndexNow 제출에 실패했습니다. 배포는 완료됐지만 검색엔진 빠른 갱신은 수동 확인이 필요합니다.\n');
+  }
+};
+
 export const checkoutDailyBranch = (branch, baseRef = 'origin/develop') => {
   if (localBranchExists(branch)) {
     run('git', ['switch', branch]);

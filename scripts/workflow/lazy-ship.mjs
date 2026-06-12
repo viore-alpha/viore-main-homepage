@@ -6,6 +6,7 @@ import {
   read,
   run,
   smokeTestProduction,
+  submitIndexNow,
   verifyFull,
   waitForPagesWorkflow,
 } from './workflow-lib.mjs';
@@ -32,6 +33,7 @@ run('git', ['push', 'origin', 'main'], {
 
 await waitForPagesWorkflow(deployedSha);
 await smokeTestProduction();
+submitIndexNow();
 run('git', ['switch', 'develop']);
 
 process.stdout.write(`프로덕션 배포 완료. 현재 브랜치: ${currentBranch()}\n`);
