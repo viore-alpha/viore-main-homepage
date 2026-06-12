@@ -27,6 +27,8 @@ const schema = {
       foundingDate: '2024',
       knowsAbout: [
         '의료 AI',
+        '국내 의료 AI 스타트업',
+        '의료 스타트업',
         '임상 의사결정 지원',
         'Evidence-Based Medicine',
         '의사 플랫폼',
@@ -42,12 +44,20 @@ const schema = {
       },
       areaServed: ['KR', 'Global'],
       sameAs: ['https://alphadoc.ai'],
-      subjectOf: {
-        '@type': 'WebPage',
-        '@id': `${SITE_URL}/viore/#webpage`,
-        url: `${SITE_URL}/viore/`,
-        name: '바이오레 공식 검색 정보',
-      },
+      subjectOf: [
+        {
+          '@type': 'WebPage',
+          '@id': `${SITE_URL}/viore/#webpage`,
+          url: `${SITE_URL}/viore/`,
+          name: '바이오레 공식 검색 정보',
+        },
+        {
+          '@type': 'AboutPage',
+          '@id': `${SITE_URL}/medical-ai-startup/#webpage`,
+          url: `${SITE_URL}/medical-ai-startup/`,
+          name: '국내 의료 AI 스타트업 바이오레',
+        },
+      ],
     },
     {
       '@type': 'WebSite',

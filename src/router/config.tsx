@@ -4,6 +4,7 @@ import type { RouteObject } from 'react-router-dom';
 const HomePage = lazy(() => import('../pages/home/page'));
 const GlobalPage = lazy(() => import('../pages/home/GlobalPage'));
 const VioreBrandPage = lazy(() => import('../pages/home/VioreBrandPage'));
+const MedicalAIStartupPage = lazy(() => import('../pages/home/MedicalAIStartupPage'));
 
 const routes: RouteObject[] = [
   {
@@ -17,6 +18,10 @@ const routes: RouteObject[] = [
   {
     path: '/viore',
     element: <VioreBrandPage />,
+  },
+  {
+    path: '/medical-ai-startup',
+    element: <MedicalAIStartupPage />,
   },
 ];
 

@@ -10,7 +10,7 @@ const KO_META = {
   description:
     '알파닥 운영사는 주식회사 바이오레(Viore Inc. Korea)입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다. 공식 한글 표기는 바이오어가 아닌 바이오레입니다.',
   keywords:
-    '주식회사 바이오레, 바이오레, 바이오레 홈페이지, Viore, Viore Inc., Viore Inc. Korea, vioreai.com, 알파닥, Alphadoc, 알파닥 운영사, 알파닥 공식 운영사, 알파닥 개발사, 알파닥 회사, 알파닥 만든 회사, 바이오레 알파닥, 의료 AI 스타트업, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의학 논문 검색',
+    '주식회사 바이오레, 바이오레, 바이오레 홈페이지, Viore, Viore Inc., Viore Inc. Korea, vioreai.com, 알파닥, Alphadoc, 알파닥 운영사, 알파닥 공식 운영사, 알파닥 개발사, 알파닥 회사, 알파닥 만든 회사, 바이오레 알파닥, 국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의학 논문 검색',
   ogLocale: 'ko_KR',
   ogSiteName: '바이오레 Viore',
   ogTitle: '주식회사 바이오레 Viore | 알파닥 운영사',

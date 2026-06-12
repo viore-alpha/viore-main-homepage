@@ -4,6 +4,7 @@ import DnaHelixCanvas from '@/components/feature/DnaHelixCanvas';
 const HomePage = lazy(() => import('./pages/home/page'));
 const GlobalPage = lazy(() => import('./pages/home/GlobalPage'));
 const VioreBrandPage = lazy(() => import('./pages/home/VioreBrandPage'));
+const MedicalAIStartupPage = lazy(() => import('./pages/home/MedicalAIStartupPage'));
 
 const normalizePathname = (pathname: string) => {
   const withoutTrailingSlash = pathname.replace(/\/+$/, '');
@@ -28,7 +29,14 @@ function App() {
     };
   }, []);
 
-  const Page = pathname === '/global' ? GlobalPage : pathname === '/viore' ? VioreBrandPage : HomePage;
+  const Page =
+    pathname === '/global'
+      ? GlobalPage
+      : pathname === '/viore'
+        ? VioreBrandPage
+        : pathname === '/medical-ai-startup'
+          ? MedicalAIStartupPage
+          : HomePage;
 
   return (
     <>

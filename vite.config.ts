@@ -8,6 +8,7 @@ const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
 const globalRouteUrl = "https://vioreai.com/global/";
 const vioreRouteUrl = "https://vioreai.com/viore/";
+const medicalAiRouteUrl = "https://vioreai.com/medical-ai-startup/";
 const globalRouteImage = "https://vioreai.com/brand/viore/og-image.png";
 const vioreLogoImage = "https://vioreai.com/brand/viore/logo-square.png";
 const organizationId = "https://vioreai.com/#organization";
@@ -40,6 +41,20 @@ const vioreRouteMeta = {
   ogImageAlt: "바이오레 공식 홈페이지 - 주식회사 바이오레",
   twitterDescription:
     "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며 알파닥 운영사입니다.",
+};
+
+const medicalAiRouteMeta = {
+  title: "국내 의료 AI 스타트업 | 주식회사 바이오레 Viore · 알파닥",
+  description:
+    "주식회사 바이오레는 국내 의료 AI 스타트업입니다. 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하며, 근거 기반 임상 AI와 의학 정보 워크플로를 만듭니다.",
+  keywords:
+    "국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 바이오레, 주식회사 바이오레, Viore Inc. Korea, 알파닥, Alphadoc, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, 근거 기반 임상 AI, 의료 정보 검색, 디지털 헬스케어 스타트업",
+  ogTitle: "국내 의료 AI 스타트업 | 주식회사 바이오레",
+  ogDescription:
+    "주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥을 개발·운영하는 국내 의료 AI 스타트업입니다.",
+  ogImageAlt: "국내 의료 AI 스타트업 - 주식회사 바이오레",
+  twitterDescription:
+    "바이오레는 알파닥을 개발·운영하는 국내 의료 AI 스타트업입니다.",
 };
 
 const globalRouteSchema = {
@@ -305,6 +320,139 @@ const vioreRouteSchema = {
   ],
 };
 
+const medicalAiRouteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: "주식회사 바이오레",
+      legalName: "주식회사 바이오레",
+      alternateName: ["바이오레", "Viore", "Viore Inc.", "Viore Inc. Korea"],
+      url: "https://vioreai.com",
+      logo: vioreLogoImage,
+      image: vioreLogoImage,
+      email: "sj@vioreai.com",
+      description:
+        "주식회사 바이오레는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.",
+      foundingDate: "2024",
+      industry: "Medical AI",
+      keywords:
+        "국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 의사용 의료 AI, 임상 AI",
+      knowsAbout: [
+        "의료 AI",
+        "의료 스타트업",
+        "의사용 AI 플랫폼",
+        "임상 의사결정 지원",
+        "근거 기반 의학",
+        "의학 정보 검색",
+      ],
+      brand: {
+        "@id": alphadocId,
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "sj@vioreai.com",
+        contactType: "business inquiries",
+        availableLanguage: ["ko", "en"],
+      },
+      areaServed: ["KR", "Global"],
+      sameAs: ["https://alphadoc.ai"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: "바이오레 Viore",
+      url: "https://vioreai.com",
+      description:
+        "주식회사 바이오레 공식 홈페이지. 바이오레는 국내 의료 AI 스타트업이며 알파닥의 개발사이자 공식 운영사입니다.",
+      inLanguage: "ko-KR",
+      publisher: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "AboutPage",
+      "@id": `${medicalAiRouteUrl}#webpage`,
+      url: medicalAiRouteUrl,
+      name: medicalAiRouteMeta.title,
+      description: medicalAiRouteMeta.description,
+      inLanguage: "ko-KR",
+      dateModified: "2026-06-12",
+      isPartOf: {
+        "@id": websiteId,
+      },
+      about: {
+        "@id": organizationId,
+      },
+      primaryEntity: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": alphadocId,
+      name: "알파닥 Alphadoc",
+      url: "https://alphadoc.ai",
+      applicationCategory: "MedicalApplication",
+      operatingSystem: "Web",
+      description:
+        "알파닥은 주식회사 바이오레가 개발·운영하는 의사용 의료 AI 플랫폼입니다.",
+      author: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "국내 의료 AI 스타트업",
+          item: medicalAiRouteUrl,
+        },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "바이오레는 국내 의료 AI 스타트업인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "네. 주식회사 바이오레(Viore Inc. Korea)는 국내 의료 AI 스타트업으로, 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "바이오레는 어떤 의료 AI를 만드나요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "바이오레는 의사를 위한 근거 기반 임상 AI, 의학 뉴스, 논문 검색, 의사 커뮤니티 워크플로를 알파닥 안에 구축하고 있습니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "알파닥과 바이오레의 관계는 무엇인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "알파닥(Alphadoc)은 주식회사 바이오레가 개발·운영하는 의사용 의료 AI 플랫폼입니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "알파닥은 환자 진단 서비스인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "아닙니다. 알파닥은 의료인과 보건의료 전문가를 위한 의사결정 지원 및 업무 지원 플랫폼이며, 의사의 판단을 대체하지 않습니다.",
+          },
+        },
+      ],
+    },
+  ],
+};
+
 const escapeHtmlAttribute = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
@@ -430,6 +578,63 @@ const buildVioreRouteHtml = (source: string) => {
   return html;
 };
 
+const buildMedicalAiRouteHtml = (source: string) => {
+  const schemaJson = JSON.stringify(medicalAiRouteSchema, null, 8)
+    .split("\n")
+    .map((line) => `      ${line}`)
+    .join("\n");
+
+  let html = source
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${medicalAiRouteMeta.title}</title>`)
+    .replace(
+      /<link rel="canonical" href="[^"]+" \/>/,
+      `<link rel="canonical" href="${medicalAiRouteUrl}" />`,
+    )
+    .replace(
+      /<link rel="alternate" hreflang="ko" href="[^"]+" \/>/,
+      `<link rel="alternate" hreflang="ko" href="${medicalAiRouteUrl}" />`,
+    )
+    .replace(
+      /<link rel="alternate" hreflang="x-default" href="[^"]+" \/>/,
+      `<link rel="alternate" hreflang="x-default" href="${medicalAiRouteUrl}" />`,
+    )
+    .replace(
+      /    <script type="application\/ld\+json" id="schema-home">[\s\S]*?    <\/script>/,
+      `    <script type="application/ld+json" id="schema-medical-ai-startup">\n${schemaJson}\n    </script>`,
+    )
+    .replace(
+      /    <noscript>[\s\S]*?    <\/noscript>/,
+      `    <noscript>
+      <main>
+        <h1>국내 의료 AI 스타트업, 주식회사 바이오레</h1>
+        <p>주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 국내 의료 AI 스타트업입니다.</p>
+        <p>바이오레는 근거 기반 임상 AI, 의학 정보 검색, 의료인 업무 지원 워크플로를 만들고 있습니다.</p>
+        <p>알파닥은 의료인의 판단을 대체하지 않는 의사결정 지원 및 업무 지원 플랫폼입니다.</p>
+        <nav aria-label="국내 의료 AI 스타트업 바이오레 공식 링크">
+          <a href="/">바이오레 홈페이지</a>
+          <a href="/viore/">바이오레 공식 정보</a>
+          <a href="https://alphadoc.ai">알파닥 Alphadoc</a>
+        </nav>
+      </main>
+    </noscript>`,
+    );
+
+  html = replaceNameMeta(html, "description", medicalAiRouteMeta.description);
+  html = replaceNameMeta(html, "keywords", medicalAiRouteMeta.keywords);
+  html = replacePropertyMeta(html, "og:locale", "ko_KR");
+  html = replacePropertyMeta(html, "og:site_name", "바이오레 Viore");
+  html = replacePropertyMeta(html, "og:title", medicalAiRouteMeta.ogTitle);
+  html = replacePropertyMeta(html, "og:description", medicalAiRouteMeta.ogDescription);
+  html = replacePropertyMeta(html, "og:url", medicalAiRouteUrl);
+  html = replacePropertyMeta(html, "og:image", globalRouteImage);
+  html = replacePropertyMeta(html, "og:image:alt", medicalAiRouteMeta.ogImageAlt);
+  html = replaceNameMeta(html, "twitter:title", medicalAiRouteMeta.ogTitle);
+  html = replaceNameMeta(html, "twitter:description", medicalAiRouteMeta.twitterDescription);
+  html = replaceNameMeta(html, "twitter:image", globalRouteImage);
+
+  return html;
+};
+
 const githubPagesFallback = () => ({
   name: "github-pages-spa-fallback",
   closeBundle() {
@@ -437,13 +642,16 @@ const githubPagesFallback = () => ({
     const fallbackPath = resolve(__dirname, "out/404.html");
     const globalRoutePath = resolve(__dirname, "out/global/index.html");
     const vioreRoutePath = resolve(__dirname, "out/viore/index.html");
+    const medicalAiRoutePath = resolve(__dirname, "out/medical-ai-startup/index.html");
     if (!existsSync(indexPath)) return;
     const indexHtml = readFileSync(indexPath, "utf8");
     copyFileSync(indexPath, fallbackPath);
     mkdirSync(resolve(__dirname, "out/global"), { recursive: true });
     mkdirSync(resolve(__dirname, "out/viore"), { recursive: true });
+    mkdirSync(resolve(__dirname, "out/medical-ai-startup"), { recursive: true });
     writeFileSync(globalRoutePath, buildGlobalRouteHtml(indexHtml));
     writeFileSync(vioreRoutePath, buildVioreRouteHtml(indexHtml));
+    writeFileSync(medicalAiRoutePath, buildMedicalAiRouteHtml(indexHtml));
   },
 });
 
