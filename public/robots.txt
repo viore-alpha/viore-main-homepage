@@ -38,3 +38,5 @@ User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://vioreai.com/sitemap.xml
+
+#DaumWebMasterTool:7ae6699f1599e178ffad4f3a7b8b051ca99727540118c8dcedb410eac2494cbf:Ep8513W5iGGcFwzgRgXT/Q==
