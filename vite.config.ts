@@ -681,6 +681,36 @@ const githubPagesFallback = () => ({
   },
 });
 
+const localMotionRouteIndex = () => {
+  const motionRouteIndexByPathname = new Map([
+    ["/alphadoc-clinical-ai-motion/", "/alphadoc-clinical-ai-motion/index.html"],
+    ["/alphadoc-widget-motion/", "/alphadoc-widget-motion/index.html"],
+  ]);
+
+  return {
+    name: "local-motion-route-index",
+    enforce: "pre" as const,
+    configureServer(server) {
+      server.middlewares.use((req, res, next) => {
+        if (!req.url) {
+          next();
+          return;
+        }
+
+        const [pathname, search] = req.url.split("?");
+        const target = motionRouteIndexByPathname.get(pathname);
+        if (!target) {
+          next();
+          return;
+        }
+
+        req.url = search ? `${target}?${search}` : target;
+        next();
+      });
+    },
+  };
+};
+
 // https://vite.dev/config/
 export default defineConfig({
   define: {
@@ -691,6 +721,7 @@ export default defineConfig({
     __READDY_AI_DOMAIN__: JSON.stringify(process.env.READDY_AI_DOMAIN || ""),
   },
   plugins: [
+    localMotionRouteIndex(),
     react(),
     githubPagesFallback(),
     AutoImport({
