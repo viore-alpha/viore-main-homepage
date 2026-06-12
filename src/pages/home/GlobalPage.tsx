@@ -8,20 +8,20 @@ const OG_IMAGE = 'https://vioreai.com/brand/viore/og-image.png';
 const KO_META = {
   title: '바이오레 | 의사의 하루를 바꿔요 · 알파닥',
   description:
-    '바이오레는 의사를 위한 의료 AI 플랫폼 알파닥을 만드는 스타트업입니다. 알파닥은 근거 기반 임상 AI, 의학 정보 검색, 의료 뉴스와 커뮤니티를 한곳에 모읍니다.',
+    '바이오레는 의료인의 하루를 바꾸는 플랫폼을 개발하고 제공하는 의료 AI 스타트업입니다.',
   keywords:
     '주식회사 바이오레, 바이오레, 바이오레 홈페이지, Viore, Viore Inc., vioreai.com, 알파닥, Alphadoc, 알파닥 운영사, 알파닥 공식 운영사, 알파닥 개발사, 알파닥 회사, 알파닥 만든 회사, 바이오레 알파닥, 국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의학 논문 검색',
   ogLocale: 'ko_KR',
   ogSiteName: '바이오레',
   ogTitle: '바이오레 | 의사의 하루를 바꿔요 · 알파닥',
   ogDescription:
-    '바이오레는 의사를 위한 의료 AI 플랫폼 알파닥을 만드는 스타트업입니다.',
+    '바이오레는 의료인의 하루를 바꾸는 플랫폼을 개발하고 제공하는 의료 AI 스타트업입니다.',
   ogUrl: 'https://vioreai.com/',
   ogImage: OG_IMAGE,
   ogImageAlt: '바이오레 - 의사의 하루를 바꿔요',
   twitterTitle: '바이오레 | 의사의 하루를 바꿔요 · 알파닥',
   twitterDescription:
-    '바이오레는 의사를 위한 의료 AI 플랫폼 알파닥을 만드는 스타트업입니다.',
+    '바이오레는 의료인의 하루를 바꾸는 플랫폼을 개발하고 제공하는 의료 AI 스타트업입니다.',
   twitterImage: OG_IMAGE,
 };
 

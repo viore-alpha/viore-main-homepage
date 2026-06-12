@@ -96,7 +96,7 @@ const schema = {
       url: SITE_URL,
       name: '바이오레 | 의사의 하루를 바꿔요 · 알파닥',
       description:
-        '바이오레는 의사를 위한 의료 AI 플랫폼 알파닥을 만드는 스타트업입니다. 알파닥은 근거 기반 임상 AI, 의학 정보 검색, 의료 뉴스와 커뮤니티를 한곳에 모읍니다.',
+        '바이오레는 의료인의 하루를 바꾸는 플랫폼을 개발하고 제공하는 의료 AI 스타트업입니다.',
       inLanguage: 'ko-KR',
       isPartOf: {
         '@id': WEBSITE_ID,
