@@ -21,13 +21,14 @@ const schema = {
       image: VIORE_LOGO_URL,
       email: 'sj@vioreai.com',
       description:
-        '알파닥 운영사는 주식회사 바이오레(Viore Inc.)입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+        '알파닥 운영사는 주식회사 바이오레(Viore Inc.)입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이자 알파닥 스타트업입니다.',
       disambiguatingDescription:
         '주식회사 바이오레는 알파닥(Alphadoc)의 개발사이자 공식 운영사입니다. 바이오어는 공식 한글 표기가 아닙니다.',
       foundingDate: '2024',
       knowsAbout: [
         '의료 AI',
         '국내 의료 AI 스타트업',
+        '알파닥 스타트업',
         '의료 스타트업',
         '임상 의사결정 지원',
         'Evidence-Based Medicine',
@@ -117,7 +118,7 @@ const schema = {
           name: '바이오레(Viore)는 어떤 회사인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '바이오레(주식회사 바이오레, Viore Inc.)는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+            text: '바이오레(주식회사 바이오레, Viore Inc.)는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이자 알파닥 스타트업입니다.',
           },
         },
         {

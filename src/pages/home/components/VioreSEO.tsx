@@ -14,7 +14,7 @@ const meta = {
   description:
     '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.',
   keywords:
-    '바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님',
+    '바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 스타트업, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님',
 };
 
 const schema = {
@@ -116,7 +116,7 @@ const schema = {
           name: '바이오레는 어떤 회사인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+            text: '바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이자 알파닥 스타트업입니다.',
           },
         },
         {
