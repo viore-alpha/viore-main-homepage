@@ -41,7 +41,7 @@ const AlphadocSection = () => {
       ref={ref}
       aria-labelledby="alphadoc-heading"
       className="relative overflow-hidden bg-[linear-gradient(180deg,#F7F8F2_0%,#FFFFFF_42%,#F7F6F2_100%)]"
-      style={{ padding: '122px 0 148px' }}
+      style={{ padding: 'clamp(78px,7vw,104px) 0 clamp(88px,8vw,118px)' }}
     >
       <span id="alphadoc" className="absolute -top-24 block h-px w-px" aria-hidden="true" />
       <div
@@ -69,7 +69,7 @@ const AlphadocSection = () => {
           <p className="mt-6 max-w-[620px] text-[16px] leading-8 text-[#5F5F63]">{content.body}</p>
         </div>
 
-        <div className="mt-24 flex flex-col gap-24 lg:mt-32 lg:gap-32 xl:gap-36">
+        <div className="mt-14 flex flex-col gap-14 lg:mt-20 lg:gap-16 xl:gap-20">
           {content.workflows.map((workflow, index) => (
             <article
               key={workflow.id}
@@ -89,7 +89,7 @@ const AlphadocSection = () => {
 
         <AlphadocCta
           content={content}
-          className={`${revealClassName} mt-16 justify-start sm:justify-center lg:mt-20`}
+          className={`${revealClassName} mt-10 justify-start sm:justify-center lg:mt-12`}
         />
       </div>
     </section>
