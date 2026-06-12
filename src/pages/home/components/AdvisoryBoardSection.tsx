@@ -119,6 +119,37 @@ const MobileCardSlider = ({
   );
 };
 
+const PrivateAdvisorCard = ({ isEn }: { isEn: boolean }) => (
+  <div
+    className="rounded-2xl bg-white border border-[#E5E5EA] overflow-hidden min-h-[240px] flex items-center justify-center px-6 py-12"
+    style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}
+  >
+    <div className="flex flex-col items-center gap-4 text-center">
+      <span
+        className="w-12 h-12 flex items-center justify-center rounded-full"
+        style={{ background: 'rgba(14,110,110,0.08)' }}
+      >
+        <i className="ri-lock-line text-[#0E6E6E] text-xl" />
+      </span>
+      <div>
+        <p className="text-[13px] font-semibold text-[#0E6E6E] tracking-wide">Coming Soon</p>
+        <p className="mt-1 text-[12px] text-viore-muted">
+          {isEn ? 'Advisor profile coming soon' : '자문위원 프로필은 곧 공개됩니다'}
+        </p>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2" aria-hidden="true">
+        {[120, 84, 104].map((width) => (
+          <span
+            key={width}
+            className="h-6 rounded-full"
+            style={{ width, background: 'rgba(14,110,110,0.08)' }}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 // ── Main component ────────────────────────────────────────────
 const AdvisoryBoardSection = () => {
   const { t, i18n } = useTranslation();
@@ -353,331 +384,8 @@ const AdvisoryBoardSection = () => {
             </div>
           </div>
 
-          {/* ══════════════════════════════════════════════
-              Card 2: 전기현 교수 (Coming Soon)
-          ══════════════════════════════════════════════ */}
-          <div className="relative rounded-2xl overflow-hidden">
-            {/* 비공개 커버 */}
-            <div
-              className="absolute inset-0 z-10 rounded-2xl flex flex-col items-center justify-center gap-3 pointer-events-none"
-              style={{ background: 'rgba(251,250,247,0.82)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', border: '1px solid rgba(14,110,110,0.10)' }}
-            >
-              <span className="w-9 h-9 flex items-center justify-center rounded-full" style={{ background: 'rgba(14,110,110,0.08)' }}>
-                <i className="ri-lock-line text-[#0E6E6E] text-lg" />
-              </span>
-              <p className="text-[13px] font-semibold text-[#0E6E6E] tracking-wide">Coming Soon</p>
-              <p className="text-[11px] text-viore-muted">{isEn ? 'Profile coming soon' : '곧 공개될 예정입니다'}</p>
-            </div>
-            <div
-              className="rounded-2xl bg-white border border-[#E5E5EA] overflow-hidden"
-              style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}
-            >
-              {/* Mobile slider (blurred) */}
-              <MobileCardSlider
-                profilePanel={
-                  <div className="flex flex-col items-center gap-4 p-6">
-                    <div className="rounded-xl overflow-hidden" style={{ width: '160px', height: '160px', border: '1px solid rgba(14,110,110,0.12)' }}>
-                      <img src="https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/4f344f32-a73a-4529-bd40-6ec54ef034bb_1004675_p2.png?v=f6df5677bf83cce9f55071fe31903644" alt="Ki-Hyun Jeon, M.D." className="w-full h-full object-cover object-top" />
-                    </div>
-                    <div className="w-full max-w-[200px] flex flex-col items-center gap-1.5 px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(14,110,110,0.12)' }}>
-                      <img src="https://www.snubh.org/front/images/header/tit_logo.png" alt="SNUBH" className="h-8 w-auto object-contain" />
-                      <p className="text-[10px] text-viore-muted text-center">Seoul National University Bundang Hospital</p>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: '#B53A3A' }}>Medical Advisor</span>
-                      <h3 className="mt-1 font-bold text-viore-text text-[1.35rem] leading-tight" style={{ letterSpacing: '-0.02em' }}>
-                        {isEn ? 'Ki-Hyun Jeon' : '전기현'}{' '}<span className="font-semibold text-[0.75em] text-[#6E6E73]">M.D.</span>
-                      </h3>
-                      <p className="mt-1 text-[12px] text-[#3C3C3E] leading-snug">
-                        {isEn ? 'Associate Professor, SNUBH' : '분당서울대학교병원 부교수'}
-                      </p>
-                    </div>
-                  </div>
-                }
-                detailPanel={
-                  <div className="p-6 flex flex-col gap-4">
-                    <div>
-                      <CategoryLabel ko="임상 Clinical" en="Clinical" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>Associate Professor, Cardiovascular Center, SNUBH</span></>,
-                          'Former Director of Clinical Research, Mediplex Sejong Hospital',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>(현) 분당서울대병원 순환기내과 부교수</span></>,
-                          '前 메디플렉스 세종병원 심장내과 임상연구실장',
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="AI · 교육" en="AI · Education" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <>&quot;Medical Research with ChatGPT&quot; (FastCampus) — <span style={{ color: '#B53A3A', fontWeight: 600 }}>₩100M Revenue in 50 Days</span></>,
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <>패스트캠퍼스 <span style={{ color: '#B53A3A', fontWeight: 600 }}>출시 50일 매출 1억 돌파</span></>,
-                        ]} />
-                      )}
-                    </div>
-                  </div>
-                }
-              />
-              {/* Desktop */}
-              <div className="hidden lg:flex flex-row">
-                <div className="flex-shrink-0 flex flex-col items-center justify-start gap-4 p-10 w-[280px] border-r border-[#F0EFEB]">
-                  <div className="w-full rounded-xl overflow-hidden" style={{ aspectRatio: '1 / 1', maxWidth: '200px', border: '1px solid rgba(14,110,110,0.12)' }}>
-                    <img src="https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/4f344f32-a73a-4529-bd40-6ec54ef034bb_1004675_p2.png?v=f6df5677bf83cce9f55071fe31903644" alt="Ki-Hyun Jeon, M.D." className="w-full h-full object-cover object-top" />
-                  </div>
-                  <div className="w-full max-w-[220px] flex flex-col items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(14,110,110,0.12)' }}>
-                    <img src="https://www.snubh.org/front/images/header/tit_logo.png" alt="SNUBH" className="w-full h-auto object-contain" style={{ maxHeight: '40px' }} />
-                    <p className="text-[10px] text-viore-muted text-center leading-snug">Seoul National University<br />Bundang Hospital</p>
-                  </div>
-                </div>
-                <div className="flex-1 pt-10 pr-10 pl-0 pb-6 flex flex-col gap-4">
-                  <span className="text-[10.5px] font-bold uppercase tracking-[0.22em]" style={{ color: '#B53A3A', fontFamily: "'Inter', sans-serif" }}>Medical Advisor</span>
-                  <div className="flex flex-wrap gap-2 -mt-1">
-                    {(isEn
-                      ? ['Associate Professor, SNUBH', 'Cardiologist', 'Medical AI Researcher', 'Bestselling Instructor · FastCampus']
-                      : ['분당서울대학교병원 부교수', '심장내과 전문의', '의료 AI 연구자', '베스트셀러 강사 · 패스트캠퍼스']
-                    ).map((badge) => (
-                      <span key={badge} className="text-[11px] px-2.5 py-1 rounded-full whitespace-nowrap" style={{ background: '#F5F4F0', color: '#3C3C3E', border: '1px solid #E5E5EA', fontFamily: "'Inter', sans-serif" }}>{badge}</span>
-                    ))}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-viore-text leading-tight" style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.02em' }}>
-                      {isEn ? <>Ki-Hyun Jeon{' '}<span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75em', color: '#6E6E73' }}>M.D.</span></> : <>전기현{' '}<span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75em', color: '#6E6E73' }}>Ki-Hyun Jeon, M.D.</span></>}
-                    </h3>
-                    <p className="mt-1 text-[14px] font-medium text-[#3C3C3E] leading-snug">
-                      {isEn ? 'Associate Professor, Cardiovascular Center, SNUBH' : '분당서울대학교병원 심장혈관센터 순환기내과 부교수'}
-                    </p>
-                    <p className="mt-1 text-[13px] text-viore-muted leading-snug">
-                      {isEn ? 'Cardiologist · Medical AI Researcher · Bestselling AI Medical Research Instructor' : '심장내과 임상의 · 의료 AI 연구자 · 베스트셀러 AI 의학연구 강사'}
-                    </p>
-                  </div>
-                  <div className="h-px bg-[#F0EFEB]" />
-                  <div className="grid grid-cols-3 gap-5">
-                    <div>
-                      <CategoryLabel ko="임상 Clinical" en="Clinical" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>Associate Professor, Cardiovascular Center, SNUBH</span></>,
-                          'Former Director of Clinical Research, Mediplex Sejong Hospital Cardiology',
-                          'B.S. & M.S., Medicine, Chung-Ang University School of Medicine',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>(현) 분당서울대병원 심장혈관센터 순환기내과 부교수</span></>,
-                          '前 메디플렉스 세종병원 심장내과 임상연구실장',
-                          '중앙대학교 의과대학 의학 학사·석사',
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="연구 Research" en="Research" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          'AI-based ECG Analysis & ML Cardiovascular Outcome Prediction',
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>JAMA Network</span> & other SCI journal publications</>,
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>2025 Korea Healthcare Forum</span> — Invited Speaker</>,
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          'AI 기반 심전도(ECG) 분석 및 머신러닝 심혈관 예후 예측',
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>JAMA Network 계열</span> 등 SCI 국제학술지 다수 게재</>,
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>2025 대한민국 헬스케어 포럼</span> 초청 연자</>,
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="AI · 교육" en="AI · Education" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <>&quot;Medical Research with ChatGPT, Taught by a Doctor&quot; — <span style={{ color: '#B53A3A', fontWeight: 600 }}>₩100M Revenue in 50 Days</span></>,
-                          '&quot;Medical Research with Gemini, Taught by a Doctor&quot; — Lead Instructor',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <>패스트캠퍼스 &apos;의사에게 배우는 ChatGPT 의학연구&apos; — <span style={{ color: '#B53A3A', fontWeight: 600 }}>출시 50일 매출 1억 돌파</span></>,
-                          '패스트캠퍼스 &apos;Gemini 의학연구 방법&apos; 대표 강사',
-                        ]} />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ══════════════════════════════════════════════
-              Card 3: 양민석 교수 (Coming Soon)
-          ══════════════════════════════════════════════ */}
-          <div className="relative rounded-2xl overflow-hidden">
-            {/* 비공개 커버 */}
-            <div
-              className="absolute inset-0 z-10 rounded-2xl flex flex-col items-center justify-center gap-3 pointer-events-none"
-              style={{ background: 'rgba(251,250,247,0.82)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', border: '1px solid rgba(14,110,110,0.10)' }}
-            >
-              <span className="w-9 h-9 flex items-center justify-center rounded-full" style={{ background: 'rgba(14,110,110,0.08)' }}>
-                <i className="ri-lock-line text-[#0E6E6E] text-lg" />
-              </span>
-              <p className="text-[13px] font-semibold text-[#0E6E6E] tracking-wide">Coming Soon</p>
-              <p className="text-[11px] text-viore-muted">{isEn ? 'Profile coming soon' : '곧 공개될 예정입니다'}</p>
-            </div>
-            <div
-              className="rounded-2xl bg-white border border-[#E5E5EA] overflow-hidden"
-              style={{ boxShadow: '0 2px 16px rgba(0,0,0,0.06)' }}
-            >
-              {/* Mobile slider (blurred) */}
-              <MobileCardSlider
-                profilePanel={
-                  <div className="flex flex-col items-center gap-4 p-6">
-                    <div className="rounded-xl overflow-hidden" style={{ width: '160px', height: '160px', border: '1px solid rgba(14,110,110,0.12)' }}>
-                      <img src="https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/e3add32e-5193-454f-8011-69b25fc4eb9e_8b34fbc441e849d8bfde41956baeff3a.jpg?v=fe6ace577eb64329ba23741ee68b1e8b" alt="Min-Suk Yang, M.D., Ph.D." className="w-full h-full object-cover object-top" />
-                    </div>
-                    <div className="w-full max-w-[200px] flex flex-col items-center gap-1.5 px-4 py-2.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(14,110,110,0.12)' }}>
-                      <img src="https://www.brmh.org/images_brmh_new/common/logo01.png" alt="Boramae Medical Center" className="h-8 w-auto object-contain" />
-                      <p className="text-[10px] text-viore-muted text-center">SMG-SNU Boramae Medical Center</p>
-                    </div>
-                    <div className="text-center">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: '#B53A3A' }}>Medical Advisor</span>
-                      <h3 className="mt-1 font-bold text-viore-text text-[1.35rem] leading-tight" style={{ letterSpacing: '-0.02em' }}>
-                        {isEn ? 'Min-Suk Yang' : '양민석'}{' '}<span className="font-semibold text-[0.75em] text-[#6E6E73]">M.D., Ph.D.</span>
-                      </h3>
-                      <p className="mt-1 text-[12px] text-[#3C3C3E] leading-snug">
-                        {isEn ? 'Associate Professor, Boramae Medical Center' : '보라매병원 알레르기내과 부교수'}
-                      </p>
-                    </div>
-                  </div>
-                }
-                detailPanel={
-                  <div className="p-6 flex flex-col gap-4">
-                    <div>
-                      <CategoryLabel ko="임상 Clinical" en="Clinical" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>Associate Professor, Allergy & Immunology, Boramae</span></>,
-                          'Former Clinical Instructor, Allergy, SNUH',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>(현) 보라매병원 알레르기내과 부교수</span></>,
-                          '前 서울대학교병원 알레르기내과 임상강사',
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="가이드라인 Guidelines" en="Guidelines" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <>&ldquo;Asthma & Allergic Diseases&rdquo; 3rd Ed. — <span style={{ color: '#B53A3A', fontWeight: 600 }}>Editorial Board Member</span></>,
-                          'Co-author, Korean Asthma Practice Guidelines',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <>『천식과 알레르기질환』 <span style={{ color: '#B53A3A', fontWeight: 600 }}>제3판 편찬위원</span> (2023)</>,
-                          '한국천식진료지침 공저',
-                        ]} />
-                      )}
-                    </div>
-                  </div>
-                }
-              />
-              {/* Desktop */}
-              <div className="hidden lg:flex flex-row">
-                <div className="flex-shrink-0 flex flex-col items-center justify-start gap-4 p-10 w-[280px] border-r border-[#F0EFEB]">
-                  <div className="w-full rounded-xl overflow-hidden" style={{ aspectRatio: '1 / 1', maxWidth: '200px', border: '1px solid rgba(14,110,110,0.12)' }}>
-                    <img src="https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/e3add32e-5193-454f-8011-69b25fc4eb9e_8b34fbc441e849d8bfde41956baeff3a.jpg?v=fe6ace577eb64329ba23741ee68b1e8b" alt="Min-Suk Yang, M.D., Ph.D." className="w-full h-full object-cover object-top" />
-                  </div>
-                  <div className="w-full max-w-[220px] flex flex-col items-center gap-2 px-4 py-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.9)', border: '1px solid rgba(14,110,110,0.12)' }}>
-                    <img src="https://www.brmh.org/images_brmh_new/common/logo01.png" alt="SMG-SNU Boramae Medical Center" className="w-full h-auto object-contain" style={{ maxHeight: '44px' }} />
-                    <p className="text-[10px] text-viore-muted text-center leading-snug">SMG-SNU Boramae<br />Medical Center</p>
-                  </div>
-                </div>
-                <div className="flex-1 pt-10 pr-10 pl-0 pb-6 flex flex-col gap-4">
-                  <span className="text-[10.5px] font-bold uppercase tracking-[0.22em]" style={{ color: '#B53A3A', fontFamily: "'Inter', sans-serif" }}>Medical Advisor</span>
-                  <div className="flex flex-wrap gap-2 -mt-2">
-                    {(isEn
-                      ? ['Associate Professor, Boramae', 'Allergist & Immunologist', 'QI Committee Professor', 'Clinical Guideline Co-author']
-                      : ['보라매병원 부교수', '알레르기내과 전문의', '의료질향상담당 교수', '진료지침 공저자']
-                    ).map((badge) => (
-                      <span key={badge} className="text-[11px] px-2.5 py-1 rounded-full whitespace-nowrap" style={{ background: '#F5F4F0', color: '#3C3C3E', border: '1px solid #E5E5EA', fontFamily: "'Inter', sans-serif" }}>{badge}</span>
-                    ))}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-viore-text leading-tight" style={{ fontSize: 'clamp(1.4rem, 2vw, 1.8rem)', letterSpacing: '-0.02em' }}>
-                      {isEn ? <>Min-Suk Yang{' '}<span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75em', color: '#6E6E73' }}>M.D., Ph.D.</span></> : <>양민석{' '}<span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: '0.75em', color: '#6E6E73' }}>Min-Suk Yang, M.D., Ph.D.</span></>}
-                    </h3>
-                    <p className="mt-1 text-[14px] font-medium text-[#3C3C3E] leading-snug">
-                      {isEn ? 'Associate Professor, Allergy & Clinical Immunology, SMG-SNU Boramae Medical Center' : '서울대학교병원운영 서울특별시보라매병원 알레르기내과 부교수'}
-                    </p>
-                    <p className="mt-1 text-[13px] text-viore-muted leading-snug">
-                      {isEn ? 'Allergist-Immunologist · Drug Adverse Reaction Expert · National Guideline Co-author' : '알레르기·천식 임상의 · 약물부작용 전문가 · 국가 진료지침 공저자'}
-                    </p>
-                  </div>
-                  <div className="h-px bg-[#F0EFEB]" />
-                  <div className="grid grid-cols-3 gap-5">
-                    <div>
-                      <CategoryLabel ko="임상 Clinical" en="Clinical" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>Associate Professor, Allergy & Immunology, Boramae Medical Center</span></>,
-                          'Former Clinical Instructor, Allergy, Seoul National University Hospital',
-                          'B.S., M.S., Ph.D., Seoul National University College of Medicine',
-                          'Asthma, Anaphylaxis, Drug & Food Allergy, Chronic Cough',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>(현) 보라매병원 알레르기내과 부교수</span></>,
-                          '前 서울대학교병원 알레르기내과 임상강사',
-                          '서울대학교 의과대학 의학 학사·석사·박사',
-                          '천식, 아나필락시스, 약물·음식물 알레르기, 만성기침 진료',
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="연구 Research" en="Research" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          'Extensive research on drug adverse reactions & anaphylaxis',
-                          'Multiple SCI international journal publications',
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>World Allergy Organization Junior Abstract Award</span> (2011)</>,
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>Commendation from Minister of Health &amp; Welfare</span> (2010)</>,
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          '약물 유해반응·아나필락시스 임상연구 다수',
-                          'SCI 국제학술지 논문 다수 게재',
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>World Allergy Organization Junior Abstract Award</span> (2011)</>,
-                          <><span style={{ color: '#B53A3A', fontWeight: 600 }}>보건복지부장관 표창</span> (2010)</>,
-                        ]} />
-                      )}
-                    </div>
-                    <div>
-                      <CategoryLabel ko="가이드라인 Guidelines" en="Guidelines" isEn={isEn} />
-                      {isEn ? (
-                        <BulletList items={[
-                          <>&ldquo;Asthma & Allergic Diseases&rdquo; 3rd Ed. — <span style={{ color: '#B53A3A', fontWeight: 600 }}>Editorial Board Member</span> (2023)</>,
-                          'Co-author, Korean Asthma Practice Guidelines',
-                          'Co-author, Clinical Practice Guidelines for Allergic Rhinitis',
-                          'Co-author, Korean Guidelines on Contrast Media Adverse Reactions',
-                        ]} />
-                      ) : (
-                        <BulletList items={[
-                          <>『천식과 알레르기질환』 <span style={{ color: '#B53A3A', fontWeight: 600 }}>제3판 편찬위원</span> (2023)</>,
-                          '한국천식진료지침 공저',
-                          '임상의를 위한 알레르기비염 진료가이드라인 공저',
-                          '조영제 유해반응 한국 임상진료지침 공저',
-                        ]} />
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PrivateAdvisorCard isEn={isEn} />
+          <PrivateAdvisorCard isEn={isEn} />
 
         </div>
       </div>
