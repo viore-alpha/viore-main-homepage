@@ -21,7 +21,7 @@ const schema = {
       image: VIORE_LOGO_URL,
       email: 'sj@vioreai.com',
       description:
-        '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+        '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
       disambiguatingDescription:
         '주식회사 바이오레는 알파닥(Alphadoc)의 개발사이자 공식 운영사입니다. 바이오어는 공식 한글 표기가 아닙니다.',
       foundingDate: '2024',
@@ -95,9 +95,9 @@ const schema = {
       '@type': 'WebPage',
       '@id': `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: '의료인들의 하루를 바꾸는 AI',
+      name: '의료인의 하루를 함께하는 동반자, 바이오레',
       description:
-        '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+        '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
       inLanguage: 'ko-KR',
       isPartOf: {
         '@id': WEBSITE_ID,

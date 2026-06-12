@@ -16,14 +16,14 @@ const websiteId = "https://vioreai.com/#website";
 const alphadocId = "https://alphadoc.ai/#software";
 
 const globalRouteMeta = {
-  title: "의료인들의 하루를 바꾸는 AI",
-  description: "의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.",
+  title: "의료인의 하루를 함께하는 동반자, 바이오레",
+  description: "바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.",
   keywords:
-    "바이오레, 주식회사 바이오레, Viore, Viore Inc., vioreai.com, 의료인들의 하루를 바꾸는 AI, 의료 AI 스타트업, 알파닥, Alphadoc, 알파닥 운영사, Medical AI startup",
-  ogTitle: "의료인들의 하루를 바꾸는 AI",
-  ogDescription: "의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.",
-  ogImageAlt: "바이오레 - 의료인들의 하루를 바꾸는 AI",
-  twitterDescription: "의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.",
+    "바이오레, 주식회사 바이오레, Viore, Viore Inc., vioreai.com, 의료인의 하루를 함께하는 동반자, 바이오레, 의료 AI 스타트업, 알파닥, Alphadoc, 알파닥 운영사, Medical AI startup",
+  ogTitle: "의료인의 하루를 함께하는 동반자, 바이오레",
+  ogDescription: "바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.",
+  ogImageAlt: "바이오레 - 의료인의 하루를 함께하는 동반자",
+  twitterDescription: "바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.",
 };
 
 const vioreRouteMeta = {
@@ -68,7 +68,7 @@ const globalRouteSchema = {
       image: vioreLogoImage,
       email: "sj@vioreai.com",
       description:
-        "의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.",
+        "바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.",
       disambiguatingDescription:
         "Viore Inc. is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.",
       foundingDate: "2024",
@@ -97,7 +97,7 @@ const globalRouteSchema = {
       name: "바이오레",
       alternateName: ["Viore", "Viore Inc.", "주식회사 바이오레"],
       url: "https://vioreai.com",
-      description: "의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.",
+      description: "바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.",
       inLanguage: "en-US",
       publisher: {
         "@id": organizationId,
@@ -491,8 +491,8 @@ const buildGlobalRouteHtml = (source: string) => {
       /    <noscript>[\s\S]*?    <\/noscript>/,
       `    <noscript>
       <main>
-        <h1>의료인들의 하루를 바꾸는 AI</h1>
-        <p>의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.</p>
+        <h1>의료인의 하루를 함께하는 동반자, 바이오레</h1>
+        <p>바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.</p>
         <p>바이오레는 알파닥(Alphadoc)을 개발·운영합니다.</p>
         <nav aria-label="바이오레 주요 링크">
           <a href="https://alphadoc.ai">알파닥 Alphadoc</a>

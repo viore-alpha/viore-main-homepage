@@ -6,42 +6,42 @@ import GlobalSEO from './components/GlobalSEO';
 const OG_IMAGE = 'https://vioreai.com/brand/viore/og-image.png';
 
 const KO_META = {
-  title: '의료인들의 하루를 바꾸는 AI',
+  title: '의료인의 하루를 함께하는 동반자, 바이오레',
   description:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   keywords:
     '주식회사 바이오레, 바이오레, 바이오레 홈페이지, Viore, Viore Inc., vioreai.com, 알파닥, 알파닥 스타트업, Alphadoc, 알파닥 운영사, 알파닥 공식 운영사, 알파닥 개발사, 알파닥 회사, 알파닥 만든 회사, 바이오레 알파닥, 국내 의료 AI 스타트업, 의료 AI 스타트업, 의료 스타트업, 한국 의료 AI 스타트업, 의사용 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의학 논문 검색',
   ogLocale: 'ko_KR',
   ogSiteName: '바이오레',
-  ogTitle: '의료인들의 하루를 바꾸는 AI',
+  ogTitle: '의료인의 하루를 함께하는 동반자, 바이오레',
   ogDescription:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   ogUrl: 'https://vioreai.com/',
   ogImage: OG_IMAGE,
-  ogImageAlt: '바이오레 - 의료인들의 하루를 바꾸는 AI',
-  twitterTitle: '의료인들의 하루를 바꾸는 AI',
+  ogImageAlt: '바이오레 - 의료인의 하루를 함께하는 동반자',
+  twitterTitle: '의료인의 하루를 함께하는 동반자, 바이오레',
   twitterDescription:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   twitterImage: OG_IMAGE,
 };
 
 const EN_META = {
-  title: '의료인들의 하루를 바꾸는 AI',
+  title: '의료인의 하루를 함께하는 동반자, 바이오레',
   description:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   keywords:
     'Viore, Viore Inc., vioreai.com, Alphadoc, Alphadoc operator, official operator of Alphadoc, developer of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai',
   ogLocale: 'en_US',
   ogSiteName: '바이오레',
-  ogTitle: '의료인들의 하루를 바꾸는 AI',
+  ogTitle: '의료인의 하루를 함께하는 동반자, 바이오레',
   ogDescription:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   ogUrl: 'https://vioreai.com/global/',
   ogImage: OG_IMAGE,
-  ogImageAlt: '바이오레 - 의료인들의 하루를 바꾸는 AI',
-  twitterTitle: '의료인들의 하루를 바꾸는 AI',
+  ogImageAlt: '바이오레 - 의료인의 하루를 함께하는 동반자',
+  twitterTitle: '의료인의 하루를 함께하는 동반자, 바이오레',
   twitterDescription:
-    '의사들의 하루의 시작과 마무리를 같이하는 의료 AI 스타트업입니다.',
+    '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   twitterImage: OG_IMAGE,
 };
 
