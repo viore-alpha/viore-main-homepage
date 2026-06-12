@@ -62,7 +62,8 @@ const schema = {
     {
       '@type': 'WebSite',
       '@id': WEBSITE_ID,
-      name: '바이오레 Viore',
+      name: '바이오레',
+      alternateName: ['주식회사 바이오레', 'Viore', 'Viore Inc.'],
       url: SITE_URL,
       description:
         '주식회사 바이오레 공식 홈페이지. 바이오레는 알파닥(Alphadoc)의 개발사이자 공식 운영사입니다.',
@@ -93,9 +94,9 @@ const schema = {
       '@type': 'WebPage',
       '@id': `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: '주식회사 바이오레 Viore | 알파닥 운영사 · Alphadoc 공식 개발사',
+      name: '바이오레 | 의사의 하루를 바꿔요 · 알파닥',
       description:
-        '알파닥 운영사는 주식회사 바이오레(Viore Inc.)입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+        '바이오레는 의사를 위한 의료 AI 플랫폼 알파닥을 만드는 스타트업입니다. 알파닥은 근거 기반 임상 AI, 의학 정보 검색, 의료 뉴스와 커뮤니티를 한곳에 모읍니다.',
       inLanguage: 'ko-KR',
       isPartOf: {
         '@id': WEBSITE_ID,
