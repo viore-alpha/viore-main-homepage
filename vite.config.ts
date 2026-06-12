@@ -500,6 +500,15 @@ const buildGlobalRouteHtml = (source: string) => {
         </nav>
       </main>
     </noscript>`,
+    )
+    .replace(
+      /    <div id="root">[\s\S]*?    <\/div>/,
+      `    <div id="root">
+      <main aria-label="바이오레 핵심 정보">
+        <h1>의료인의 하루를 함께하는 동반자, 바이오레</h1>
+        <p>바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.</p>
+      </main>
+    </div>`,
     );
 
   html = replaceNameMeta(html, "description", globalRouteMeta.description);
@@ -557,6 +566,16 @@ const buildVioreRouteHtml = (source: string) => {
         </nav>
       </main>
     </noscript>`,
+    )
+    .replace(
+      /    <div id="root">[\s\S]*?    <\/div>/,
+      `    <div id="root">
+      <main aria-label="바이오레 공식 정보">
+        <h1>바이오레 공식 홈페이지</h1>
+        <p>바이오레는 주식회사 바이오레(Viore Inc.)의 공식 한글명입니다.</p>
+        <p>바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.</p>
+      </main>
+    </div>`,
     );
 
   html = replaceNameMeta(html, "description", vioreRouteMeta.description);
@@ -614,6 +633,16 @@ const buildMedicalAiRouteHtml = (source: string) => {
         </nav>
       </main>
     </noscript>`,
+    )
+    .replace(
+      /    <div id="root">[\s\S]*?    <\/div>/,
+      `    <div id="root">
+      <main aria-label="국내 의료 AI 스타트업 바이오레 핵심 정보">
+        <h1>국내 의료 AI 스타트업, 주식회사 바이오레</h1>
+        <p>주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 국내 의료 AI 스타트업입니다.</p>
+        <p>바이오레는 근거 기반 임상 AI, 의학 정보 검색, 의료인 업무 지원 워크플로를 만들고 있습니다.</p>
+      </main>
+    </div>`,
     );
 
   html = replaceNameMeta(html, "description", medicalAiRouteMeta.description);
