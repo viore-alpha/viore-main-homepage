@@ -51,8 +51,8 @@ export type AlphadocContent = {
 export const ALPHADOC_CONTENT = {
   ko: {
     assets: ALPHADOC_ASSETS,
-    headline: '의료인들의 하루를 같이해요.',
-    body: '알파닥은 의사들의 하루의 시작과 마무리를 같이하는 동반자에요.',
+    headline: '의료인의 하루를 같이해요.',
+    body: '알파닥은 의료인의 하루의 시작과 마무리를 같이하는 동반자에요.',
     ctaLabel: '알파닥 시작하기',
     note: '글로벌 버전은 개발 중이에요.',
     demoTitle: '알파닥 데모',

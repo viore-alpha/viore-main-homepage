@@ -89,7 +89,7 @@ export const resources = {
       // ── Alphadoc ──
       alphadoc_label: '알파닥 Alphadoc.ai',
       alphadoc_headline: '의료인들의 하루를 같이하는 알파닥',
-      alphadoc_sub: '알파닥은 의사들의 하루의 시작과 마무리를 같이하는 동반자에요.',
+      alphadoc_sub: '알파닥은 의료인의 하루의 시작과 마무리를 같이하는 동반자에요.',
       alphadoc_beta: '알파닥은 현재 베타 테스트 중이에요.',
       alphadoc_module_1_title: 'Clinical AI',
       alphadoc_module_1_desc: '근거 기반 임상 질문 응답. 응답마다 근거 논문 링크를 함께 보여드려요.',

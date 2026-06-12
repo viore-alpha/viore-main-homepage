@@ -21,16 +21,9 @@ const Footer = () => {
             >
               {t('footer_legal_notice')}
             </a>
-            <a
-              href="mailto:sj@vioreai.com"
-              rel="nofollow"
-              className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
-            >
-              sj@vioreai.com
-            </a>
+            <span className="whitespace-nowrap">{t('footer_copyright')}</span>
           </div>
         </div>
-        <p className="text-[12px] text-viore-faint">{t('footer_copyright')}</p>
       </div>
     </footer>
   );
