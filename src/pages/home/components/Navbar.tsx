@@ -3,9 +3,10 @@ import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { key: 'nav_main', href: '/' },
-  { key: 'nav_alphadoc', href: '#alphadoc' },
-  { key: 'nav_people', href: '#advisory' },
-  { key: 'nav_direction', href: '#vision' },
+  { key: 'nav_viore', href: '/viore/' },
+  { key: 'nav_alphadoc', href: '/#alphadoc' },
+  { key: 'nav_people', href: '/#advisory' },
+  { key: 'nav_direction', href: '/#vision' },
 ];
 
 const getNormalizedPathname = () => window.location.pathname.replace(/\/+$/, '') || '/';
@@ -50,6 +51,7 @@ const Navbar = () => {
   };
 
   const isGlobal = pathname === '/global';
+  const contactHref = pathname === '/' ? '#contact' : '/#contact';
 
   return (
     <>
@@ -97,7 +99,7 @@ const Navbar = () => {
               {isGlobal ? t('lang_ko') : t('lang_en')}
             </button>
             <a
-              href="#contact"
+              href={contactHref}
               className="inline-flex items-center px-5 py-2 rounded-[14px] text-[13px] font-semibold text-white bg-viore-teal hover:bg-viore-teal-mid transition-all duration-300 hover:translate-y-[-1px] whitespace-nowrap cursor-pointer"
             >
               {t('nav_contact')}
@@ -147,7 +149,7 @@ const Navbar = () => {
             </a>
           ))}
           <a
-            href="#contact"
+            href={contactHref}
             className="mt-4 inline-flex items-center self-start px-6 py-3 rounded-[14px] text-[14px] font-semibold text-white bg-viore-teal whitespace-nowrap cursor-pointer"
             onClick={() => setMenuOpen(false)}
           >

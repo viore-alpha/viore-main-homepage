@@ -7,6 +7,7 @@ import AutoImport from "unplugin-auto-import/vite";
 const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
 const globalRouteUrl = "https://vioreai.com/global/";
+const vioreRouteUrl = "https://vioreai.com/viore/";
 const globalRouteImage = "https://vioreai.com/brand/viore/og-image.png";
 const vioreLogoImage = "https://vioreai.com/brand/viore/logo-square.png";
 const organizationId = "https://vioreai.com/#organization";
@@ -25,6 +26,20 @@ const globalRouteMeta = {
   ogImageAlt: "Viore Inc. Korea - Alphadoc operator",
   twitterDescription:
     "Viore Inc. Korea builds Alphadoc, a physician-focused medical AI platform.",
+};
+
+const vioreRouteMeta = {
+  title: "바이오레 공식 홈페이지 | 주식회사 바이오레 Viore · 알파닥 운영사",
+  description:
+    "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업이며, 비오레(Bioré) 화장품 브랜드와 무관합니다.",
+  keywords:
+    "바이오레, 주식회사 바이오레, 바이오레 공식 홈페이지, 바이오레 Viore, Viore Inc. Korea, Viore Inc., vioreai.com, 알파닥 운영사, 알파닥 개발사, 알파닥 만든 회사, 알파닥 공식 운영사, 의료 AI 스타트업, 비오레 아님, Bioré 아님",
+  ogTitle: "바이오레 공식 홈페이지 | 주식회사 바이오레",
+  ogDescription:
+    "바이오레는 알파닥을 개발·운영하는 한국 의료 AI 스타트업입니다. 비오레(Bioré) 화장품 브랜드와 무관합니다.",
+  ogImageAlt: "바이오레 공식 홈페이지 - 주식회사 바이오레",
+  twitterDescription:
+    "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며 알파닥 운영사입니다.",
 };
 
 const globalRouteSchema = {
@@ -159,6 +174,137 @@ const globalRouteSchema = {
   ],
 };
 
+const vioreRouteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": organizationId,
+      name: "주식회사 바이오레",
+      legalName: "주식회사 바이오레",
+      alternateName: ["바이오레", "Viore", "Viore Inc.", "Viore Inc. Korea"],
+      url: "https://vioreai.com",
+      logo: vioreLogoImage,
+      image: vioreLogoImage,
+      email: "sj@vioreai.com",
+      description:
+        "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명이며, 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
+      disambiguatingDescription:
+        "바이오레는 비오레(Bioré) 화장품 브랜드와 무관한 한국 의료 AI 스타트업입니다. 바이오어는 공식 표기가 아닙니다.",
+      foundingDate: "2024",
+      knowsAbout: [
+        "의료 AI",
+        "의사용 AI 플랫폼",
+        "임상 의사결정 지원",
+        "근거 기반 의학",
+        "의학 정보 검색",
+      ],
+      brand: {
+        "@id": alphadocId,
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "sj@vioreai.com",
+        contactType: "business inquiries",
+        availableLanguage: ["ko", "en"],
+      },
+      areaServed: ["KR", "Global"],
+      sameAs: ["https://alphadoc.ai"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      name: "바이오레 Viore",
+      url: "https://vioreai.com",
+      description:
+        "주식회사 바이오레 공식 홈페이지. 바이오레는 알파닥(Alphadoc)의 개발사이자 공식 운영사입니다.",
+      inLanguage: "ko-KR",
+      publisher: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${vioreRouteUrl}#webpage`,
+      url: vioreRouteUrl,
+      name: vioreRouteMeta.title,
+      description: vioreRouteMeta.description,
+      inLanguage: "ko-KR",
+      dateModified: "2026-06-12",
+      isPartOf: {
+        "@id": websiteId,
+      },
+      about: {
+        "@id": organizationId,
+      },
+      primaryEntity: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": alphadocId,
+      name: "알파닥 Alphadoc",
+      url: "https://alphadoc.ai",
+      applicationCategory: "MedicalApplication",
+      operatingSystem: "Web",
+      description:
+        "알파닥은 주식회사 바이오레가 개발·운영하는 의사용 의료 AI 플랫폼입니다.",
+      author: {
+        "@id": organizationId,
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "바이오레",
+          item: vioreRouteUrl,
+        },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "바이오레는 어떤 회사인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다. 바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "바이오레와 비오레는 같은 브랜드인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "아닙니다. 바이오레(Viore)는 알파닥을 운영하는 한국 의료 AI 스타트업이고, 비오레(Bioré)는 별도의 화장품 브랜드입니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "바이오레 공식 홈페이지는 어디인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "바이오레 공식 홈페이지는 https://vioreai.com/ 이며, 바이오레 공식 검색 정보 페이지는 https://vioreai.com/viore/ 입니다.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "알파닥 운영사는 어디인가요?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "알파닥(Alphadoc)의 공식 운영사는 주식회사 바이오레(Viore Inc. Korea)입니다.",
+          },
+        },
+      ],
+    },
+  ],
+};
+
 const escapeHtmlAttribute = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
 
@@ -227,16 +373,77 @@ const buildGlobalRouteHtml = (source: string) => {
   return html;
 };
 
+const buildVioreRouteHtml = (source: string) => {
+  const schemaJson = JSON.stringify(vioreRouteSchema, null, 8)
+    .split("\n")
+    .map((line) => `      ${line}`)
+    .join("\n");
+
+  let html = source
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${vioreRouteMeta.title}</title>`)
+    .replace(
+      /<link rel="canonical" href="[^"]+" \/>/,
+      `<link rel="canonical" href="${vioreRouteUrl}" />`,
+    )
+    .replace(
+      /<link rel="alternate" hreflang="ko" href="[^"]+" \/>/,
+      `<link rel="alternate" hreflang="ko" href="${vioreRouteUrl}" />`,
+    )
+    .replace(
+      /<link rel="alternate" hreflang="x-default" href="[^"]+" \/>/,
+      `<link rel="alternate" hreflang="x-default" href="${vioreRouteUrl}" />`,
+    )
+    .replace(
+      /    <script type="application\/ld\+json" id="schema-home">[\s\S]*?    <\/script>/,
+      `    <script type="application/ld+json" id="schema-viore">\n${schemaJson}\n    </script>`,
+    )
+    .replace(
+      /    <noscript>[\s\S]*?    <\/noscript>/,
+      `    <noscript>
+      <main>
+        <h1>바이오레 공식 홈페이지</h1>
+        <p>바이오레는 주식회사 바이오레(Viore Inc. Korea)의 공식 한글명입니다.</p>
+        <p>바이오레는 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.</p>
+        <p>바이오레는 비오레(Bioré) 화장품 브랜드와 무관합니다. 바이오어는 공식 표기가 아닙니다.</p>
+        <nav aria-label="바이오레 공식 링크">
+          <a href="/">바이오레 홈페이지</a>
+          <a href="https://alphadoc.ai">알파닥 Alphadoc</a>
+          <a href="/global/">Viore Global</a>
+        </nav>
+      </main>
+    </noscript>`,
+    );
+
+  html = replaceNameMeta(html, "description", vioreRouteMeta.description);
+  html = replaceNameMeta(html, "keywords", vioreRouteMeta.keywords);
+  html = replacePropertyMeta(html, "og:locale", "ko_KR");
+  html = replacePropertyMeta(html, "og:site_name", "바이오레 Viore");
+  html = replacePropertyMeta(html, "og:title", vioreRouteMeta.ogTitle);
+  html = replacePropertyMeta(html, "og:description", vioreRouteMeta.ogDescription);
+  html = replacePropertyMeta(html, "og:url", vioreRouteUrl);
+  html = replacePropertyMeta(html, "og:image", globalRouteImage);
+  html = replacePropertyMeta(html, "og:image:alt", vioreRouteMeta.ogImageAlt);
+  html = replaceNameMeta(html, "twitter:title", vioreRouteMeta.ogTitle);
+  html = replaceNameMeta(html, "twitter:description", vioreRouteMeta.twitterDescription);
+  html = replaceNameMeta(html, "twitter:image", globalRouteImage);
+
+  return html;
+};
+
 const githubPagesFallback = () => ({
   name: "github-pages-spa-fallback",
   closeBundle() {
     const indexPath = resolve(__dirname, "out/index.html");
     const fallbackPath = resolve(__dirname, "out/404.html");
     const globalRoutePath = resolve(__dirname, "out/global/index.html");
+    const vioreRoutePath = resolve(__dirname, "out/viore/index.html");
     if (!existsSync(indexPath)) return;
+    const indexHtml = readFileSync(indexPath, "utf8");
     copyFileSync(indexPath, fallbackPath);
     mkdirSync(resolve(__dirname, "out/global"), { recursive: true });
-    writeFileSync(globalRoutePath, buildGlobalRouteHtml(readFileSync(indexPath, "utf8")));
+    mkdirSync(resolve(__dirname, "out/viore"), { recursive: true });
+    writeFileSync(globalRoutePath, buildGlobalRouteHtml(indexHtml));
+    writeFileSync(vioreRoutePath, buildVioreRouteHtml(indexHtml));
   },
 });
 

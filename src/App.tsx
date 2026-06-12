@@ -3,6 +3,7 @@ import DnaHelixCanvas from '@/components/feature/DnaHelixCanvas';
 
 const HomePage = lazy(() => import('./pages/home/page'));
 const GlobalPage = lazy(() => import('./pages/home/GlobalPage'));
+const VioreBrandPage = lazy(() => import('./pages/home/VioreBrandPage'));
 
 const normalizePathname = (pathname: string) => {
   const withoutTrailingSlash = pathname.replace(/\/+$/, '');
@@ -27,7 +28,7 @@ function App() {
     };
   }, []);
 
-  const Page = pathname === '/global' ? GlobalPage : HomePage;
+  const Page = pathname === '/global' ? GlobalPage : pathname === '/viore' ? VioreBrandPage : HomePage;
 
   return (
     <>

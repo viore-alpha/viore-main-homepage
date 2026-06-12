@@ -42,6 +42,12 @@ const schema = {
       },
       areaServed: ['KR', 'Global'],
       sameAs: ['https://alphadoc.ai'],
+      subjectOf: {
+        '@type': 'WebPage',
+        '@id': `${SITE_URL}/viore/#webpage`,
+        url: `${SITE_URL}/viore/`,
+        name: '바이오레 공식 검색 정보',
+      },
     },
     {
       '@type': 'WebSite',
