@@ -7,21 +7,24 @@ import AutoImport from "unplugin-auto-import/vite";
 const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
 const globalRouteUrl = "https://vioreai.com/global/";
-const globalRouteImage =
-  "https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/cdecc015-3612-48e5-96cf-4d67c12a1a43_viore-eng-logotype.png?v=c244b85742c4ab34af42521986a4c558";
+const globalRouteImage = "https://vioreai.com/brand/viore/og-image.png";
+const vioreLogoImage = "https://vioreai.com/brand/viore/logo-square.png";
+const organizationId = "https://vioreai.com/#organization";
+const websiteId = "https://vioreai.com/#website";
+const alphadocId = "https://alphadoc.ai/#software";
 
 const globalRouteMeta = {
-  title: "Viore | Medical AI Platform That Transforms Physicians' Day - Alphadoc",
+  title: "Viore Inc. Korea | Official Operator of Alphadoc - Medical AI Startup",
   description:
-    "Viore (Viore Inc.) builds Alphadoc, the evidence-based clinical AI platform designed for physicians. Smarter clinical decisions, curated medical news, and physician community in one place.",
+    "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians with evidence-based clinical AI, medical news, literature search, and physician community.",
   keywords:
-    "Viore, Viore Inc., Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
-  ogTitle: "Viore | Medical AI Platform That Transforms Physicians' Day",
+    "Viore, Viore Inc., Viore Korea, vioreai.com, Alphadoc, official operator of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai",
+  ogTitle: "Viore Inc. Korea | Official Operator of Alphadoc",
   ogDescription:
-    "Viore builds Alphadoc, the evidence-based clinical AI platform designed for physicians. Smarter decisions, meaningful care, all in one place.",
-  ogImageAlt: "Viore - Medical AI Platform for Physicians - Alphadoc",
+    "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
+  ogImageAlt: "Viore Inc. Korea - official operator of Alphadoc",
   twitterDescription:
-    "Viore builds Alphadoc - clinical AI, medical news, and physician community to make every 4.3 minutes count.",
+    "Viore Inc. Korea builds Alphadoc - clinical AI, medical news, literature search, and physician community for doctors.",
 };
 
 const globalRouteSchema = {
@@ -29,12 +32,16 @@ const globalRouteSchema = {
   "@graph": [
     {
       "@type": "Organization",
-      name: "Viore Inc.",
-      alternateName: ["Viore", "Viore Inc.", "Viore Korea"],
+      "@id": organizationId,
+      name: "Viore Inc. Korea",
+      legalName: "주식회사 바이오레",
+      alternateName: ["Viore", "Viore Inc.", "Viore Korea", "바이오레", "주식회사 바이오레"],
       url: "https://vioreai.com",
+      logo: vioreLogoImage,
+      image: vioreLogoImage,
       email: "sj@vioreai.com",
       description:
-        "Viore builds Alphadoc, an evidence-based clinical AI platform designed for physicians.",
+        "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
       foundingDate: "2024",
       knowsAbout: [
         "Medical AI",
@@ -43,18 +50,27 @@ const globalRouteSchema = {
         "Physician Platform",
         "Healthcare Technology",
       ],
+      brand: {
+        "@id": alphadocId,
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "sj@vioreai.com",
+        contactType: "business inquiries",
+        availableLanguage: ["ko", "en"],
+      },
+      areaServed: ["KR", "Global"],
       sameAs: ["https://alphadoc.ai"],
     },
     {
       "@type": "WebSite",
+      "@id": websiteId,
       name: "Viore",
       url: "https://vioreai.com",
       description: "Viore official website for Alphadoc, a medical AI platform for physicians.",
       inLanguage: "en-US",
       publisher: {
-        "@type": "Organization",
-        name: "Viore Inc.",
-        url: "https://vioreai.com",
+        "@id": organizationId,
       },
     },
     {
@@ -66,16 +82,18 @@ const globalRouteSchema = {
       inLanguage: "en-US",
       dateModified: "2026-06-12",
       isPartOf: {
-        "@type": "WebSite",
-        url: "https://vioreai.com",
+        "@id": websiteId,
       },
       about: {
-        "@type": "Organization",
-        name: "Viore Inc.",
+        "@id": organizationId,
+      },
+      primaryEntity: {
+        "@id": organizationId,
       },
     },
     {
       "@type": "SoftwareApplication",
+      "@id": alphadocId,
       name: "Alphadoc",
       url: "https://alphadoc.ai",
       applicationCategory: "MedicalApplication",
@@ -88,10 +106,37 @@ const globalRouteSchema = {
         priceCurrency: "USD",
       },
       author: {
-        "@type": "Organization",
-        name: "Viore Inc.",
-        url: "https://vioreai.com",
+        "@id": organizationId,
       },
+    },
+    {
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is Viore?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is Alphadoc?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Alphadoc is a medical AI platform for physicians, offering evidence-based clinical AI, medical news, literature search, and physician community.",
+          },
+        },
+        {
+          "@type": "Question",
+          name: "What is the official Viore website?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Viore's official website is https://vioreai.com, and Alphadoc is available at https://alphadoc.ai.",
+          },
+        },
+      ],
     },
   ],
 };

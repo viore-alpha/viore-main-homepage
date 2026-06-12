@@ -2,18 +2,26 @@ import { useEffect } from 'react';
 
 const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://vioreai.com';
 const HOME_SCHEMA_ID = 'schema-home';
+const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+const ALPHADOC_ID = 'https://alphadoc.ai/#software';
+const VIORE_LOGO_URL = `${SITE_URL}/brand/viore/logo-square.png`;
 
 const schema = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'Organization',
+      '@id': ORGANIZATION_ID,
       name: '주식회사 바이오레',
+      legalName: '주식회사 바이오레',
       alternateName: ['Viore Inc.', '바이오레', 'Viore'],
       url: SITE_URL,
+      logo: VIORE_LOGO_URL,
+      image: VIORE_LOGO_URL,
       email: 'sj@vioreai.com',
       description:
-        '의사의 하루를 바꾸는 메디컬AI 플랫폼. 알파닥(Alphadoc)으로 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티를 제공합니다.',
+        '주식회사 바이오레(Viore Inc.)는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
       foundingDate: '2024',
       knowsAbout: [
         '의료 AI',
@@ -21,22 +29,33 @@ const schema = {
         'Evidence-Based Medicine',
         '의사 플랫폼',
       ],
+      brand: {
+        '@id': ALPHADOC_ID,
+      },
+      contactPoint: {
+        '@type': 'ContactPoint',
+        email: 'sj@vioreai.com',
+        contactType: 'business inquiries',
+        availableLanguage: ['ko', 'en'],
+      },
+      areaServed: ['KR', 'Global'],
       sameAs: ['https://alphadoc.ai'],
     },
     {
       '@type': 'WebSite',
+      '@id': WEBSITE_ID,
       name: '바이오레 Viore',
       url: SITE_URL,
-      description: '의사의 하루를 바꾸는 메디컬AI 플랫폼 바이오레 공식 사이트',
+      description:
+        '주식회사 바이오레 공식 홈페이지. 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영합니다.',
       inLanguage: 'ko-KR',
       publisher: {
-        '@type': 'Organization',
-        name: '주식회사 바이오레',
-        url: SITE_URL,
+        '@id': ORGANIZATION_ID,
       },
     },
     {
       '@type': 'SoftwareApplication',
+      '@id': ALPHADOC_ID,
       name: '알파닥 Alphadoc',
       url: 'https://alphadoc.ai',
       applicationCategory: 'MedicalApplication',
@@ -49,26 +68,25 @@ const schema = {
         priceCurrency: 'KRW',
       },
       author: {
-        '@type': 'Organization',
-        name: '주식회사 바이오레',
-        url: SITE_URL,
+        '@id': ORGANIZATION_ID,
       },
     },
     {
       '@type': 'WebPage',
       '@id': `${SITE_URL}/#webpage`,
       url: SITE_URL,
-      name: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼 · 알파닥',
+      name: '주식회사 바이오레 Viore | 알파닥 Alphadoc 공식 운영사 · 의료 AI 스타트업',
       description:
-        '바이오레(Viore Inc.)는 의사의 하루를 바꾸는 메디컬AI 플랫폼을 만드는 스타트업입니다. 알파닥(Alphadoc)으로 4.3분의 진료 시간을 더 의미 있게.',
+        '주식회사 바이오레(Viore Inc.)는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
       inLanguage: 'ko-KR',
       isPartOf: {
-        '@type': 'WebSite',
-        url: SITE_URL,
+        '@id': WEBSITE_ID,
       },
       about: {
-        '@type': 'Organization',
-        name: '주식회사 바이오레',
+        '@id': ORGANIZATION_ID,
+      },
+      primaryEntity: {
+        '@id': ORGANIZATION_ID,
       },
       dateModified: '2026-06-12',
     },
@@ -80,7 +98,7 @@ const schema = {
           name: '바이오레(Viore)는 어떤 회사인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '바이오레(주식회사 바이오레, Viore Inc.)는 의사의 하루를 바꾸는 메디컬AI 플랫폼 알파닥(Alphadoc)을 개발하는 의료 AI 스타트업입니다. 한국 의사에게 주어진 평균 4.3분의 진료 시간을 더 의미 있게 만들기 위해 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티를 하나의 공간에서 제공합니다.',
+            text: '바이오레(주식회사 바이오레, Viore Inc.)는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다.',
           },
         },
         {
@@ -88,15 +106,15 @@ const schema = {
           name: '알파닥(Alphadoc)이란 무엇인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '알파닥(Alphadoc)은 바이오레가 개발한 의사의 하루를 바꾸는 메디컬AI 플랫폼으로, 임상 질문 응답, 최신 의학 뉴스 큐레이션, 논문 검색, 의사 커뮤니티 기능을 제공합니다. alphadoc.ai에서 사용할 수 있습니다.',
+            text: '알파닥(Alphadoc)은 바이오레가 개발·운영하는 의사용 의료 AI 플랫폼으로, 근거 기반 임상 AI, 의학 뉴스, 논문 검색, 의사 커뮤니티 기능을 제공합니다. alphadoc.ai에서 사용할 수 있습니다.',
           },
         },
         {
           '@type': 'Question',
-          name: '메디컬AI 플랫폼이란 무엇인가요?',
+          name: '바이오레 홈페이지 주소는 무엇인가요?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: '메디컬AI 플랫폼은 근거 중심 의학(Evidence-Based Medicine) 원칙을 기반으로 임상 의사결정을 지원하는 AI 서비스입니다. 바이오레는 알파닥을 통해 의사가 최신 의학적 근거를 빠르게 찾고 적용할 수 있도록 돕습니다.',
+            text: '바이오레 공식 홈페이지는 https://vioreai.com 이며, 제품 알파닥은 https://alphadoc.ai 에서 확인할 수 있습니다.',
           },
         },
       ],

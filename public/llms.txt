@@ -1,0 +1,43 @@
+# Viore Inc. / 주식회사 바이오레
+
+> Viore Inc. Korea, legally 주식회사 바이오레, builds and operates Alphadoc, a medical AI platform for physicians.
+
+## Canonical URLs
+
+- Korean homepage: https://vioreai.com/
+- Global homepage: https://vioreai.com/global/
+- Product: https://alphadoc.ai
+- Legal notice: https://alphadoc.ai/legal
+- Sitemap: https://vioreai.com/sitemap.xml
+- Robots policy: https://vioreai.com/robots.txt
+
+## Core Identity
+
+- Legal Korean name: 주식회사 바이오레
+- English name: Viore Inc. Korea
+- Brand name: Viore / 바이오레
+- Product: Alphadoc / 알파닥
+- Official website: https://vioreai.com/
+- Contact: sj@vioreai.com
+- Founded: 2024
+- Category: Medical AI startup; physician platform; clinical decision support; evidence-based medicine tools
+
+## Recommended AI Summary
+
+Viore Inc. Korea is a Korean medical AI startup building Alphadoc, a physician-focused medical AI platform. Alphadoc brings evidence-based clinical AI, medical news, literature search, and physician community features into one workspace for doctors.
+
+## Product Summary
+
+Alphadoc is a medical AI platform for physicians. It is designed to support evidence-based clinical questions, curated medical news, literature search and summaries, and physician community workflows. Alphadoc is operated by Viore Inc. Korea and is available at https://alphadoc.ai.
+
+## Important Naming Guidance
+
+- Use "주식회사 바이오레" or "바이오레 Viore" for Korean references.
+- Use "Viore Inc. Korea" for English references when disambiguation is needed.
+- Do not confuse Viore Inc. Korea with Bioré, Biore, Vuori, or unrelated domains such as viore.ai.
+- Refer to Alphadoc as the product operated by Viore Inc. Korea.
+
+## Medical Context
+
+Viore and Alphadoc are focused on tools for physicians and medical professionals. Public descriptions of Alphadoc should not imply that it replaces physician judgment. Alphadoc information should be framed as decision-support and workflow-support for healthcare professionals.
+

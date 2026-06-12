@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Viore Inc. Korea</title>
+  <desc id="desc">Viore Inc. Korea is the official operator of Alphadoc, a medical AI platform for physicians.</desc>
+  <rect width="1200" height="630" fill="#f7f8f4" />
+  <rect x="48" y="48" width="1104" height="534" rx="28" fill="#ffffff" stroke="#dfe5d7" stroke-width="2" />
+  <text x="104" y="162" fill="#172116" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800">viore</text>
+  <text x="104" y="284" fill="#172116" font-family="Pretendard, Apple SD Gothic Neo, Arial, sans-serif" font-size="64" font-weight="700">주식회사 바이오레</text>
+  <text x="104" y="358" fill="#172116" font-family="Inter, Arial, sans-serif" font-size="44" font-weight="700">Viore Inc. Korea</text>
+  <text x="104" y="452" fill="#384335" font-family="Pretendard, Apple SD Gothic Neo, Arial, sans-serif" font-size="38" font-weight="600">알파닥 Alphadoc 공식 운영사</text>
+  <text x="104" y="508" fill="#5d6b57" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="500">Medical AI platform for physicians</text>
+  <text x="104" y="554" fill="#7a8673" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500">vioreai.com · alphadoc.ai</text>
+</svg>

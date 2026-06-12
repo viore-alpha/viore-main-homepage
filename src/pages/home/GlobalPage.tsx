@@ -3,50 +3,46 @@ import i18n from '@/i18n';
 import HomePage from './page';
 import GlobalSEO from './components/GlobalSEO';
 
-const SQ_LOGO =
-  'https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/91ded2f8-1398-49f9-8863-1016633642aa_viore-eng-logotype---.png?v=1591502e1944a7c7ff916e99d0b5260b';
-
-const WIDE_LOGO =
-  'https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/cdecc015-3612-48e5-96cf-4d67c12a1a43_viore-eng-logotype.png?v=c244b85742c4ab34af42521986a4c558';
+const OG_IMAGE = 'https://vioreai.com/brand/viore/og-image.png';
 
 const KO_META = {
-  title: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼 · 알파닥',
+  title: '주식회사 바이오레 Viore | 알파닥 Alphadoc 공식 운영사 · 의료 AI 스타트업',
   description:
-    '바이오레(Viore Inc.)는 의사의 하루를 바꾸는 메디컬AI 플랫폼을 만드는 스타트업입니다. 알파닥(Alphadoc)으로 4.3분의 진료 시간을 더 의미 있게 — 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티를 하나의 공간에서.',
+    '주식회사 바이오레(Viore Inc.)는 의사용 의료 AI 플랫폼 알파닥(Alphadoc)을 개발·운영하는 한국 의료 AI 스타트업입니다. 근거 기반 임상 AI, 의학 뉴스, 논문 검색, 의사 커뮤니티를 한 공간에서 제공합니다.',
   keywords:
-    '바이오레, Viore, Viore Inc., 알파닥, Alphadoc, 메디컬AI 플랫폼, 의사 메디컬AI, 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 의사용 AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의료 스타트업, 의사 앱, 의학 논문 검색',
+    '주식회사 바이오레, 바이오레, 바이오레 홈페이지, Viore, Viore Inc., vioreai.com, 알파닥, Alphadoc, 알파닥 공식 운영사, 메디컬AI 플랫폼, 의사 메디컬AI, 의료 AI, 임상 AI, 의사 AI 플랫폼, Clinical AI, 의사용 AI, 근거 기반 임상 AI, EBM AI, 의학 뉴스 AI, 의사 커뮤니티, 임상 의사결정 지원, 의료 스타트업, 의사 앱, 의학 논문 검색',
   ogLocale: 'ko_KR',
   ogSiteName: '바이오레 Viore',
-  ogTitle: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼',
+  ogTitle: '주식회사 바이오레 Viore | 알파닥 Alphadoc 공식 운영사',
   ogDescription:
-    '의사의 하루를 바꾸는 메디컬AI 플랫폼 바이오레. 한국 의사에게 허락된 시간은 단 4.3분 — 알파닥으로 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티를 하나의 공간에서.',
+    '주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥을 개발·운영하는 한국 의료 AI 스타트업입니다. 근거 기반 임상 AI, 의학 뉴스, 논문 검색, 의사 커뮤니티를 한 공간에서 제공합니다.',
   ogUrl: 'https://vioreai.com/',
-  ogImage: SQ_LOGO,
-  ogImageAlt: '바이오레 Viore — 의사의 하루를 바꾸는 메디컬AI 플랫폼',
-  twitterTitle: '바이오레 Viore | 의사의 하루를 바꾸는 메디컬AI 플랫폼',
+  ogImage: OG_IMAGE,
+  ogImageAlt: '주식회사 바이오레 Viore — 알파닥 Alphadoc 공식 운영사',
+  twitterTitle: '주식회사 바이오레 Viore | 알파닥 Alphadoc 공식 운영사',
   twitterDescription:
-    '의사의 하루를 바꾸는 메디컬AI 플랫폼 바이오레. 알파닥으로 4.3분의 진료 시간을 더 의미 있게 — 근거 기반 임상 AI, 의학 뉴스, 의사 커뮤니티.',
-  twitterImage: SQ_LOGO,
+    '주식회사 바이오레는 의사용 의료 AI 플랫폼 알파닥을 개발·운영하는 한국 의료 AI 스타트업입니다.',
+  twitterImage: OG_IMAGE,
 };
 
 const EN_META = {
-  title: 'Viore | Medical AI Platform That Transforms Physicians\' Day · Alphadoc',
+  title: 'Viore Inc. Korea | Official Operator of Alphadoc · Medical AI Startup',
   description:
-    'Viore (Viore Inc.) builds Alphadoc — the evidence-based clinical AI platform designed for physicians. Smarter clinical decisions, curated medical news, and physician community in one place.',
+    'Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians with evidence-based clinical AI, medical news, literature search, and physician community.',
   keywords:
-    'Viore, Viore Inc., Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai',
+    'Viore, Viore Inc., Viore Korea, vioreai.com, Alphadoc, official operator of Alphadoc, Medical AI Platform, Clinical AI, Evidence-Based Medicine, EBM AI, Physician AI, Healthcare AI, Clinical Decision Support, Medical News AI, Physician Community, Medical AI startup, Doctor AI app, alphadoc.ai',
   ogLocale: 'en_US',
   ogSiteName: 'Viore',
-  ogTitle: 'Viore | Medical AI Platform That Transforms Physicians\' Day',
+  ogTitle: 'Viore Inc. Korea | Official Operator of Alphadoc',
   ogDescription:
-    'Viore builds Alphadoc — the evidence-based clinical AI platform designed for physicians. Smarter decisions, meaningful care, all in one place.',
+    'Viore Inc. Korea builds and operates Alphadoc, a medical AI platform for physicians.',
   ogUrl: 'https://vioreai.com/global/',
-  ogImage: WIDE_LOGO,
-  ogImageAlt: 'Viore — Medical AI Platform for Physicians · Alphadoc',
-  twitterTitle: 'Viore | Medical AI Platform That Transforms Physicians\' Day',
+  ogImage: OG_IMAGE,
+  ogImageAlt: 'Viore Inc. Korea — official operator of Alphadoc',
+  twitterTitle: 'Viore Inc. Korea | Official Operator of Alphadoc',
   twitterDescription:
-    'Viore builds Alphadoc — clinical AI, medical news, and physician community to make every 4.3 minutes count.',
-  twitterImage: WIDE_LOGO,
+    'Viore Inc. Korea builds Alphadoc — clinical AI, medical news, literature search, and physician community for doctors.',
+  twitterImage: OG_IMAGE,
 };
 
 type MetaMap = typeof KO_META;

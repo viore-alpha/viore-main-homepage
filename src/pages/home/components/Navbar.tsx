@@ -69,7 +69,7 @@ const Navbar = () => {
           {/* Logo */}
           <a href="/" className="flex items-center cursor-pointer">
             <img
-              src="https://storage.readdy-site.link/project_files/f0121b54-b4dd-49ef-9b9a-70a9b6263ce6/cdecc015-3612-48e5-96cf-4d67c12a1a43_viore-eng-logotype.png?v=c244b85742c4ab34af42521986a4c558"
+              src="/brand/viore/logotype.png"
               alt="Viore"
               className="h-6 w-auto object-contain"
             />
