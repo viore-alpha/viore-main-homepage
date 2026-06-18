@@ -3,7 +3,6 @@ export const resources = {
     translation: {
       // ── Nav ──
       nav_main: '메인',
-      nav_viore: '바이오레',
       nav_about: '회사 소개',
       nav_alphadoc: '알파닥',
       nav_advisory: '자문위원',
@@ -164,7 +163,6 @@ export const resources = {
     translation: {
       // ── Nav ──
       nav_main: 'Main',
-      nav_viore: 'Viore',
       nav_about: 'About',
       nav_alphadoc: 'Alphadoc',
       nav_advisory: 'Advisors',

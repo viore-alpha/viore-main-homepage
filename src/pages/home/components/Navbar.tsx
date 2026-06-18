@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 
 const navLinks = [
   { key: 'nav_main', href: '/' },
-  { key: 'nav_viore', href: '/viore/' },
   { key: 'nav_alphadoc', href: '/#alphadoc' },
   { key: 'nav_people', href: '/#advisory' },
   { key: 'nav_direction', href: '/#vision' },

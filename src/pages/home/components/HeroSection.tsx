@@ -32,9 +32,6 @@ const HeroSection = () => {
           }}
         >
           {t('hero_title')}
-          <span className="sr-only">
-            {' '}주식회사 바이오레 Viore, 알파닥 Alphadoc 공식 운영사
-          </span>
         </h1>
 
         {/* Sub copy */}

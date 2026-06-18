@@ -20,7 +20,7 @@ const schemas = [
     image: VIORE_LOGO_URL,
     email: 'sj@vioreai.com',
     description:
-      '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
+      'Viore Inc. builds Alphadoc, a physician-focused medical AI platform for evidence-based clinical support and physician workflows.',
     disambiguatingDescription:
       'Viore Inc. is legally 주식회사 바이오레. 바이오어 is not the official Korean spelling.',
     foundingDate: '2024',
@@ -47,11 +47,11 @@ const schemas = [
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    name: '바이오레',
+    name: 'Viore',
     alternateName: ['Viore', 'Viore Inc.', '주식회사 바이오레'],
     url: SITE_URL,
     description:
-      '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
+      'Viore Inc. builds medical AI products for physicians, including Alphadoc.',
     inLanguage: 'en-US',
     publisher: {
       '@id': ORGANIZATION_ID,
@@ -81,9 +81,9 @@ const schemas = [
     '@type': 'WebPage',
     '@id': `${GLOBAL_URL}#webpage`,
     url: GLOBAL_URL,
-    name: '의료인의 하루를 함께하는 동반자, 바이오레',
+    name: 'Viore | Medical AI for the Doctor\'s Day',
     description:
-      '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
+      'Viore Inc. builds Alphadoc, a physician-focused medical AI platform for evidence-based clinical support, medical news, literature search, and physician workflows.',
     inLanguage: 'en-US',
     isPartOf: {
       '@id': WEBSITE_ID,
@@ -94,53 +94,7 @@ const schemas = [
     primaryEntity: {
       '@id': ORGANIZATION_ID,
     },
-    dateModified: '2026-06-12',
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'What is Viore?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Viore Inc. is the developer and official operator of Alphadoc, a medical AI platform for physicians.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Who operates Alphadoc?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Alphadoc is officially operated by Viore Inc., legally 주식회사 바이오레.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is Alphadoc?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Alphadoc is a medical AI platform for physicians, offering evidence-based clinical AI, medical news, literature search, and physician community. Available at alphadoc.ai.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the correct Korean spelling of Viore?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'The official Korean spelling is 바이오레. 바이오어 is not used by Viore Inc.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the official Viore website?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Viore’s official website is https://vioreai.com, and Alphadoc is available at https://alphadoc.ai.',
-        },
-      },
-    ],
+    dateModified: '2026-06-18',
   },
 ];
 

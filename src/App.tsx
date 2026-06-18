@@ -3,8 +3,6 @@ import DnaHelixCanvas from '@/components/feature/DnaHelixCanvas';
 
 const HomePage = lazy(() => import('./pages/home/page'));
 const GlobalPage = lazy(() => import('./pages/home/GlobalPage'));
-const VioreBrandPage = lazy(() => import('./pages/home/VioreBrandPage'));
-const MedicalAIStartupPage = lazy(() => import('./pages/home/MedicalAIStartupPage'));
 
 const normalizePathname = (pathname: string) => {
   const withoutTrailingSlash = pathname.replace(/\/+$/, '');
@@ -16,11 +14,23 @@ const getPathname = () => {
   return normalizePathname(window.location.pathname.replace(basePath, '') || '/');
 };
 
+const getHomePath = () => (__BASE_PATH__ === '/' ? '/' : `${__BASE_PATH__.replace(/\/$/, '')}/`);
+const getRoutePathname = () => (getPathname() === '/global' ? '/global' : '/');
+
 function App() {
-  const [pathname, setPathname] = useState(getPathname);
+  const [pathname, setPathname] = useState(getRoutePathname);
 
   useEffect(() => {
-    const syncPathname = () => setPathname(getPathname());
+    const syncPathname = () => {
+      const nextPathname = getPathname();
+      if (nextPathname !== '/' && nextPathname !== '/global') {
+        window.history.replaceState(null, '', getHomePath());
+        setPathname('/');
+        return;
+      }
+      setPathname(nextPathname);
+    };
+    syncPathname();
     window.addEventListener('popstate', syncPathname);
     window.addEventListener('viore:navigate', syncPathname);
     return () => {
@@ -29,14 +39,7 @@ function App() {
     };
   }, []);
 
-  const Page =
-    pathname === '/global'
-      ? GlobalPage
-      : pathname === '/viore'
-        ? VioreBrandPage
-        : pathname === '/medical-ai-startup'
-          ? MedicalAIStartupPage
-          : HomePage;
+  const Page = pathname === '/global' ? GlobalPage : HomePage;
 
   return (
     <>
