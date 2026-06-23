@@ -269,13 +269,11 @@ const AdvisoryBoardSection = () => {
                     <CategoryLabel ko="교육 Education" en="Education" isEn={isEn} />
                     {isEn ? (
                       <BulletList items={[
-                        'Pioneer of CPX Prep Program (since 2009)',
                         'M.S. Internal Medicine, Chung-Ang Univ. (2010)',
                         'M.D., Seoul National University (Feb 2003)',
                       ]} />
                     ) : (
                       <BulletList items={[
-                        '2009년~ 국내 최초 의사국시 CPX 특별반 운영',
                         '중앙대학교 의과대학 내과학 석사 (2010)',
                         '서울대학교 의과대학 졸업 (2003년 2월)',
                       ]} />
@@ -367,13 +365,11 @@ const AdvisoryBoardSection = () => {
                     <CategoryLabel ko="교육 Education" en="Education" isEn={isEn} />
                     {isEn ? (
                       <BulletList items={[
-                        'Pioneer of CPX Prep Program for Medical Licensing Exam (since 2009)',
                         'M.S. Internal Medicine, Chung-Ang Univ. School of Medicine (2010)',
                         'M.D., Seoul National University College of Medicine (Feb 2003)',
                       ]} />
                     ) : (
                       <BulletList items={[
-                        '2009년~ 국내 최초 의사국시 CPX 특별반 운영',
                         '중앙대학교 의과대학 내과학 석사 (2010)',
                         '서울대학교 의과대학 졸업 (2003년 2월)',
                       ]} />
