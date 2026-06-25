@@ -16,7 +16,7 @@ const KO_META = {
     '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
   ogUrl: 'https://vioreai.com/',
   ogImage: OG_IMAGE,
-  ogImageAlt: '바이오레 - 의료인의 하루를 함께하는 동반자',
+  ogImageAlt: '바이오레 로고',
   twitterTitle: '의료인의 하루를 함께하는 동반자, 바이오레',
   twitterDescription:
     '바이오레는 의료인이 필요로 하는 모든 기능을 새롭게 구현하고자 하는 의료 AI 스타트업입니다.',
@@ -34,7 +34,7 @@ const EN_META = {
     'Viore Inc. builds Alphadoc, a physician-focused medical AI platform for evidence-based clinical support and physician workflows.',
   ogUrl: 'https://vioreai.com/global/',
   ogImage: OG_IMAGE,
-  ogImageAlt: 'Viore - medical AI for the doctor\'s day',
+  ogImageAlt: 'Viore logo',
   twitterTitle: 'Viore | Medical AI for the Doctor\'s Day',
   twitterDescription:
     'Viore Inc. builds Alphadoc, a physician-focused medical AI platform.',
