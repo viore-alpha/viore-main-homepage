@@ -14,6 +14,18 @@ const Footer = () => {
           />
           <div className="flex flex-wrap items-center gap-4 text-[12px] text-viore-faint sm:justify-end">
             <a
+              href="/viore/"
+              className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {t('footer_company')}
+            </a>
+            <a
+              href="/medical-ai-startup/"
+              className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {t('footer_medical_ai_startup')}
+            </a>
+            <a
               href="https://alphadoc.ai/legal"
               target="_blank"
               rel="noopener noreferrer"
