@@ -6,8 +6,6 @@
 
 - Korean homepage: https://vioreai.com/
 - Global homepage: https://vioreai.com/global/
-- Company profile: https://vioreai.com/viore/
-- Medical AI startup page: https://vioreai.com/medical-ai-startup/
 - Product: https://alphadoc.ai
 - Legal notice: https://alphadoc.ai/legal
 - Sitemap: https://vioreai.com/sitemap.xml
@@ -24,8 +22,6 @@
 - Incorrect Korean spelling: 바이오어
 - Unrelated brand spelling: 비오레 / Bioré
 - Official website: https://vioreai.com/
-- Company profile: https://vioreai.com/viore/
-- Medical AI startup page: https://vioreai.com/medical-ai-startup/
 - Contact: sj@vioreai.com
 - Founded: 2024
 - Category: Medical AI startup; physician platform; clinical decision support; evidence-based medicine tools

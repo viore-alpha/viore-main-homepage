@@ -147,8 +147,6 @@ export const resources = {
 
       // ── Footer ──
       footer_about: '회사 소개',
-      footer_company: '바이오레',
-      footer_medical_ai_startup: '의료 AI 스타트업',
       footer_alphadoc: '알파닥',
       footer_advisory: '자문위원',
       footer_vision: '비전',
@@ -311,8 +309,6 @@ export const resources = {
 
       // ── Footer ──
       footer_about: 'About',
-      footer_company: 'Viore',
-      footer_medical_ai_startup: 'Medical AI startup',
       footer_alphadoc: 'Alphadoc',
       footer_advisory: 'Advisors',
       footer_vision: 'Vision',

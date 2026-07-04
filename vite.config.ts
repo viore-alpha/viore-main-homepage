@@ -158,8 +158,6 @@ const buildGlobalRouteHtml = (source: string) => {
         <p>Alphadoc supports evidence-based clinical workflows for physicians.</p>
         <nav aria-label="Viore links">
           <a href="https://alphadoc.ai">Alphadoc</a>
-          <a href="/viore/">Viore company</a>
-          <a href="/medical-ai-startup/">Medical AI startup</a>
           <a href="/">Viore Korean</a>
         </nav>
       </main>
