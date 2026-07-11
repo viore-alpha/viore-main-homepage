@@ -7,7 +7,7 @@ import AutoImport from "unplugin-auto-import/vite";
 const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
 const globalRouteUrl = "https://vioreai.com/global/";
-const globalRouteImage = "https://vioreai.com/brand/viore/og-image.png";
+const globalRouteImage = "https://vioreai.com/brand/viore/og-image-white-v2.png";
 const vioreLogoImage = "https://vioreai.com/brand/viore/logo-square.png";
 const organizationId = "https://vioreai.com/#organization";
 const websiteId = "https://vioreai.com/#website";

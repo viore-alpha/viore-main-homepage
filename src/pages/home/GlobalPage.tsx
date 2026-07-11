@@ -3,7 +3,7 @@ import i18n from '@/i18n';
 import HomePage from './page';
 import GlobalSEO from './components/GlobalSEO';
 
-const OG_IMAGE = 'https://vioreai.com/brand/viore/og-image.png';
+const OG_IMAGE = 'https://vioreai.com/brand/viore/og-image-white-v2.png';
 
 const KO_META = {
   title: '의료인의 하루를 함께하는 동반자, 바이오레',
