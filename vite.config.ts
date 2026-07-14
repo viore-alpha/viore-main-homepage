@@ -7,6 +7,7 @@ import AutoImport from "unplugin-auto-import/vite";
 const base = process.env.BASE_PATH || "/";
 const isPreview = process.env.IS_PREVIEW ? true : false;
 const globalRouteUrl = "https://vioreai.com/global/";
+const legalRouteUrl = "https://vioreai.com/legal/";
 const globalRouteImage = "https://vioreai.com/brand/viore/og-image-white-v2.png";
 const vioreLogoImage = "https://vioreai.com/brand/viore/logo-square.png";
 const organizationId = "https://vioreai.com/#organization";
@@ -183,17 +184,55 @@ const buildGlobalRouteHtml = (source: string) => {
   return html;
 };
 
+const buildLegalRouteHtml = (source: string) => {
+  const title = "법무고지 | 바이오레";
+  const description = "주식회사 바이오레의 개인정보처리방침과 홈페이지 이용약관입니다.";
+
+  let html = source
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
+    .replace(
+      /<meta name="robots" content="[^"]*" \/>/,
+      '<meta name="robots" content="noindex, follow" />',
+    )
+    .replace(
+      /<link rel="canonical" href="[^"]+" \/>/,
+      `<link rel="canonical" href="${legalRouteUrl}" />`,
+    )
+    .replace(
+      /    <noscript>[\s\S]*?    <\/noscript>/,
+      `    <noscript>
+      <main>
+        <h1>법무고지</h1>
+        <p>주식회사 바이오레의 개인정보처리방침과 홈페이지 이용약관입니다.</p>
+        <a href="mailto:cs@vioreai.com">cs@vioreai.com</a>
+      </main>
+    </noscript>`,
+    );
+
+  html = replaceNameMeta(html, "description", description);
+  html = replacePropertyMeta(html, "og:title", title);
+  html = replacePropertyMeta(html, "og:description", description);
+  html = replacePropertyMeta(html, "og:url", legalRouteUrl);
+  html = replaceNameMeta(html, "twitter:title", title);
+  html = replaceNameMeta(html, "twitter:description", description);
+
+  return html;
+};
+
 const githubPagesFallback = () => ({
   name: "github-pages-spa-fallback",
   closeBundle() {
     const indexPath = resolve(__dirname, "out/index.html");
     const fallbackPath = resolve(__dirname, "out/404.html");
     const globalRoutePath = resolve(__dirname, "out/global/index.html");
+    const legalRoutePath = resolve(__dirname, "out/legal/index.html");
     if (!existsSync(indexPath)) return;
     const indexHtml = readFileSync(indexPath, "utf8");
     copyFileSync(indexPath, fallbackPath);
     mkdirSync(resolve(__dirname, "out/global"), { recursive: true });
     writeFileSync(globalRoutePath, buildGlobalRouteHtml(indexHtml));
+    mkdirSync(resolve(__dirname, "out/legal"), { recursive: true });
+    writeFileSync(legalRoutePath, buildLegalRouteHtml(indexHtml));
   },
 });
 

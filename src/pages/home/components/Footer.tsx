@@ -12,14 +12,18 @@ const Footer = () => {
             alt="Viore"
             className="h-4 w-auto object-contain opacity-50"
           />
-          <div className="flex flex-wrap items-center gap-4 text-[12px] text-viore-faint sm:justify-end">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[12px] text-viore-faint sm:justify-end">
             <a
-              href="https://alphadoc.ai/legal"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/legal/#privacy"
               className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
             >
-              {t('footer_legal_notice')}
+              {t('footer_privacy')}
+            </a>
+            <a
+              href="/legal/#terms"
+              className="hover:text-viore-muted transition-colors cursor-pointer whitespace-nowrap"
+            >
+              {t('footer_terms')}
             </a>
             <span className="whitespace-nowrap">{t('footer_copyright')}</span>
           </div>

@@ -3,6 +3,7 @@ import DnaHelixCanvas from '@/components/feature/DnaHelixCanvas';
 
 const HomePage = lazy(() => import('./pages/home/page'));
 const GlobalPage = lazy(() => import('./pages/home/GlobalPage'));
+const LegalPage = lazy(() => import('./pages/legal/page'));
 
 const normalizePathname = (pathname: string) => {
   const withoutTrailingSlash = pathname.replace(/\/+$/, '');
@@ -15,7 +16,10 @@ const getPathname = () => {
 };
 
 const getHomePath = () => (__BASE_PATH__ === '/' ? '/' : `${__BASE_PATH__.replace(/\/$/, '')}/`);
-const getRoutePathname = () => (getPathname() === '/global' ? '/global' : '/');
+const getRoutePathname = () => {
+  const pathname = getPathname();
+  return pathname === '/global' || pathname === '/legal' ? pathname : '/';
+};
 
 function App() {
   const [pathname, setPathname] = useState(getRoutePathname);
@@ -23,7 +27,7 @@ function App() {
   useEffect(() => {
     const syncPathname = () => {
       const nextPathname = getPathname();
-      if (nextPathname !== '/' && nextPathname !== '/global') {
+      if (nextPathname !== '/' && nextPathname !== '/global' && nextPathname !== '/legal') {
         window.history.replaceState(null, '', getHomePath());
         setPathname('/');
         return;
@@ -39,7 +43,15 @@ function App() {
     };
   }, []);
 
-  const Page = pathname === '/global' ? GlobalPage : HomePage;
+  const Page = pathname === '/global' ? GlobalPage : pathname === '/legal' ? LegalPage : HomePage;
+
+  if (pathname === '/legal') {
+    return (
+      <Suspense fallback={null}>
+        <Page />
+      </Suspense>
+    );
+  }
 
   return (
     <>

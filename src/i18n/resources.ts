@@ -151,7 +151,8 @@ export const resources = {
       footer_advisory: '자문위원',
       footer_vision: '비전',
       footer_contact: '문의',
-      footer_legal_notice: '법무고지',
+      footer_privacy: '개인정보처리방침',
+      footer_terms: '이용약관',
       footer_copyright: '© 2026 Viore Inc. All rights reserved.',
 
       // Lang toggle
@@ -313,7 +314,8 @@ export const resources = {
       footer_advisory: 'Advisors',
       footer_vision: 'Vision',
       footer_contact: 'Contact',
-      footer_legal_notice: 'Legal Notice',
+      footer_privacy: 'Privacy Policy',
+      footer_terms: 'Terms of Use',
       footer_copyright: '© 2026 Viore Inc. All rights reserved.',
 
       lang_ko: 'KO',
