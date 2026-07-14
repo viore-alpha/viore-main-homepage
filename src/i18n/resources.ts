@@ -152,7 +152,7 @@ export const resources = {
       footer_vision: '비전',
       footer_contact: '문의',
       footer_privacy: '개인정보처리방침',
-      footer_terms: '이용약관',
+      footer_terms: '사이트 이용안내',
       footer_copyright: '© 2026 Viore Inc. All rights reserved.',
 
       // Lang toggle

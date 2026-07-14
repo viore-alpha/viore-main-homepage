@@ -186,7 +186,7 @@ const buildGlobalRouteHtml = (source: string) => {
 
 const buildLegalRouteHtml = (source: string) => {
   const title = "법무고지 | 바이오레";
-  const description = "주식회사 바이오레의 개인정보처리방침과 홈페이지 이용약관입니다.";
+  const description = "주식회사 바이오레의 개인정보처리방침과 사이트 이용안내입니다.";
 
   let html = source
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`)
@@ -203,7 +203,7 @@ const buildLegalRouteHtml = (source: string) => {
       `    <noscript>
       <main>
         <h1>법무고지</h1>
-        <p>주식회사 바이오레의 개인정보처리방침과 홈페이지 이용약관입니다.</p>
+        <p>주식회사 바이오레의 개인정보처리방침과 사이트 이용안내입니다.</p>
         <a href="mailto:cs@vioreai.com">cs@vioreai.com</a>
       </main>
     </noscript>`,
