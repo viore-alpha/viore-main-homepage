@@ -1,0 +1,64 @@
+import { CompanyConnections } from "@/app/components/CompanyConnections";
+import { CompanyEnergyCanvas } from "@/app/components/CompanyEnergyCanvas";
+import { CompanyMetrics } from "@/app/components/CompanyMetrics";
+import { CompanyNetworkBackdrop } from "@/app/components/CompanyNetworkBackdrop";
+import { getCompanyMetrics } from "@/app/company-metrics";
+import { detailContent, routeFor, type Language } from "@/app/site-content";
+
+export async function CompanyPage({ language }: { language: Language }) {
+  const page = detailContent[language].company;
+  const companyMetrics = page.metrics
+    ? await getCompanyMetrics(language, page.metrics)
+    : null;
+
+  return (
+    <article className="detail-page detail-page-company detail-company">
+      <section className="company-hero">
+        <CompanyEnergyCanvas />
+        <div className="company-hero-copy">
+          <h1>{page.title}</h1>
+          <p>{page.lead}</p>
+        </div>
+        <a
+          className="company-scroll-cue"
+          href="#company-story"
+          aria-label={language === "ko" ? "회사 소개 보기" : "View our story"}
+        >
+          <i aria-hidden="true" />
+        </a>
+      </section>
+
+      <div className="company-dark-chapter">
+        <CompanyNetworkBackdrop />
+        <section className="detail-body" id="company-story">
+          <h2>{page.statement}</h2>
+          {page.statementLead && <p className="detail-statement-lead">{page.statementLead}</p>}
+          {page.metrics && (
+            <>
+              <CompanyMetrics
+                metrics={companyMetrics?.metrics ?? page.metrics}
+                source={companyMetrics?.source}
+                generatedAt={companyMetrics?.generatedAt}
+              />
+              {page.connections && <CompanyConnections content={page.connections} />}
+            </>
+          )}
+        </section>
+
+        <section className="detail-next company-join" id="company-join">
+          <h2>{language === "ko" ? "우리가 그리는 새로운 선형에\n합류하세요." : "Join the new line\nwe are drawing."}</h2>
+          <div className="company-join-links">
+            <a className="company-join-product" href={routeFor(language, "alphadoc")}>
+              <span>{language === "ko" ? "그 첫 번째 선형, 알파닥 Alphadoc" : "The first line, Alphadoc"}</span>
+              <i aria-hidden="true">↗</i>
+            </a>
+            <a id="partnership-inquiry" className="company-join-contact" href="mailto:biz@vioreai.com">
+              <small>{language === "ko" ? "파트너십 문의" : "Partnership inquiries"}</small>
+              <span>biz@vioreai.com <i aria-hidden="true">↗</i></span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </article>
+  );
+}

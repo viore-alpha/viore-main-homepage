@@ -1,0 +1,19 @@
+{
+  "name": "바이오레 | Viore",
+  "short_name": "Viore",
+  "description": "Viore, Drawing a New Linearity in Medicine.",
+  "start_url": "/ko",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "lang": "ko-KR",
+  "icons": [
+    {
+      "src": "/brand/viore-v-square-white-v2.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
