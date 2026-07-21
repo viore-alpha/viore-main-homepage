@@ -229,7 +229,7 @@ export function AlphaEvidenceSnapshot({
       data-snapshot-state={result.state}
       aria-live="polite"
     >
-      {result.snapshot && result.state !== "unavailable" ? (
+      {result.snapshot ? (
         <SnapshotContent snapshot={result.snapshot} state={result.state} rootRef={rootRef} />
       ) : (
         <div className="alphaevidence-snapshot-unavailable">

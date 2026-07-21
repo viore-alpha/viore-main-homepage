@@ -3,24 +3,13 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(pathname) {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
+  const baseUrl = process.env.VIORE_TEST_BASE_URL;
+  if (!baseUrl) throw new Error("VIORE_TEST_BASE_URL is required");
 
-  return worker.fetch(
-    new Request(`http://localhost${pathname}`, {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+  return fetch(new URL(pathname, baseUrl), {
+    headers: { accept: "text/html" },
+    redirect: "manual",
+  });
 }
 
 test("server-renders canonical Viore homepage metadata", async () => {
@@ -38,7 +27,7 @@ test("server-renders canonical Viore homepage metadata", async () => {
   assert.match(html, /<meta property="og:image:width" content="1200"/);
   assert.match(html, /<meta property="og:image:height" content="630"/);
   assert.match(html, /<meta name="twitter:title" content="Viore, Drawing a New Linearity in Medicine\."/);
-  assert.match(html, /<link rel="icon" href="https:\/\/vioreai\.com\/brand\/viore-v-square-white-v2\.png"/);
+  assert.match(html, /<link rel="icon" href="\/brand\/viore-v-square-white-v2\.png"/);
   assert.match(html, /<meta name="google-site-verification"/);
   assert.match(html, /<meta name="naver-site-verification"/);
   assert.match(html, /id="viore-home-structured-data"/);
@@ -49,7 +38,7 @@ test("server-renders canonical Viore homepage metadata", async () => {
 test("permanently redirects the root index to the Korean canonical page", async () => {
   const response = await render("/");
   assert.equal(response.status, 308);
-  assert.equal(new URL(response.headers.get("location")).pathname, "/ko");
+  assert.equal(new URL(response.headers.get("location"), "http://localhost").pathname, "/ko");
 });
 
 test("permanently redirects the former Company routes to each locale homepage", async () => {
@@ -834,14 +823,7 @@ test("classifies fresh and stale AlphaEvidence snapshots at the fixed boundary",
 });
 
 test("redirects legacy Technology detail routes to the matching article anchor", async () => {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}-legacy-technology`);
-  const { default: worker } = await import(workerUrl.href);
-  const response = await worker.fetch(
-    new Request("http://localhost/ko/technology/alphaevidence", { redirect: "manual" }),
-    { ASSETS: { fetch: async () => new Response("Not found", { status: 404 }) } },
-    { waitUntil() {}, passThroughOnException() {} },
-  );
+  const response = await render("/ko/technology/alphaevidence");
 
   assert.equal(response.status, 307);
   assert.match(response.headers.get("location") ?? "", /\/ko\/technology#technology-alphaevidence$/);

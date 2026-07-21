@@ -7,7 +7,7 @@ import { isLanguage } from "@/app/site-content";
 
 type TechnologyRouteParams = Promise<{ lang: string }>;
 
-export const revalidate = 10 * 60;
+export const revalidate = 600;
 
 const metadataCopy = {
   ko: {

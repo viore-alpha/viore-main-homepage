@@ -649,7 +649,7 @@ function LayerSvg({ mobile }: { mobile: boolean }) {
         const y = 204 + (index * 70);
         const nodeHeight = index === 0 ? 64 : 56;
         return (
-          <g key={Array.isArray(title) ? title.join("-") : title}>
+          <g key={typeof title === "string" ? title : title.join("-")}>
             <SvgNode x={420} y={y} width={362} height={nodeHeight} eyebrow={`TARGET ${String(index + 1).padStart(2, "0")}`} title={title} tone="muted" dashed step={index + 6} />
             {index < layerTargetSteps.length - 1 && (
               <SvgConnector d={`M 601 ${y + nodeHeight} V ${y + 66}`} id={id} tone="muted" dashed step={index + 7} />

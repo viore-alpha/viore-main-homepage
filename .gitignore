@@ -15,8 +15,15 @@
 
 # next.js
 /.next/
-/.vinext/
 /out/
+
+# legacy local build artifacts
+/.vinext/
+/dist/
+/.wrangler/
+/outputs/
+/work/
+/_workspace/
 
 # misc
 .DS_Store
@@ -36,9 +43,4 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
-/dist/
-/.wrangler/
-/outputs/
-/work/
-/_workspace/
 *.tsbuildinfo
