@@ -1,0 +1,246 @@
+"use client";
+
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type RefObject,
+} from "react";
+import type {
+  AlphaEvidencePublicSnapshotV1,
+  AlphaEvidenceSnapshotResult,
+} from "@/app/alphaevidence-snapshot";
+
+const integerFormatter = new Intl.NumberFormat("ko-KR");
+const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
+
+const COUNT_LABELS = [
+  ["canonical_papers", "정규화 논문 레코드", "Canonical papers"],
+  ["papers_with_abstract", "초록 보유 논문", "Papers with abstract"],
+  ["visible_guidelines", "노출 가능한 진료지침", "Visible guidelines"],
+  ["source_change_observations", "출처·변경 관찰 기록", "Source & change observations"],
+  ["managed_units", "관리 중인 작업 단위", "Managed source · enrichment · report units"],
+] as const;
+
+function subscribeToReducedMotion(onStoreChange: () => void) {
+  if (typeof window === "undefined") return () => {};
+  const mediaQuery = window.matchMedia(reducedMotionQuery);
+  mediaQuery.addEventListener("change", onStoreChange);
+  return () => mediaQuery.removeEventListener("change", onStoreChange);
+}
+
+function getReducedMotionSnapshot() {
+  return typeof window === "undefined" || window.matchMedia(reducedMotionQuery).matches;
+}
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(subscribeToReducedMotion, getReducedMotionSnapshot, () => true);
+}
+
+function useCountUpReady(rootRef: RefObject<HTMLDivElement | null>, enabled: boolean) {
+  const reduceMotion = usePrefersReducedMotion();
+  const [ready, setReady] = useState(false);
+  const supportsIntersectionObserver =
+    typeof window !== "undefined" && "IntersectionObserver" in window;
+  const started = enabled && (ready || reduceMotion || !supportsIntersectionObserver);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || started || !enabled) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setReady(true);
+        observer.disconnect();
+      },
+      { threshold: 0.16 },
+    );
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [enabled, rootRef, started]);
+
+  return { started, reduceMotion };
+}
+
+function useAnimatedNumber(target: number, started: boolean, reduceMotion: boolean, delay: number) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!started || reduceMotion) return;
+    let frame = 0;
+    const startAt = performance.now() + delay;
+    const duration = 1_250;
+
+    const tick = (now: number) => {
+      if (now < startAt) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+      const progress = Math.min((now - startAt) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      setValue(Math.round(target * eased));
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [delay, reduceMotion, started, target]);
+
+  return reduceMotion ? target : value;
+}
+
+function formatDateTime(value: string | null) {
+  if (!value) return null;
+  const parsed = new Date(value);
+  if (!Number.isFinite(parsed.getTime())) return null;
+  const koreaTime = new Date(parsed.getTime() + 9 * 60 * 60 * 1_000);
+  const pad = (part: number) => String(part).padStart(2, "0");
+  return `${koreaTime.getUTCFullYear()}. ${pad(koreaTime.getUTCMonth() + 1)}. ${pad(koreaTime.getUTCDate())}. ${pad(koreaTime.getUTCHours())}:${pad(koreaTime.getUTCMinutes())}`;
+}
+
+function CountMetric({
+  value,
+  label,
+  english,
+  index,
+  started,
+  reduceMotion,
+}: {
+  value: number;
+  label: string;
+  english: string;
+  index: number;
+  started: boolean;
+  reduceMotion: boolean;
+}) {
+  const displayValue = useAnimatedNumber(value, started, reduceMotion, index * 75);
+
+  return (
+    <tr>
+      <td className="alphaevidence-count-index">{String(index + 1).padStart(2, "0")}</td>
+      <th scope="row">
+        <span>{label}</span>
+        <small>{english}</small>
+      </th>
+      <td className="alphaevidence-count-value" aria-label={`${label} ${integerFormatter.format(value)}건`}>
+        <strong aria-hidden="true">{integerFormatter.format(displayValue)}</strong>
+      </td>
+    </tr>
+  );
+}
+
+function SnapshotContent({
+  snapshot,
+  state,
+  rootRef,
+}: {
+  snapshot: AlphaEvidencePublicSnapshotV1;
+  state: "live" | "stale";
+  rootRef: RefObject<HTMLDivElement | null>;
+}) {
+  const { started, reduceMotion } = useCountUpReady(rootRef, true);
+
+  return (
+    <>
+      <div className="alphaevidence-snapshot-meta">
+        <div>
+          <span className={`snapshot-state snapshot-state-${state}`}>
+            {state === "stale" ? "STALE · 갱신 지연" : "LIVE SNAPSHOT"}
+          </span>
+          <p>데이터 기준 {formatDateTime(snapshot.data_as_of)} KST</p>
+        </div>
+        <p>생성 {formatDateTime(snapshot.generated_at)} KST · 10분 cache</p>
+      </div>
+
+      <div className="alphaevidence-table-wrap">
+        <table className="alphaevidence-count-table">
+          <thead>
+            <tr>
+              <th scope="col">No.</th>
+              <th scope="col">Metric</th>
+              <th scope="col">Live count</th>
+            </tr>
+          </thead>
+          <tbody>
+            {COUNT_LABELS.map(([key, label, english], index) => (
+              <CountMetric
+                key={key}
+                value={snapshot.counts[key]}
+                label={label}
+                english={english}
+                index={index}
+                started={started}
+                reduceMotion={reduceMotion}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+    </>
+  );
+}
+
+export function AlphaEvidenceSnapshot({
+  initialResult,
+}: {
+  initialResult: AlphaEvidenceSnapshotResult;
+}) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [result, setResult] = useState(initialResult);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    async function refresh() {
+      try {
+        const response = await fetch("/api/technology/alphaevidence-snapshot", {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        const payload = await response.json() as AlphaEvidenceSnapshotResult;
+        if (!response.ok || !payload.snapshot) {
+          setResult((current) => ({
+            state: "unavailable",
+            snapshot: null,
+            lastSuccessAt: current.snapshot?.generated_at ?? current.lastSuccessAt,
+          }));
+          return;
+        }
+        setResult(payload);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        console.error("[alphaevidence-snapshot] client refresh failed", error);
+        setResult((current) => ({
+          state: "unavailable",
+          snapshot: null,
+          lastSuccessAt: current.snapshot?.generated_at ?? current.lastSuccessAt,
+        }));
+      }
+    }
+    void refresh();
+    return () => controller.abort();
+  }, []);
+
+  return (
+    <div
+      ref={rootRef}
+      className="alphaevidence-snapshot"
+      data-snapshot-state={result.state}
+      aria-live="polite"
+    >
+      {result.snapshot && result.state !== "unavailable" ? (
+        <SnapshotContent snapshot={result.snapshot} state={result.state} rootRef={rootRef} />
+      ) : (
+        <div className="alphaevidence-snapshot-unavailable">
+          <span>PUBLIC SNAPSHOT</span>
+          <h4>집계 갱신 중</h4>
+          <p>
+            확인되지 않은 숫자를 대신 표시하지 않습니다.
+            {result.lastSuccessAt && <> 마지막 성공 {formatDateTime(result.lastSuccessAt)} KST.</>}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
