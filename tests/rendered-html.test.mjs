@@ -466,7 +466,10 @@ test("server-renders the Alphadoc product story from real product UI", async () 
 
   const productCss = css.slice(css.indexOf("/* Alphadoc product · real UI narrative */"));
   assert.match(css, /src: url\("\/fonts\/PretendardVariable\.woff2"\)/);
+  assert.match(css, /--dark-paper-base: #08080a;/);
+  assert.match(css, /--dark-paper-image: linear-gradient\(rgba\(0,0,0,\.24\),rgba\(0,0,0,\.24\)\),url/);
   assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-color: var\(--dark-paper-base\);[\s\S]*?background-image: var\(--dark-paper-image\);/);
+  assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-size: var\(--dark-paper-size\);/);
   assert.match(productCss, /--ap-red: #ff8177/);
   assert.match(productCss, /\.ap-button-primary \{[\s\S]*?background: var\(--ap-red\);/);
   assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.72s 1\.6s/);
