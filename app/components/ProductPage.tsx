@@ -27,15 +27,16 @@ type GalleryItem = {
 const productCopy = {
   ko: {
     nav: [
-      ["overview", "한눈에"],
+      ["overview", "인터페이스"],
       ["clinical", "앱"],
       ["alphadocs", "알파닥스"],
     ],
     hero: {
-      title: ["Alphadoc, an AI Medical Workspace"],
+      titleBrand: "Alphadoc",
+      titleRest: ", an AI Medical Workspace",
       lead: "임상 질문부터 근거 확인, 문서 작성과 번역까지.\n의료인의 업무를 앱의 형태로 이어주는 공간.",
       primary: "알파닥 시작하기",
-      visualLabel: "의료인들의 하루를 바꾸는 워크스페이스라는 문구 뒤로 알파닥 검색 화면이 완성되는 애니메이션",
+      visualLabel: "복합 산-염기 질문이 입력되고 전송된 뒤 알파닥 엔진의 근거 기반 답변으로 전환되는 애니메이션",
     },
     anatomy: {
       title: "모든 것이 하나의 화면 안에",
@@ -75,10 +76,11 @@ const productCopy = {
   en: {
     nav: [["overview", "Overview"], ["clinical", "Apps"], ["alphadocs", "Alphadocs"]],
     hero: {
-      title: ["Alphadoc, an AI Medical Workspace"],
+      titleBrand: "Alphadoc",
+      titleRest: ", an AI Medical Workspace",
       lead: "From clinical questions and evidence review to document creation and translation. A space that connects medical work through apps.",
       primary: "Start Alphadoc",
-      visualLabel: "An animation introducing Alphadoc as the workspace changing every clinician's day",
+      visualLabel: "A complex acid-base question is typed and submitted before Alphadoc Engine opens an evidence-backed chat answer",
     },
     anatomy: {
       title: "Three roles in one screen",
@@ -241,7 +243,7 @@ export function ProductPage({ language }: { language: Language }) {
 
       <section className="ap-hero" id="overview" data-ap-section>
         <div className="ap-hero-copy">
-          <h1>{content.hero.title.map((line) => <span key={line}>{line}</span>)}</h1>
+          <h1><span className="ap-hero-brand">{content.hero.titleBrand}</span>{content.hero.titleRest}</h1>
           <p className="ap-hero-lead">{content.hero.lead}</p>
           <div className="ap-hero-actions">
             <a className="ap-button ap-button-primary" href="https://www.alphadoc.ai" target="_blank" rel="noreferrer">{content.hero.primary}<span aria-hidden="true">↗</span></a>

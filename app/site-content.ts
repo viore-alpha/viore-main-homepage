@@ -10,6 +10,7 @@ export type PageKey =
   | "contact";
 
 export type CompanyMetric = {
+  kind: "monthly" | "documents" | "guidelines";
   value: number;
   suffix?: string;
   label: string;
@@ -19,8 +20,16 @@ export type CompanyMetric = {
 
 export type CompanyConnectionsContent = {
   title: string;
-  description?: string;
   nodes: Array<{ title: string; subtitle?: string }>;
+};
+
+export type CompanyEfficiencyContent = {
+  title: string;
+  context: string;
+  repetition: string;
+  product: string;
+  productLead: string;
+  outcome: string;
 };
 
 export type DetailPage = {
@@ -31,7 +40,9 @@ export type DetailPage = {
   status?: string;
   statement: string;
   statementLead?: string;
+  metricsTitle?: string;
   metrics?: CompanyMetric[];
+  efficiency?: CompanyEfficiencyContent;
   connections?: CompanyConnectionsContent;
   items: Array<{ index: string; title: string; body: string }>;
 };
@@ -156,20 +167,31 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       title: "의료계의\n새로운 선형을 그리다.",
       lead: "의료계가 오랜 시간 축적해 온 전문성과 시스템을 연결하기 위한 선\n그것이 바이오레 입니다",
       status: "MEDICAL INTELLIGENCE COMPANY",
-      statement: "의료의 모든 순간이\n하나의 흐름으로 이어지도록",
+      statement: "의료인의 모든 업무가\n하나의 흐름으로 이어지도록",
       statementLead: "혁신은, 더 많이 더하는 일이 아닙니다.\n이미 존재하는 의료의 전문성과 시스템이 더 자연스럽게 이어지도록 만드는 일입니다.\n바이오레는 의료인의 질문과 문서, 지식과 도구가 끊김 없이 이어지는 환경을 Medical OS(Operating System)라고 부릅니다.",
+      metricsTitle: "Ever-growing Knowledge",
       metrics: [
-        { value: 36047, label: "Medical Documents Added Monthly", caption: "최근 30일 신규 정규화 문헌", ariaLabel: "최근 30일 신규 정규화 의료 문헌 36,047건 이상" },
-        { value: 212891, label: "Standardized Medical Documents", caption: "누적 정규화 의료 문헌", ariaLabel: "누적 정규화 의료 문헌 212,891건 이상" },
-        { value: 9476, label: "Korean & Global Clinical Guidelines", caption: "누적 공개 국내외 가이드라인·지침 문헌", ariaLabel: "누적 공개 국내외 가이드라인과 지침 문헌 9,476건 이상" },
+        { kind: "documents", value: 212891, label: "Standardized Medical Documents", caption: "누적 정규화 의료 문헌", ariaLabel: "누적 정규화 의료 문헌 212,891건 이상" },
+        { kind: "monthly", value: 36047, label: "Medical Documents Added Monthly", caption: "최근 30일 신규 정규화 문헌", ariaLabel: "최근 30일 신규 정규화 의료 문헌 36,047건 이상" },
+        { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "누적 공개 국내외 가이드라인·지침 문헌", ariaLabel: "누적 공개 국내외 가이드라인과 지침 문헌 9,476건 이상" },
       ],
+      efficiency: {
+        title: "Alphadoc\nMedical Workspace",
+        context: "의료 현장은 수많은 정보와 시스템 사이를 끊임없이 오갑니다.",
+        repetition: "기록하고, 계산하고, 검색하고, 확인하는 반복적인 과정은 의료인의 시간을 빼앗습니다.",
+        product: "알파닥",
+        productLead: "은 이러한 업무를 하나의 자연스러운 흐름으로 연결하여,",
+        outcome: "의료인이 가장 중요한 일에 집중할 수 있도록 돕습니다.",
+      },
       connections: {
         title: "One connected Flow\nfor Medicine",
-        description: "기존의 가치를 대체하지 않으며\n이미 존재하는 의료의 전문성과 시스템이 더 자연스럽게 이어지도록 만듭니다.",
         nodes: [
           { title: "더 직관적인 경험", subtitle: "A more intuitive experience" },
-          { title: "더 자연스럽게 연결되는 흐름", subtitle: "A more naturally connected flow" },
-          { title: "처음부터 설계 기준에 포함된 보안", subtitle: "Security built into the design from the start" },
+          { title: "엄격한 보안 아키텍처", subtitle: "Rigorous security architecture" },
+          { title: "다양한 의료 도구", subtitle: "A diverse range of medical tools" },
+          { title: "빠른 의료 노트 작성", subtitle: "Fast medical note drafting" },
+          { title: "쉽게 보는 최신 의료 근거", subtitle: "Clear, up-to-date medical evidence" },
+          { title: "함께 성장하는 지식 커뮤니티", subtitle: "A knowledge community that grows together" },
         ],
       },
       items: [],
@@ -272,18 +294,29 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       lead: "Viore builds a Medical OS that connects the expertise and systems accumulated across medicine into one continuous flow.",
       status: "MEDICAL INTELLIGENCE COMPANY",
       statement: "Viore draws a new linearity in medicine.",
+      metricsTitle: "Ever-growing Knowledge",
       metrics: [
-        { value: 36047, label: "Medical Documents Added Monthly", caption: "Newly normalized in the last 30 days", ariaLabel: "More than 36,047 medical documents normalized in the last 30 days" },
-        { value: 212891, label: "Standardized Medical Documents", caption: "Current normalized corpus", ariaLabel: "More than 212,891 normalized medical documents" },
-        { value: 9476, label: "Korean & Global Clinical Guidelines", caption: "Current visible guideline corpus", ariaLabel: "More than 9,476 visible Korean and global clinical guidelines" },
+        { kind: "documents", value: 212891, label: "Standardized Medical Documents", caption: "Current normalized corpus", ariaLabel: "More than 212,891 normalized medical documents" },
+        { kind: "monthly", value: 36047, label: "Medical Documents Added Monthly", caption: "Newly normalized in the last 30 days", ariaLabel: "More than 36,047 medical documents normalized in the last 30 days" },
+        { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "Current visible guideline corpus", ariaLabel: "More than 9,476 visible Korean and global clinical guidelines" },
       ],
+      efficiency: {
+        title: "Alphadoc\nMedical Workspace",
+        context: "Medical professionals constantly move between countless sources of information and systems.",
+        repetition: "Repetitive recording, calculating, searching, and checking takes time away from medical professionals.",
+        product: "Alphadoc",
+        productLead: " connects these tasks into one natural flow,",
+        outcome: "helping medical professionals focus on what matters most.",
+      },
       connections: {
         title: "One connected Flow\nfor Medicine",
-        description: "Without replacing the value already in place,\nwe help medicine's existing expertise and systems connect more naturally.",
         nodes: [
           { title: "A more intuitive experience" },
-          { title: "A more natural, connected flow" },
-          { title: "Security built in from the start" },
+          { title: "Rigorous security architecture" },
+          { title: "A diverse range of medical tools" },
+          { title: "Fast medical note drafting" },
+          { title: "Clear, up-to-date medical evidence" },
+          { title: "A knowledge community that grows together" },
         ],
       },
       items: [],

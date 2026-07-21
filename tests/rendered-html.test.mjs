@@ -123,7 +123,7 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.match(html, /새로운 선형을 그리다\./);
   assert.match(html, /의료계가 오랜 시간 축적해 온 전문성과 시스템을 연결하기 위한 선/);
   assert.match(html, /그것이 바이오레 입니다/);
-  assert.match(html, /의료의 모든 순간이/);
+  assert.match(html, /의료인의 모든 업무가/);
   assert.match(html, /하나의 흐름으로 이어지도록/);
   assert.match(html, /혁신은, 더 많이 더하는 일이 아닙니다\./);
   assert.match(html, /이미 존재하는 의료의 전문성과 시스템이 더 자연스럽게 이어지도록 만드는 일입니다\./);
@@ -136,16 +136,40 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.match(html, /최근 30일 신규 정규화 문헌/);
   assert.match(html, /누적 정규화 의료 문헌/);
   assert.match(html, /누적 공개 국내외 가이드라인·지침 문헌/);
+  assert.ok(html.indexOf("Standardized Medical Documents") < html.indexOf("Medical Documents Added Monthly"));
+  assert.match(html, /class="company-efficiency"/);
+  assert.match(html, /class="company-efficiency-title-brand">Alphadoc<\/span><span class="company-efficiency-title-workspace">Medical Workspace<\/span>/);
+  assert.doesNotMatch(html, /company-efficiency-title-brand">Alphadoc,/);
+  assert.doesNotMatch(html, /company-efficiency-workspace|company-section-subtitle/);
+  assert.match(html, /class="company-knowledge"/);
+  assert.match(html, /id="company-knowledge-title">Ever-growing Knowledge<\/h2>/);
+  assert.match(html, /class="company-question-loop"/);
+  assert.match(html, /패혈증 초기 처치는\?/);
+  assert.match(html, /의료 현장은 수많은 정보와 시스템 사이를 끊임없이 오갑니다\./);
+  assert.match(html, /기록하고, 계산하고, 검색하고, 확인하는 반복적인 과정은 의료인의 시간을 빼앗습니다\./);
+  assert.match(html, /class="company-efficiency-product">알파닥<\/strong>은 이러한 업무를 하나의 자연스러운 흐름으로 연결하여,/);
+  assert.match(html, /의료인이 가장 중요한 일에 집중할 수 있도록 돕습니다\./);
   assert.match(html, /class="company-connections"/);
+  assert.ok(html.indexOf('class="company-efficiency"') < html.indexOf('class="company-knowledge"'));
+  assert.ok(html.indexOf('class="company-knowledge"') < html.indexOf('class="company-metrics"'));
   assert.doesNotMatch(html, /CONNECTED BY DESIGN/);
+  assert.doesNotMatch(html, /기존의 가치를 대체하지 않으며/);
   assert.match(html, /One connected Flow/);
   assert.match(html, /for Medicine/);
+  assert.match(html, /엄격한 보안 아키텍처/);
   assert.match(html, /더 직관적인 경험/);
-  assert.match(html, /더 자연스럽게 연결되는 흐름/);
-  assert.match(html, /처음부터 설계 기준에 포함된 보안/);
-  assert.match(html, /viore-company-network-dark-portrait-transparent\.png/);
+  assert.match(html, /다양한 의료 도구/);
+  assert.match(html, /빠른 의료 노트 작성/);
+  assert.match(html, /쉽게 보는 최신 의료 근거/);
+  assert.match(html, /함께 성장하는 지식 커뮤니티/);
+  assert.ok(html.indexOf("더 직관적인 경험") < html.indexOf("엄격한 보안 아키텍처"));
+  assert.ok(html.indexOf("엄격한 보안 아키텍처") < html.indexOf("다양한 의료 도구"));
+  assert.ok(html.indexOf("다양한 의료 도구") < html.indexOf("빠른 의료 노트 작성"));
+  assert.doesNotMatch(html, /처음부터 설계 기준에 포함된 보안/);
+  assert.match(html, /class="company-convergence-canvas"/);
+  assert.doesNotMatch(html, /viore-company-convergence-threads|viore-company-network-dark-portrait-transparent/);
   assert.doesNotMatch(html, /viore-connected-principles/);
-  assert.match(html, /그 첫 번째 선형, 알파닥 Alphadoc/);
+  assert.match(html, /그 첫 번째 선형, <span class="company-join-product-name">알파닥 Alphadoc<\/span>/);
   assert.match(html, /id="partnership-inquiry"/);
   assert.match(html, /href="\/ko#partnership-inquiry"[^>]*>Contact<\/a>/);
   assert.doesNotMatch(html, /NEW LINE/);
@@ -326,10 +350,11 @@ test("redirects legacy Knowledge while keeping the former Council route unavaila
 });
 
 test("server-renders the Alphadoc product story from real product UI", async () => {
-  const [response, css, productSource, workspaceSource, energyCanvasSource] = await Promise.all([
+  const [response, css, productSource, heroMotionSource, workspaceSource, energyCanvasSource] = await Promise.all([
     render("/ko/product/alphadoc"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ProductPage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/AlphadocHeroMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphadocWorkspaceMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/CompanyEnergyCanvas.tsx", import.meta.url), "utf8"),
   ]);
@@ -342,11 +367,19 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /class="site-header site-header-dark"/);
   assert.match(html, /class="site-footer "/);
   assert.doesNotMatch(html, /class="site-footer site-footer-dark"/);
-  assert.match(html, /Alphadoc, an AI Medical Workspace/);
+  assert.match(html, /class="ap-hero-brand">Alphadoc<\/span>, an AI Medical Workspace/);
   assert.match(html, /임상 질문부터 근거 확인, 문서 작성과 번역까지\.\s*의료인의 업무를 앱의 형태로 이어주는 공간\./);
   assert.match(html, /의료인들의 하루를 바꾸는 워크스페이스/);
-  assert.match(html, /ap-hero-motion-svg ap-hero-motion-svg--desktop/);
-  assert.match(html, /ap-hero-motion-svg ap-hero-motion-svg--mobile/);
+  assert.match(html, /class="ap-hero-motion-scene"/);
+  assert.match(html, /class="ap-motion-chat"/);
+  assert.match(html, /class="ap-motion-answer"/);
+  assert.match(html, /38세 여성, Hb 8\.1, 혈소판 18,000/);
+  assert.match(html, /TTP와 DIC를 감별하고 즉시 처치를 정리해줘/);
+  assert.match(html, /혈전성 혈소판감소성 자반증/);
+  assert.match(html, /ADAMTS13·PLASMIC/);
+  assert.match(html, /class="ap-motion-composer"/);
+  assert.match(html, /class="ap-motion-action-bar"/);
+  assert.doesNotMatch(html, /ap-hero-motion-svg/);
   assert.match(html, /\/brand\/alphadoc-alpha\.png/);
   assert.match(html, /모든 것이 하나의 화면 안에/);
   assert.match(html, /필요한 모든 기능이 단 하나의 공간에 펼쳐집니다\.\s*복잡함은 비우고 시야는 넓혀, 당신이 필요한 순간에 완벽하게 집중할 수 있도록\./);
@@ -373,7 +406,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /65% · 25/);
   assert.match(html, /모든 가능성은 앱 하나로/);
   assert.match(html, /필요한 순간 앱을 바로 실행하세요\.\s*더 높은 자율성, 손쉬운 연동, 그리고 계속해서 추가되는 앱까지\.\s*하나의 공간에서 이 모든 것이 가능해집니다\./);
-  assert.match(html, /href="#overview"[^>]*>한눈에/);
+  assert.match(html, /href="#overview"[^>]*>인터페이스/);
   assert.match(html, /href="#clinical"[^>]*>앱/);
   assert.match(html, /href="#alphadocs"[^>]*>알파닥스/);
   assert.match(html, /논문 검색/);
@@ -421,6 +454,12 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /class="company-energy-canvas"/);
   assert.match(html, /class="ap-final-logo" src="\/brand\/alphadoc-alpha\.png"/);
   assert.match(productSource, /<CompanyEnergyCanvas quality="balanced" \/>/);
+  assert.match(heroMotionSource, /type MotionPhase = "intro" \| "typing" \| "submitting" \| "thinking" \| "answer"/);
+  assert.match(heroMotionSource, /setTypedLength\(cursor\)/);
+  assert.match(heroMotionSource, /setPhase\("thinking"\)/);
+  assert.match(heroMotionSource, /setPhase\("answer"\)/);
+  assert.doesNotMatch(heroMotionSource, /ap-motion-start|PadakiMark|start:/);
+  assert.doesNotMatch(heroMotionSource, /ap-motion-assistant-bubble|ap-motion-answer-metrics|ap-motion-sources/);
   assert.match(workspaceSource, /setIsPlaying\(entry\.isIntersecting && entry\.intersectionRatio >= 0\.08\)/);
   assert.match(energyCanvasSource, /balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
   assert.match(energyCanvasSource, /balanced \? 1\.25 : 1\.5/);
@@ -472,8 +511,14 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-size: var\(--dark-paper-size\);/);
   assert.match(productCss, /--ap-red: #ff8177/);
   assert.match(productCss, /\.ap-button-primary \{[\s\S]*?background: var\(--ap-red\);/);
-  assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.72s 1\.6s/);
-  assert.match(productCss, /\.ap-hero-motion-svg--mobile \{ display: none; \}/);
+  assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.58s \.15s/);
+  assert.match(productCss, /\.ap-hero-motion-scene \{[^}]*aspect-ratio: 39\/20;/);
+  assert.match(productCss, /\.ap-hero-motion:not\(\.is-thinking\):not\(\.is-answer\) \.ap-hero-motion-scene \{ aspect-ratio: 14\/5; \}/);
+  assert.match(productCss, /\.ap-motion-user-bubble \{[^}]*background: linear-gradient\(155deg,#353537 0%,#171719 100%\);/);
+  assert.match(productCss, /\.ap-motion-composer \{[^}]*border-radius: 999px;/);
+  assert.match(productCss, /\.ap-hero-motion\.is-answer \.ap-motion-chat \{ opacity: 1;/);
+  assert.match(productCss, /\.ap-hero-motion\.is-answer \.ap-motion-answer \{ opacity: 1;/);
+  assert.match(productCss, /@keyframes ap-motion-caret/);
   assert.match(productCss, /\.ap-hero-copy h1 \{[\s\S]*?white-space: nowrap;/);
   assert.match(productCss, /\.ap-hero-lead \{[\s\S]*?white-space: pre-line;/);
   assert.match(productCss, /\.ap-section-head \{[\s\S]*?grid-template-columns: 1fr;[\s\S]*?align-items: start;/);
@@ -503,14 +548,13 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.ok(pretendardAsset.length > 1_000_000);
 });
 
-test("uses the flowing filament background and carries the transparent network through the dark chapter", async () => {
-  const [page, energyCanvas, companyBackdrop, content, css, companyNetwork] = await Promise.all([
+test("carries the hero energy-line language into a slow scroll-linked convergence", async () => {
+  const [page, energyCanvas, companyBackdrop, content, css] = await Promise.all([
     readFile(new URL("../app/components/CompanyPage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/CompanyEnergyCanvas.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/CompanyNetworkBackdrop.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/site-content.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
-    readFile(new URL("../public/media/viore-company-network-dark-portrait-transparent.png", import.meta.url)),
   ]);
 
   assert.match(page, /href="#company-story"/);
@@ -534,15 +578,25 @@ test("uses the flowing filament background and carries the transparent network t
   assert.match(css, /\.product-page-v2 \{[^}]*background-image: var\(--paper-texture\);/);
   assert.match(page, /<CompanyNetworkBackdrop \/>/);
   assert.doesNotMatch(page, /viore-company-terminal-pin-dark\.png|company-pin-alpha|company-pin-mask-boost/);
-  assert.match(companyBackdrop, /viore-company-network-dark-portrait-transparent\.png/);
+  assert.match(companyBackdrop, /className="company-convergence-canvas"/);
+  assert.doesNotMatch(companyBackdrop, /<img|\.png/);
   assert.match(companyBackdrop, /requestAnimationFrame/);
   assert.match(companyBackdrop, /prefers-reduced-motion: reduce/);
-  assert.match(companyBackdrop, /--company-network-shift/);
+  assert.match(companyBackdrop, /ORANGE_PALETTE/);
+  assert.match(companyBackdrop, /RED_PALETTE/);
+  assert.match(companyBackdrop, /\[255, 126, 29\]/);
+  assert.match(companyBackdrop, /Math\.pow\(localProgress, 2\.6\)/);
+  assert.match(companyBackdrop, /spreadScale = family === 0 \? 0\.38 : family === 1 \? 0\.31 : 0\.43/);
+  assert.match(companyBackdrop, /index \* 0\.13 \+ family \* 1\.7/);
+  assert.match(companyBackdrop, /context\.lineWidth = haze \? 18 : accent \? 2\.35 : 0\.76/);
+  assert.match(companyBackdrop, /join\.offsetTop - window\.innerHeight \* 0\.15/);
+  assert.match(companyBackdrop, /--company-convergence-progress/);
+  assert.match(companyBackdrop, /globalCompositeOperation = "screen"/);
   assert.match(css, /\.company-network-backdrop \{[^}]*position: absolute;[^}]*inset: 0;/);
   assert.match(css, /\.company-network-viewport \{[^}]*position: sticky;[^}]*height: 100svh;/);
-  assert.match(css, /\.company-network-source \{[^}]*width: max\(100vw,118svh\);/);
-  assert.ok(companyNetwork.length > 500_000);
-  assert.equal(companyNetwork[25], 6, "company network asset must be an RGBA PNG");
+  assert.match(css, /\.company-network-viewport::after \{[^}]*opacity: calc\(\.82 - var\(--company-convergence-progress\) \* \.82\)/);
+  assert.match(css, /\.company-convergence-canvas \{[^}]*opacity: calc\(\.82 \+ var\(--company-convergence-progress\) \* \.18\)/);
+  assert.match(css, /\.company-convergence-canvas \{[^}]*position: absolute;[^}]*width: 100%;[^}]*height: 100%;/);
   assert.match(css, /@keyframes company-scroll-energy/);
   assert.match(css, /@keyframes company-scroll-chevron/);
   assert.match(css, /prefers-reduced-motion: reduce/);
@@ -585,11 +639,13 @@ test("uses accessible live count-up company metrics with a verified snapshot fal
   assert.match(dataSource, /medical_documents_added_30d/);
   assert.match(dataSource, /standardized_medical_documents/);
   assert.match(dataSource, /clinical_guidelines/);
+  assert.match(dataSource, /values\[metric\.kind\]/);
   assert.match(dataSource, /revalidate: COMPANY_METRICS_REVALIDATE_SECONDS/);
   assert.doesNotMatch(dataSource, /service_role|service-role|secret key/i);
   assert.match(content, /value: 36047/);
   assert.match(content, /value: 212891/);
   assert.match(content, /value: 9476/);
+  assert.match(content, /kind: "documents", value: 212891/);
   assert.match(css, /\.company-metrics \{[^}]*grid-template-columns: repeat\(3,minmax\(0,1fr\)\);/);
   assert.match(css, /\.company-metric-value \{[^}]*font-variant-numeric: tabular-nums;/);
 });
@@ -607,11 +663,43 @@ test("keeps the three connected principles text-only over the continuous company
   assert.doesNotMatch(connections, /padStart|String\(index \+ 1\)/);
   assert.match(connections, /content\.nodes\.map/);
   assert.match(connections, /aria-labelledby="company-connections-title"/);
-  assert.equal((content.match(/더 직관적인 경험|더 자연스럽게 연결되는 흐름|처음부터 설계 기준에 포함된 보안/g) ?? []).length, 3);
+  assert.equal((content.match(/더 직관적인 경험|엄격한 보안 아키텍처|다양한 의료 도구|빠른 의료 노트 작성|쉽게 보는 최신 의료 근거|함께 성장하는 지식 커뮤니티/g) ?? []).length, 6);
+  assert.match(content, /Rigorous security architecture/);
   assert.match(content, /A more intuitive experience/);
-  assert.match(content, /A more natural, connected flow/);
-  assert.match(content, /Security built in from the start/);
+  assert.match(content, /A diverse range of medical tools/);
+  assert.match(content, /Fast medical note drafting/);
+  assert.match(content, /Clear, up-to-date medical evidence/);
+  assert.match(content, /A knowledge community that grows together/);
+  assert.doesNotMatch(content, /Security built in from the start/);
   assert.match(css, /\.company-connection-nodes \{[^}]*grid-template-columns: repeat\(3,minmax\(0,1fr\)\);/);
+  assert.match(css, /\.company-connection-node:nth-child\(3n\+1\) \{[^}]*padding-left: 0;/);
+  assert.match(css, /\.company-connections-heading h2 \{[^}]*font-size: clamp\(32px,3\.4vw,48px\);/);
+  assert.doesNotMatch(css, /\.company-connections \{[^}]*border-top:/);
+});
+
+test("loops five clinical questions in a transparent, reduced-motion-safe Alphadoc field", async () => {
+  const [page, questionLoop, css] = await Promise.all([
+    readFile(new URL("../app/components/CompanyPage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/CompanyQuestionLoop.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(page, /<CompanyQuestionLoop language=\{language\} \/>/);
+  assert.equal((questionLoop.match(/패혈증 초기 처치는|급성 흉통 위험 신호는|심방세동 항응고 기준은|신기능 저하 시 용량 조정은|당뇨병 혈당 목표는/g) ?? []).length, 5);
+  assert.match(questionLoop, /IntersectionObserver/);
+  assert.match(questionLoop, /window\.setTimeout/);
+  assert.match(questionLoop, /window\.clearTimeout/);
+  assert.match(questionLoop, /prefers-reduced-motion: reduce/);
+  assert.match(questionLoop, /role="img"/);
+  assert.match(css, /\.company-question-loop \{[^}]*background: transparent;/);
+  assert.match(css, /\.company-efficiency \{[^}]*border-top: 1px solid rgba\(255,255,255,\.18\);/);
+  assert.match(css, /\.company-efficiency-heading \{[^}]*grid-template-columns: max-content minmax\(0,1fr\);/);
+  assert.match(css, /\.company-efficiency h2 > span \{[^}]*display: block;[^}]*white-space: nowrap;/);
+  assert.match(css, /\.company-efficiency-title-brand \{[^}]*color: var\(--red\);/);
+  assert.match(css, /\.company-efficiency-title-workspace \{[^}]*font-size: clamp\(32px,3\.4vw,48px\);/);
+  assert.match(css, /\.company-efficiency p \{[^}]*margin: 38px 0 0;/);
+  assert.match(css, /\.company-knowledge > h2 \{[^}]*font-size: clamp\(32px,3\.4vw,48px\);/);
+  assert.match(css, /@keyframes company-question-cursor/);
 });
 
 test("routes Company and Contact navigation into the locale homepage", async () => {

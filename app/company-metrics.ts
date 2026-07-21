@@ -41,7 +41,7 @@ function parseMetricsRow(value: unknown): CompanyMetricsRow | null {
   return row as CompanyMetricsRow;
 }
 
-function ariaLabel(language: Language, kind: "monthly" | "documents" | "guidelines", value: number) {
+function ariaLabel(language: Language, kind: CompanyMetric["kind"], value: number) {
   const formatted = new Intl.NumberFormat(language === "ko" ? "ko-KR" : "en-US").format(value);
 
   if (language === "ko") {
@@ -62,17 +62,16 @@ export function applyCompanyMetricsRow(
 ): CompanyMetric[] {
   if (fallbackMetrics.length !== 3) return fallbackMetrics;
 
-  const values = [
-    row.medical_documents_added_30d,
-    row.standardized_medical_documents,
-    row.clinical_guidelines,
-  ] as const;
-  const kinds = ["monthly", "documents", "guidelines"] as const;
+  const values: Record<CompanyMetric["kind"], number> = {
+    monthly: row.medical_documents_added_30d,
+    documents: row.standardized_medical_documents,
+    guidelines: row.clinical_guidelines,
+  };
 
-  return fallbackMetrics.map((metric, index) => ({
+  return fallbackMetrics.map((metric) => ({
     ...metric,
-    value: values[index],
-    ariaLabel: ariaLabel(language, kinds[index], values[index]),
+    value: values[metric.kind],
+    ariaLabel: ariaLabel(language, metric.kind, values[metric.kind]),
   }));
 }
 
