@@ -5,7 +5,6 @@ export function CompanyConnections({ content }: { content: CompanyConnectionsCon
     <section className="company-connections" aria-labelledby="company-connections-title">
       <header className="company-connections-heading">
         <h2 id="company-connections-title">{content.title}</h2>
-        {content.description && <p>{content.description}</p>}
       </header>
 
       <div className="company-connections-stage">
