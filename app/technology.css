@@ -18,7 +18,7 @@
   background-color: var(--technology-page);
   background-image: var(--technology-paper);
   background-repeat: repeat;
-  background-size: 720px 720px;
+  background-size: var(--dark-paper-size);
   font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Noto Sans KR", sans-serif;
 }
 
@@ -128,7 +128,7 @@
   color: var(--technology-ink);
   background-color: var(--technology-page);
   background-image: var(--technology-paper);
-  background-size: 720px 720px;
+  background-size: var(--dark-paper-size);
 }
 
 .site-header-dark .mobile-menu-group,
