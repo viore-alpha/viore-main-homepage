@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-const FRAME_INTERVAL = 1000 / 20;
 type EnergyFamily = 0 | 1 | 2;
 type Rgb = readonly [number, number, number];
 
@@ -46,33 +45,41 @@ const continueSmoothly = (
 
 export function CompanyNetworkBackdrop() {
   const backdropRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const startCanvasRef = useRef<HTMLCanvasElement>(null);
+  const endCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const backdrop = backdropRef.current;
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d", { alpha: true });
+    const viewport = viewportRef.current;
+    const startCanvas = startCanvasRef.current;
+    const endCanvas = endCanvasRef.current;
+    const startContext = startCanvas?.getContext("2d", { alpha: true });
+    const endContext = endCanvas?.getContext("2d", { alpha: true });
     const chapter = backdrop?.closest<HTMLElement>(".company-dark-chapter");
     const join = chapter?.querySelector<HTMLElement>(".company-join") ?? null;
-    if (!backdrop || !canvas || !context) return;
+    if (!backdrop || !viewport || !startCanvas || !endCanvas || !startContext || !endContext) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 1;
     let height = 1;
-    let progress = 0;
-    let animationFrame = 0;
+    let chapterStart = 0;
+    let finishDistance = 1;
+    let progress = -1;
+    let renderFrame = 0;
     let scrollFrame = 0;
-    let lastFrame = 0;
-    let isIntersecting = false;
-    let primaryGradient: CanvasGradient | null = null;
-    let counterGradient: CanvasGradient | null = null;
-    let goldGradient: CanvasGradient | null = null;
-    let gradientProgress = -1;
+    let isNearViewport = false;
 
-    const traceStrand = (index: number, count: number, seconds: number, family: EnergyFamily) => {
+    const traceStrand = (
+      context: CanvasRenderingContext2D,
+      layerProgress: number,
+      index: number,
+      count: number,
+      family: EnergyFamily,
+    ) => {
       const position = count === 1 ? 0 : index / (count - 1);
       const offset = position * 2 - 1;
-      const localProgress = clamp(progress + 0.035 * (1 - progress));
+      const localProgress = clamp(layerProgress + 0.035 * (1 - layerProgress));
       const convergence = Math.pow(localProgress, 2.6);
       const compact = width < 700;
       const lateralScale = compact ? 0.64 : 1;
@@ -82,8 +89,8 @@ export function CompanyNetworkBackdrop() {
       const spread = offset * mix(initialSpread, finalSpread, convergence);
       const flowScale = 1 - convergence;
       const curveScale = flowScale * lateralScale;
-      const pulse = Math.sin(seconds * (0.22 + family * 0.025) + index * 0.13 + family * 1.7);
-      const counterPulse = Math.cos(seconds * (0.15 + family * 0.018) - index * 0.09 + family * 1.1);
+      const pulse = Math.sin(index * 0.13 + family * 1.7);
+      const counterPulse = Math.cos(-index * 0.09 + family * 1.1);
       const drift = pulse * width * 0.024 * flowScale * lateralScale;
       const fineDrift = counterPulse * width * 0.011 * flowScale * lateralScale;
       const jitterA = Math.sin((index + 1) * 1.91 + family * 2.7) * width * 0.018 * flowScale * lateralScale;
@@ -166,12 +173,15 @@ export function CompanyNetworkBackdrop() {
       );
     };
 
-    const makeGradient = (family: EnergyFamily) => {
+    const makeGradient = (
+      context: CanvasRenderingContext2D,
+      layerProgress: number,
+      family: EnergyFamily,
+    ) => {
       const orange = ORANGE_PALETTE[family];
       const red = RED_PALETTE[family];
-      const colorProgress = Math.pow(progress, 1.18);
+      const colorProgress = Math.pow(layerProgress, 1.18);
       const gradient = context.createLinearGradient(0, -height * 0.1, 0, height * 1.1);
-
       const stops = family === 0
         ? ([
             [0, orange[0], red[0], 0.18],
@@ -202,186 +212,139 @@ export function CompanyNetworkBackdrop() {
       return gradient;
     };
 
-    const strokeFamily = (
-      count: number,
-      seconds: number,
-      family: EnergyFamily,
-      gradient: CanvasGradient,
-      haze = false,
-    ) => {
-      const convergence = Math.pow(progress, 2.6);
-      const convergenceAlpha = mix(1, 0.3, convergence);
+    const drawLayer = (context: CanvasRenderingContext2D, layerProgress: number) => {
+      const compact = width < 700;
+      const convergenceAlpha = mix(1, 0.3, Math.pow(layerProgress, 2.6));
+      const gradients = [0, 1, 2].map((family) =>
+        makeGradient(context, layerProgress, family as EnergyFamily));
 
-      for (let index = 0; index < count; index += 1) {
-        traceStrand(index, count, seconds, family);
-        const accent = !haze && index % (family === 0 ? 11 : 8) === 0;
-        const shimmer = 0.86 + Math.sin(seconds * 0.22 + index * 0.57 + family) * 0.14;
-        context.strokeStyle = gradient;
-        context.globalAlpha = haze
-          ? 0.055 * convergenceAlpha
-          : (accent ? 0.78 : 0.21) * shimmer * convergenceAlpha;
-        context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
-
-        if (haze || accent) {
-          context.shadowColor = progress > 0.72
-            ? "rgba(255, 59, 48, .28)"
-            : family === 2
-              ? "rgba(248, 183, 53, .2)"
-              : "rgba(255, 93, 31, .24)";
-          context.shadowBlur = haze ? 20 : 8;
-        } else {
-          context.shadowBlur = 0;
+      const strokeFamily = (count: number, family: EnergyFamily, haze = false) => {
+        for (let index = 0; index < count; index += 1) {
+          traceStrand(context, layerProgress, index, count, family);
+          const accent = !haze && index % (family === 0 ? 11 : 8) === 0;
+          context.strokeStyle = gradients[family];
+          context.globalAlpha = haze
+            ? 0.055 * convergenceAlpha
+            : (accent ? 0.78 : 0.21) * convergenceAlpha;
+          context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+          context.stroke();
         }
-
-        context.stroke();
-      }
-    };
-
-    const draw = (seconds: number) => {
-      if (
-        !primaryGradient ||
-        !counterGradient ||
-        !goldGradient ||
-        Math.abs(gradientProgress - progress) > 0.0005
-      ) {
-        primaryGradient = makeGradient(0);
-        counterGradient = makeGradient(1);
-        goldGradient = makeGradient(2);
-        gradientProgress = progress;
-      }
+      };
 
       context.clearRect(0, 0, width, height);
       context.save();
       context.globalCompositeOperation = "screen";
       context.lineCap = "round";
       context.lineJoin = "round";
-
-      const compact = width < 700;
-
-      strokeFamily(compact ? 6 : 8, seconds, 0, primaryGradient, true);
-      strokeFamily(compact ? 3 : 4, seconds, 1, counterGradient, true);
-      strokeFamily(compact ? 32 : 48, seconds, 0, primaryGradient);
-      strokeFamily(compact ? 7 : 11, seconds, 1, counterGradient);
-      strokeFamily(compact ? 11 : 17, seconds, 2, goldGradient);
-
+      context.shadowBlur = 0;
+      strokeFamily(compact ? 6 : 8, 0, true);
+      strokeFamily(compact ? 3 : 4, 1, true);
+      strokeFamily(compact ? 32 : 48, 0);
+      strokeFamily(compact ? 7 : 11, 1);
+      strokeFamily(compact ? 11 : 17, 2);
       context.restore();
+    };
+
+    const releaseCanvases = () => {
+      width = 1;
+      height = 1;
+      for (const canvas of [startCanvas, endCanvas]) {
+        if (canvas.width !== 1) canvas.width = 1;
+        if (canvas.height !== 1) canvas.height = 1;
+      }
     };
 
     const updateProgress = () => {
       scrollFrame = 0;
-      const rect = backdrop.getBoundingClientRect();
-      const fallbackFinish = Math.max(backdrop.offsetHeight - window.innerHeight * 0.85, 1);
-      const finishDistance = join
-        ? Math.max(join.offsetTop - window.innerHeight * 0.15, 1)
-        : fallbackFinish;
-      const nextProgress = clamp(Math.max(-rect.top, 0) / finishDistance);
-
-      if (Math.abs(nextProgress - progress) > 0.0005) {
-        progress = nextProgress;
-        backdrop.style.setProperty("--company-convergence-progress", progress.toFixed(4));
-        if (reducedMotion.matches) draw(0);
-      }
+      const nextProgress = clamp((window.scrollY - chapterStart) / finishDistance);
+      if (Math.abs(nextProgress - progress) < 0.0005) return;
+      progress = nextProgress;
+      backdrop.style.setProperty("--company-convergence-progress", progress.toFixed(4));
     };
 
     const requestProgressUpdate = () => {
       if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateProgress);
     };
 
-    const releaseCanvas = () => {
-      width = 1;
-      height = 1;
-      primaryGradient = null;
-      counterGradient = null;
-      goldGradient = null;
-      gradientProgress = -1;
-      if (canvas.width !== 1) canvas.width = 1;
-      if (canvas.height !== 1) canvas.height = 1;
-    };
+    const resizeAndRender = () => {
+      renderFrame = 0;
+      if (!isNearViewport || document.hidden) return;
 
-    const resize = () => {
-      if (!isIntersecting || document.hidden) return;
-      const bounds = canvas.getBoundingClientRect();
+      const bounds = startCanvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
+      chapterStart = backdrop.getBoundingClientRect().top + window.scrollY;
+      const fallbackFinish = Math.max(backdrop.offsetHeight - window.innerHeight * 0.85, 1);
+      finishDistance = join
+        ? Math.max(join.offsetTop - window.innerHeight * 0.15, 1)
+        : fallbackFinish;
+
       const pixelRatioCap = width < 700 ? 1 : 1.15;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
 
-      if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
+      for (const [canvas, context] of [[startCanvas, startContext], [endCanvas, endContext]] as const) {
         canvas.width = renderWidth;
         canvas.height = renderHeight;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        primaryGradient = null;
-        counterGradient = null;
-        goldGradient = null;
-        gradientProgress = -1;
       }
+
+      drawLayer(startContext, 0);
+      drawLayer(endContext, 1);
       updateProgress();
-      draw(reducedMotion.matches ? 0 : performance.now() / 1000);
     };
 
-    const animate = (timestamp: number) => {
-      if (timestamp - lastFrame >= FRAME_INTERVAL) {
-        draw(timestamp / 1000);
-        lastFrame = timestamp;
-      }
-      animationFrame = window.requestAnimationFrame(animate);
+    const requestRender = () => {
+      if (!renderFrame) renderFrame = window.requestAnimationFrame(resizeAndRender);
     };
 
     const syncMotion = () => {
-      window.cancelAnimationFrame(animationFrame);
-      animationFrame = 0;
-      lastFrame = 0;
-
-      if (!isIntersecting || document.hidden) {
-        releaseCanvas();
-        return;
-      }
-      resize();
-      if (reducedMotion.matches) draw(0);
-      else animationFrame = window.requestAnimationFrame(animate);
+      const visible = isNearViewport && !document.hidden;
+      backdrop.classList.toggle("is-motion-active", visible && !reducedMotion.matches);
+      if (visible) requestRender();
+      else releaseCanvases();
     };
 
-    const handleMotionChange = () => {
-      updateProgress();
-      syncMotion();
-    };
-
-    const resizeObserver = new ResizeObserver(resize);
+    const resizeObserver = new ResizeObserver(requestRender);
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
-        isIntersecting = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.01);
+        isNearViewport = entry?.isIntersecting ?? false;
         syncMotion();
       },
-      { rootMargin: "0px", threshold: [0, 0.01] },
+      { rootMargin: "100% 0px" },
     );
 
-    resizeObserver.observe(canvas);
+    resizeObserver.observe(viewport);
     intersectionObserver.observe(backdrop);
     window.addEventListener("scroll", requestProgressUpdate, { passive: true });
-    window.addEventListener("resize", requestProgressUpdate);
-    reducedMotion.addEventListener("change", handleMotionChange);
+    window.addEventListener("resize", requestRender, { passive: true });
+    reducedMotion.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncMotion);
+    requestProgressUpdate();
     syncMotion();
 
     return () => {
-      window.cancelAnimationFrame(animationFrame);
+      window.cancelAnimationFrame(renderFrame);
       window.cancelAnimationFrame(scrollFrame);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       window.removeEventListener("scroll", requestProgressUpdate);
-      window.removeEventListener("resize", requestProgressUpdate);
-      reducedMotion.removeEventListener("change", handleMotionChange);
+      window.removeEventListener("resize", requestRender);
+      reducedMotion.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
-      releaseCanvas();
+      backdrop.classList.remove("is-motion-active");
+      releaseCanvases();
     };
   }, []);
 
   return (
     <div ref={backdropRef} className="company-network-backdrop" aria-hidden="true">
-      <div className="company-network-viewport">
-        <canvas ref={canvasRef} className="company-convergence-canvas" />
+      <div ref={viewportRef} className="company-network-viewport">
+        <div className="company-network-layers">
+          <canvas ref={startCanvasRef} className="company-convergence-canvas company-convergence-canvas-start" />
+          <canvas ref={endCanvasRef} className="company-convergence-canvas company-convergence-canvas-end" />
+        </div>
       </div>
     </div>
   );

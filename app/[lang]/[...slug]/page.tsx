@@ -6,9 +6,6 @@ import {
   AlphaEvidenceVisual,
   CouncilPartnersVisual,
 } from "@/app/components/BrandVisuals";
-import { KnowledgePage } from "@/app/components/KnowledgePage";
-import { ProductPage } from "@/app/components/ProductPage";
-import { getKnowledgeInitialFeed } from "@/app/knowledge-feed";
 import { buildPageMetadata } from "@/app/seo";
 import { detailContent, insightPageFromLegacySlug, isLanguage, pageKeyFromSlug, pageRoutes, routeFor, technologyAnchorFromLegacySlug, technologyRouteFor, type Language, type PageKey } from "@/app/site-content";
 
@@ -91,14 +88,7 @@ export default async function DetailRoute({ params }: { params: RouteParams }) {
   const page = detailContent[lang][pageKey];
   const continuation = continuationFor(lang, pageKey);
 
-  if (pageKey === "alphadoc") {
-    return <ProductPage language={lang} />;
-  }
-
-  if (pageKey === "knowledge") {
-    const knowledgeFeed = await getKnowledgeInitialFeed();
-    return <KnowledgePage language={lang} result={knowledgeFeed} />;
-  }
+  if (pageKey === "alphadoc" || pageKey === "knowledge") notFound();
 
   return (
     <article className={`detail-page detail-page-${pageKey} detail-${page.kind}`}>

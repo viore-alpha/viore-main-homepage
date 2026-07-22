@@ -107,6 +107,13 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
   });
   assert.deepEqual(pngSize(socialImage), { width: 1200, height: 630 });
   assert.deepEqual(pngSize(squareImage), { width: 1024, height: 1024 });
+
+  const optimizedTexture = await render("/media/viore-paper-texture-dark-v2.webp");
+  assert.equal(optimizedTexture.status, 200);
+  assert.equal(
+    optimizedTexture.headers.get("cache-control"),
+    "public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800",
+  );
 });
 
 test("server-renders the Korean Company story as the homepage", async () => {
@@ -166,7 +173,8 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.ok(html.indexOf("엄격한 보안 아키텍처") < html.indexOf("다양한 의료 도구"));
   assert.ok(html.indexOf("다양한 의료 도구") < html.indexOf("빠른 의료 노트 작성"));
   assert.doesNotMatch(html, /처음부터 설계 기준에 포함된 보안/);
-  assert.match(html, /class="company-convergence-canvas"/);
+  assert.match(html, /class="company-convergence-canvas company-convergence-canvas-start"/);
+  assert.match(html, /class="company-convergence-canvas company-convergence-canvas-end"/);
   assert.doesNotMatch(html, /viore-company-convergence-threads|viore-company-network-dark-portrait-transparent/);
   assert.doesNotMatch(html, /viore-connected-principles/);
   assert.match(html, /그 첫 번째 선형, <span class="company-join-product-name">알파닥 Alphadoc<\/span>/);
@@ -350,9 +358,10 @@ test("redirects legacy Knowledge while keeping the former Council route unavaila
 });
 
 test("server-renders the Alphadoc product story from real product UI", async () => {
-  const [response, css, productSource, heroMotionSource, workspaceSource, featureRailSource, featureCardSource, featureMotionSource, phoneDemoSource, viewportMotionSource, energyCanvasSource] = await Promise.all([
+  const [response, css, productCss, productSource, heroMotionSource, workspaceSource, featureRailSource, featureCardSource, featureMotionSource, phoneDemoSource, viewportMotionSource, deferredViewportMotionSource, energyCanvasSource] = await Promise.all([
     render("/ko/product/alphadoc"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/product.css", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ProductPage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphadocHeroMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphadocWorkspaceMotion.tsx", import.meta.url), "utf8"),
@@ -361,6 +370,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
     readFile(new URL("../app/components/AlphadocFeatureMotionSvg.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphadocsPhoneDemo.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/useViewportMotion.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ViewportMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/CompanyEnergyCanvas.tsx", import.meta.url), "utf8"),
   ]);
   assert.equal(response.status, 200);
@@ -398,8 +408,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /brand\/feature-icons\/panel\/community\/logo\.svg/);
   assert.match(html, /응급실 흉통 평가,[\s\S]*연속 검사 중심으로 개편/);
   assert.match(html, /Accelerated Chest Pain Assessment/);
-  assert.match(html, /generated\/news-chest-pain-night\.jpg/);
-  assert.match(html, /generated\/community-chest-pain-handoff\.jpg/);
+  assert.match(html, /generated\/news-chest-pain-night-optimized\.webp/);
+  assert.match(html, /generated\/community-chest-pain-handoff-optimized\.webp/);
   assert.match(html, /혼합 산-염기 장애 계산/);
   assert.match(html, /138−\(102\+13\)/);
   assert.match(html, /23\+2\.5×\(4\.4−2\.4\)/);
@@ -461,7 +471,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /교육 분위기/);
   assert.match(html, /당직 강도/);
   assert.match(html, /급여·복지/);
-  assert.match(html, /community-chest-pain-handoff\.jpg/);
+  assert.match(html, /community-chest-pain-handoff-optimized\.webp/);
   assert.doesNotMatch(html, /ap-community-global-head|새로운 소식이 있나요\?/);
   assert.doesNotMatch(html, /내과의 · 18분|중증 패혈증 초기 수액 후 승압제/);
   assert.match(html, /Intuitive UI/);
@@ -474,7 +484,9 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /class="company-energy-canvas"/);
   assert.match(html, /class="ap-final-logo" src="\/brand\/alphadoc-alpha\.png"/);
   assert.match(productSource, /<CompanyEnergyCanvas quality="balanced" \/>/);
-  assert.match(productSource, /useViewportMotion<HTMLElement>\(0\.12\)/);
+  assert.match(productSource, /<AlphadocLocalNav items=\{content\.nav\} language=\{language\} \/>/);
+  assert.match(productSource, /<ViewportMotion as="section" className="ap-final-cta" threshold=\{0\.12\}>/);
+  assert.doesNotMatch(productSource, /^"use client"/m);
   assert.doesNotMatch(productSource, /function useInView/);
   assert.match(heroMotionSource, /type MotionPhase = "intro" \| "attaching" \| "typing" \| "submitting" \| "thinking" \| "answer"/);
   assert.match(heroMotionSource, /setTypedLength\(cursor\)/);
@@ -487,7 +499,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(heroMotionSource, /restartDelay: 2600/);
   assert.match(heroMotionSource, /function restartSequence\(\)/);
   assert.match(heroMotionSource, /schedule\(restartSequence, MOTION_TIMING\.restartDelay\)/);
-  assert.match(heroMotionSource, /synthetic-chest-xray-rll\.jpg/);
+  assert.match(heroMotionSource, /synthetic-chest-xray-rll-optimized\.webp/);
   assert.match(heroMotionSource, /이 흉부 X-ray에서 우하폐야 음영을 판독하고/);
   assert.match(heroMotionSource, /이 논문의 PICO, 주요 결과와 한계를 정리하고/);
   assert.match(heroMotionSource, /function AttachmentCard/);
@@ -495,7 +507,11 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.doesNotMatch(heroMotionSource, /ap-motion-start|PadakiMark|start:/);
   assert.doesNotMatch(heroMotionSource, /ap-motion-assistant-bubble|ap-motion-answer-metrics|ap-motion-sources/);
   assert.match(heroMotionSource, /useViewportMotion<HTMLDivElement>\(0\.18\)/);
-  assert.match(workspaceSource, /useViewportMotion<HTMLDivElement>\(0\.08\)/);
+  assert.match(workspaceSource, /<ViewportMotion/);
+  assert.match(workspaceSource, /deferChildren/);
+  assert.match(workspaceSource, /mountMargin="520px 0px"/);
+  assert.match(workspaceSource, /threshold=\{0\.08\}/);
+  assert.doesNotMatch(workspaceSource, /^"use client"/m);
   assert.match(workspaceSource, /viewBox="0 0 1280 840"/);
   assert.match(workspaceSource, /width="648" height="768"/);
   assert.doesNotMatch(workspaceSource, /ap-real-workflow-shelf|workflowLabel|workflowItems|최근 이어서 하기/);
@@ -507,8 +523,12 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(viewportMotionSource, /document\.addEventListener\("visibilitychange"/);
   assert.match(viewportMotionSource, /new Observer/);
   assert.match(viewportMotionSource, /shouldAnimate: inView && pageVisible && !reducedMotion/);
-  assert.match(energyCanvasSource, /balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
-  assert.match(energyCanvasSource, /balanced \? 1\.25 : 1\.5/);
+  assert.match(deferredViewportMotionSource, /new IntersectionObserver/);
+  assert.match(deferredViewportMotionSource, /data-motion-mounted=\{mounted \? "true" : "false"\}/);
+  assert.match(deferredViewportMotionSource, /media\.addEventListener\("change", syncMotionPreference\)/);
+  assert.match(energyCanvasSource, /const pixelRatioCap = width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
+  assert.match(energyCanvasSource, /canvas\.classList\.toggle\("is-motion-active"/);
+  assert.doesNotMatch(energyCanvasSource, /FRAME_INTERVAL|setInterval|function animate/);
   assert.match(html, /"@type":"SoftwareApplication"/);
   assert.match(html, /class="ap-feature-gallery/);
   assert.match(html, /class="ap-feature-rail"[^>]*role="list"/);
@@ -517,11 +537,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /data-feature-card="forms"/);
   assert.match(html, /data-feature-card="translation"/);
   assert.match(html, /data-feature-card="tools"/);
-  assert.match(html, /class="ap-feature-svg ap-feature-svg--papers"/);
-  assert.match(html, /class="ap-feature-svg ap-feature-svg--notices"/);
-  assert.match(html, /class="ap-feature-svg ap-feature-svg--forms"/);
-  assert.match(html, /class="ap-feature-svg ap-feature-svg--translation"/);
-  assert.match(html, /class="ap-feature-svg ap-feature-svg--tools"/);
+  assert.match(html, /class="ap-feature-motion-placeholder"/);
+  assert.doesNotMatch(html, /class="ap-feature-svg ap-feature-svg--(?:papers|notices|forms|translation|tools)"/);
   assert.doesNotMatch(html, /role="tablist"|class="ap-gallery-tabs"/);
   assert.match(featureRailSource, /const AUTO_SCROLL_PX_PER_SECOND = 18/);
   assert.match(featureRailSource, /const RAIL_COPIES = \[0, 1\] as const/);
@@ -530,6 +547,10 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(featureRailSource, /new Observer\(\(entries\) =>/);
   assert.match(featureRailSource, /\{ root: rail, rootMargin: "0px 48px", threshold: \[0, 0\.06\] \}/);
   assert.match(featureRailSource, /motionVisible=\{visibleInstances\.has\(instanceId\)\}/);
+  assert.match(featureRailSource, /const pendingInstances = new Set<string>\(\)/);
+  assert.match(featureRailSource, /requestIdleCallback\(mountNext, \{ timeout: 700 \}\)/);
+  assert.match(featureRailSource, /window\.addEventListener\("scroll", deferDuringPageScroll/);
+  assert.match(featureRailSource, /const cards = cardMetricsRef\.current/);
   assert.doesNotMatch(featureRailSource, /AUTO_ADVANCE_MS|directionRef|rail\.scrollTo/);
   assert.match(featureRailSource, /useViewportMotion<HTMLDivElement>\(0\.04\)/);
   assert.match(featureRailSource, /onPointerEnter=\{handlePointerEnter\}/);
@@ -538,6 +559,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(featureRailSource, /data-auto-scroll=\{motionPaused \? "paused" : "running"\}/);
   assert.match(featureRailSource, /event\.key !== "ArrowLeft" && event\.key !== "ArrowRight"/);
   assert.match(featureCardSource, /<AlphadocFeatureMotionSvg/);
+  assert.match(featureCardSource, /lazy\(async \(\) =>/);
+  assert.match(featureCardSource, /loading="lazy"/);
   assert.match(featureCardSource, /is-motion-visible/);
   assert.match(featureCardSource, /data-feature-instance=\{instanceId\}/);
   assert.match(featureCardSource, /aria-hidden=\{duplicate \? "true" : undefined\}/);
@@ -582,15 +605,16 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /Winter 공식 · 1967/);
   assert.match(html, /Albumin 보정 · 1998/);
   assert.match(html, /Delta gap · 1990/);
-  assert.doesNotMatch(html, /PMID 6016545|PMID 9824071|PMID 2240729/);
+  assert.match(html, /PMID 6016545/);
+  assert.match(html, /PMID 9824071/);
+  assert.match(html, /PMID 2240729/);
   assert.match(html, /중환자실 항생제 재평가/);
   assert.match(html, /48시간 체크리스트 도입/);
-  assert.match(html, /news-antibiotic-review\.jpg/);
+  assert.match(html, /news-antibiotic-review-optimized\.webp/);
 
-  const productCss = css.slice(css.indexOf("/* Alphadoc product · real UI narrative */"));
-  assert.match(css, /src: url\("\/fonts\/PretendardVariable\.woff2"\)/);
+  assert.doesNotMatch(css, /PretendardVariable\.woff2/);
   assert.match(css, /--dark-paper-base: #08080a;/);
-  assert.match(css, /--dark-paper-image: linear-gradient\(rgba\(0,0,0,\.24\),rgba\(0,0,0,\.24\)\),url/);
+  assert.match(css, /--dark-paper-image: linear-gradient\(rgba\(0,0,0,\.24\),rgba\(0,0,0,\.24\)\),url\("\/media\/viore-paper-texture-dark-v2\.webp"\)/);
   assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-color: var\(--dark-paper-base\);[\s\S]*?background-image: var\(--dark-paper-image\);/);
   assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-size: var\(--dark-paper-size\);/);
   assert.match(productCss, /--ap-red: var\(--red\)/);
@@ -625,6 +649,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.ap-feature-rail \{[^}]*scroll-behavior: auto;/);
   assert.doesNotMatch(productCss, /scroll-snap-type: x mandatory|scroll-snap-align: center/);
   assert.match(productCss, /\.ap-feature-motion \{[\s\S]*?overflow:hidden;[\s\S]*?background:#f5f6f8;/);
+  assert.match(productCss, /\.ap-feature-motion-placeholder/);
   assert.match(productCss, /@keyframes ap-svg-file-drop/);
   assert.match(productCss, /@keyframes ap-svg-calculator-in/);
   assert.match(productCss, /@keyframes ap-svg-bell-ring/);
@@ -634,7 +659,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.ap-feature-card-copy \{ min-height:0; padding:18px 17px 20px;/);
   assert.doesNotMatch(productCss, /min-height:386px|flex-basis:calc\(\(100vw - 28px\)\/1\.8\)/);
   assert.doesNotMatch(productCss, /ap-feature-(?:focus|result)-loop|ap-feature-motion-(?:scan|focus|result)/);
-  assert.match(productCss, /\.ap-feature-gallery\.is-playing \.ap-feature-card\.is-motion-visible \.ap-feature-svg \* \{ animation-play-state:running; \}/);
+  assert.match(productCss, /\.ap-feature-gallery\.is-playing \.ap-feature-card\.is-motion-visible \{ --ap-feature-play-state:running; \}/);
+  assert.doesNotMatch(productCss, /\.ap-feature-card\.is-motion-visible \.ap-feature-svg \*/);
   assert.doesNotMatch(productCss, /\.ap-feature-gallery\.is-playing:not\(\.is-paused\)|\.ap-feature-card\.is-current \.ap-feature-svg/);
   assert.doesNotMatch(productCss, /--ap-feature-delay: -/);
   assert.match(productCss, /@keyframes ap-svg-cursor-tools/);
@@ -651,16 +677,15 @@ test("server-renders the Alphadoc product story from real product UI", async () 
 
   const asset = await readFile(new URL("../public/assets/product/alphadoc/01-workspace-apps.jpg", import.meta.url));
   assert.ok(asset.length > 30_000);
-  const xrayAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/synthetic-chest-xray-rll.jpg", import.meta.url));
-  assert.ok(xrayAsset.length > 100_000);
-  const generatedNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-chest-pain-night.jpg", import.meta.url));
-  const generatedSecondaryNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-antibiotic-review.jpg", import.meta.url));
-  const generatedCommunityAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/community-chest-pain-handoff.jpg", import.meta.url));
-  const pretendardAsset = await readFile(new URL("../public/fonts/PretendardVariable.woff2", import.meta.url));
-  assert.ok(generatedNewsAsset.length > 100_000);
-  assert.ok(generatedSecondaryNewsAsset.length > 100_000);
-  assert.ok(generatedCommunityAsset.length > 100_000);
-  assert.ok(pretendardAsset.length > 1_000_000);
+  const xrayAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/synthetic-chest-xray-rll-optimized.webp", import.meta.url));
+  const generatedNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-chest-pain-night-optimized.webp", import.meta.url));
+  const generatedSecondaryNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-antibiotic-review-optimized.webp", import.meta.url));
+  const generatedCommunityAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/community-chest-pain-handoff-optimized.webp", import.meta.url));
+  const darkTextureAsset = await readFile(new URL("../public/media/viore-paper-texture-dark-v2.webp", import.meta.url));
+  for (const optimizedAsset of [xrayAsset, generatedNewsAsset, generatedSecondaryNewsAsset, generatedCommunityAsset, darkTextureAsset]) {
+    assert.ok(optimizedAsset.length > 5_000);
+    assert.ok(optimizedAsset.length < 40_000);
+  }
 });
 
 test("carries the hero energy-line language into a slow scroll-linked convergence", async () => {
@@ -680,8 +705,10 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(energyCanvas, /prefers-reduced-motion: reduce/);
   assert.match(energyCanvas, /globalCompositeOperation = "multiply"/);
   assert.match(energyCanvas, /let isIntersecting = false/);
+  assert.match(energyCanvas, /canvas\.classList\.toggle\("is-motion-active"/);
   assert.match(energyCanvas, /const releaseCanvas = \(\) =>/);
   assert.match(energyCanvas, /if \(canvas\.width !== 1\) canvas\.width = 1/);
+  assert.doesNotMatch(energyCanvas, /FRAME_INTERVAL|setInterval|function animate/);
   assert.match(content, /title: "의료계의\\n새로운 선형을 그리다\."/);
   assert.match(content, /연결하기 위한 선\\n그것이 바이오레 입니다/);
   assert.match(css, /\.company-hero \{[^}]*background-color: var\(--paper-base\);/);
@@ -696,18 +723,20 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(css, /\.product-page-v2 \{[^}]*background-image: var\(--paper-texture\);/);
   assert.match(page, /<CompanyNetworkBackdrop \/>/);
   assert.doesNotMatch(page, /viore-company-terminal-pin-dark\.png|company-pin-alpha|company-pin-mask-boost/);
-  assert.match(companyBackdrop, /className="company-convergence-canvas"/);
+  assert.match(companyBackdrop, /className="company-convergence-canvas company-convergence-canvas-start"/);
+  assert.match(companyBackdrop, /className="company-convergence-canvas company-convergence-canvas-end"/);
   assert.doesNotMatch(companyBackdrop, /<img|\.png/);
   assert.match(companyBackdrop, /requestAnimationFrame/);
   assert.match(companyBackdrop, /prefers-reduced-motion: reduce/);
-  assert.match(companyBackdrop, /const FRAME_INTERVAL = 1000 \/ 20/);
-  assert.match(companyBackdrop, /let isIntersecting = false/);
-  assert.match(companyBackdrop, /gradientProgress = progress/);
+  assert.doesNotMatch(companyBackdrop, /FRAME_INTERVAL|setInterval|function animate/);
+  assert.match(companyBackdrop, /let isNearViewport = false/);
+  assert.match(companyBackdrop, /drawLayer\(startContext, 0\)/);
+  assert.match(companyBackdrop, /drawLayer\(endContext, 1\)/);
   assert.match(companyBackdrop, /compact \? 32 : 48/);
   assert.match(companyBackdrop, /width < 700 \? 1 : 1\.15/);
-  assert.match(companyBackdrop, /const releaseCanvas = \(\) =>/);
-  assert.match(companyBackdrop, /entry\.intersectionRatio >= 0\.01/);
-  assert.match(companyBackdrop, /\{ rootMargin: "0px", threshold: \[0, 0\.01\] \}/);
+  assert.match(companyBackdrop, /const releaseCanvases = \(\) =>/);
+  assert.match(companyBackdrop, /\{ rootMargin: "100% 0px" \}/);
+  assert.match(companyBackdrop, /backdrop\.classList\.toggle\("is-motion-active"/);
   assert.match(companyBackdrop, /ORANGE_PALETTE/);
   assert.match(companyBackdrop, /RED_PALETTE/);
   assert.match(companyBackdrop, /\[255, 126, 29\]/);
@@ -724,9 +753,13 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(css, /\.company-network-backdrop \{[^}]*position: absolute;[^}]*inset: 0;/);
   assert.match(css, /\.company-network-viewport \{[^}]*position: sticky;[^}]*height: 100svh;/);
   assert.match(css, /\.company-network-viewport::after \{[^}]*opacity: calc\(\.82 - var\(--company-convergence-progress\) \* \.82\)/);
-  assert.match(css, /\.company-convergence-canvas \{[^}]*opacity: calc\(\.82 \+ var\(--company-convergence-progress\) \* \.18\)/);
   assert.match(css, /\.company-convergence-canvas \{[^}]*position: absolute;[^}]*width: 100%;[^}]*height: 100%;/);
-  assert.doesNotMatch(css, /\.company-convergence-canvas \{[^}]*will-change:/);
+  assert.match(css, /\.company-convergence-canvas-start \{[^}]*opacity: calc\(\.82 - var\(--company-convergence-progress\) \* \.56\)/);
+  assert.match(css, /\.company-convergence-canvas-end \{[^}]*opacity: var\(--company-convergence-progress\)/);
+  assert.match(css, /\.company-network-backdrop\.is-motion-active \.company-network-layers \{ animation: company-network-composite-drift/);
+  assert.match(css, /@keyframes company-network-composite-drift/);
+  assert.doesNotMatch(css, /(?:^|\n)\.company-convergence-canvas \{[^}]*will-change:/);
+  assert.match(css, /\.company-network-backdrop\.is-motion-active \.company-convergence-canvas \{ will-change: transform,opacity; \}/);
   assert.doesNotMatch(css, /\.company-convergence-canvas \{[^}]*filter:/);
   assert.doesNotMatch(css, /\.company-energy-canvas \{[^}]*filter:/);
   assert.match(css, /@keyframes company-scroll-energy/);
@@ -927,11 +960,12 @@ test("server-renders one accessible Technology journal with four independent art
 });
 
 test("implements the AlphaEvidence public snapshot as a bounded server contract", async () => {
-  const [dataSource, route, snapshot, motion, nav, chrome, css] = await Promise.all([
+  const [dataSource, route, snapshot, motion, viewportMotion, nav, chrome, css] = await Promise.all([
     readFile(new URL("../app/alphaevidence-snapshot.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/technology/alphaevidence-snapshot/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphaEvidenceSnapshot.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TechnologyMotion.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ViewportMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TechnologyArticleNav.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteChrome.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/technology.css", import.meta.url), "utf8"),
@@ -967,10 +1001,13 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.doesNotMatch(motion, /Three records|Registered path|Residual-risk evaluation/);
   assert.match(motion, /local render/);
   assert.match(motion, /Current Security Controls/);
-  assert.match(motion, /IntersectionObserver/);
-  assert.match(motion, /prefers-reduced-motion: reduce/);
+  assert.match(motion, /<ViewportMotion/);
+  assert.match(motion, /deferChildren/);
   assert.match(motion, /is-enhanced/);
-  assert.match(motion, /observer\.disconnect\(\)/);
+  assert.doesNotMatch(motion, /^"use client"/m);
+  assert.match(viewportMotion, /new IntersectionObserver/);
+  assert.match(viewportMotion, /prefers-reduced-motion: reduce/);
+  assert.match(viewportMotion, /visibilityObserver\.disconnect\(\)/);
   assert.match(nav, /aria-label="Technology articles"/);
   assert.match(chrome, /href=\{technologyRouteFor\(language\)\}/);
   assert.doesNotMatch(chrome, /technologyRouteFor\(language, "(?:alphaevidence|alphadoc-engine|alphadocument|alphalayer)"\)/);
@@ -985,7 +1022,8 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(css, /--technology-paper: var\(--dark-paper-image\)/);
   assert.match(css, /--technology-blue: #8bb5ff/);
   assert.match(css, /--technology-red: #ff8177/);
-  assert.match(css, /"Pretendard Variable", Pretendard/);
+  assert.match(css, /-apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif/);
+  assert.doesNotMatch(css, /Pretendard Variable/);
   assert.match(css, /--diagram-paper: #f7f6f1/);
   assert.match(css, /\.technology-paper-svg-mobile/);
   assert.match(css, /\.technology-paper-svg \.diagram-box\.is-dashed/);

@@ -14,6 +14,8 @@ import { isLanguage } from "@/app/site-content";
 
 type LanguageRouteParams = Promise<{ lang: string }>;
 
+export const revalidate = 600;
+
 export async function generateMetadata({ params }: { params: LanguageRouteParams }): Promise<Metadata> {
   const { lang } = await params;
   if (!isLanguage(lang)) return {};
