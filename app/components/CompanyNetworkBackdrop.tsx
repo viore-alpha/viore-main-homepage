@@ -322,7 +322,7 @@ export function CompanyNetworkBackdrop() {
         ? Math.max(join.offsetTop - window.innerHeight * 0.15, 1)
         : fallbackFinish;
 
-      const pixelRatioCap = width < 700 ? 1.25 : 1.1;
+      const pixelRatioCap = width < 700 ? 2 : 1.1;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       renderWidth = Math.round(width * pixelRatio);
       renderHeight = Math.round(height * pixelRatio);

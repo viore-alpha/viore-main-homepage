@@ -525,7 +525,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(deferredViewportMotionSource, /new IntersectionObserver/);
   assert.match(deferredViewportMotionSource, /data-motion-mounted=\{mounted \? "true" : "false"\}/);
   assert.match(deferredViewportMotionSource, /media\.addEventListener\("change", syncMotionPreference\)/);
-  assert.match(energyCanvasSource, /balanced \? 1\.35 : 1\.5/);
+  assert.match(energyCanvasSource, /const pixelRatioCap = width < 700 \? 2 : balanced \? 1\.15 : 1\.25/);
   assert.match(energyCanvasSource, /field\.classList\.toggle\("is-motion-active"/);
   assert.doesNotMatch(energyCanvasSource, /FRAME_INTERVAL|setInterval|function animate/);
   assert.match(html, /"@type":"SoftwareApplication"/);
@@ -737,7 +737,7 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(companyBackdrop, /draw\(frameContext, frame \/ \(NETWORK_FRAME_COUNT - 1\)\)/);
   assert.match(companyBackdrop, /visibleContext\.globalCompositeOperation = "copy"/);
   assert.match(companyBackdrop, /compact \? 22 : 34/);
-  assert.match(companyBackdrop, /width < 700 \? 1\.25 : 1\.1/);
+  assert.match(companyBackdrop, /width < 700 \? 2 : 1\.1/);
   assert.match(companyBackdrop, /const releaseCanvases = \(\) =>/);
   assert.match(companyBackdrop, /\{ rootMargin: "100% 0px" \}/);
   assert.match(companyBackdrop, /backdrop\.classList\.toggle\("is-motion-active"/);
