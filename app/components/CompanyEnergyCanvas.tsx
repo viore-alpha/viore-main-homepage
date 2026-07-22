@@ -29,7 +29,7 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     let height = 1;
     let frame = 0;
     let lastFrame = 0;
-    let isIntersecting = true;
+    let isIntersecting = false;
     let primaryGradient: CanvasGradient | null = null;
     let counterGradient: CanvasGradient | null = null;
     let goldGradient: CanvasGradient | null = null;
@@ -198,19 +198,42 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       context.restore();
     };
 
+    const releaseCanvas = () => {
+      width = 1;
+      height = 1;
+      primaryGradient = null;
+      counterGradient = null;
+      goldGradient = null;
+      if (canvas.width !== 1) canvas.width = 1;
+      if (canvas.height !== 1) canvas.height = 1;
+    };
+
     const resize = () => {
+      if (!isIntersecting || document.hidden) return;
       const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
       const pixelRatioCap = width < 700 ? 1 : balanced ? 1.25 : 1.5;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-      primaryGradient = makeGradient(0);
-      counterGradient = makeGradient(1);
-      goldGradient = makeGradient(2);
-      if (isIntersecting) draw(reducedMotion.matches ? 0 : performance.now() / 1000);
+      const renderWidth = Math.round(width * pixelRatio);
+      const renderHeight = Math.round(height * pixelRatio);
+      const sizeChanged = canvas.width !== renderWidth || canvas.height !== renderHeight;
+
+      if (sizeChanged) {
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        primaryGradient = makeGradient(0);
+        counterGradient = makeGradient(1);
+        goldGradient = makeGradient(2);
+      }
+
+      if (!primaryGradient || !counterGradient || !goldGradient) {
+        primaryGradient = makeGradient(0);
+        counterGradient = makeGradient(1);
+        goldGradient = makeGradient(2);
+      }
+      draw(reducedMotion.matches ? 0 : performance.now() / 1000);
     };
 
     const animate = (timestamp: number) => {
@@ -226,9 +249,13 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       frame = 0;
       lastFrame = 0;
 
-      if (!isIntersecting) return;
+      if (!isIntersecting || document.hidden) {
+        releaseCanvas();
+        return;
+      }
+      resize();
       if (reducedMotion.matches) draw(0);
-      else if (!document.hidden) frame = window.requestAnimationFrame(animate);
+      else frame = window.requestAnimationFrame(animate);
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -244,7 +271,6 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     intersectionObserver.observe(canvas);
     reducedMotion.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncMotion);
-    resize();
     syncMotion();
 
     return () => {
@@ -253,6 +279,7 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
+      releaseCanvas();
     };
   }, [quality]);
 

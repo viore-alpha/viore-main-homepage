@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Language } from "@/app/site-content";
+import { useViewportMotion } from "@/app/components/useViewportMotion";
 
 type MotionPhase = "intro" | "attaching" | "typing" | "submitting" | "thinking" | "answer";
 
@@ -43,15 +44,15 @@ type MotionCopy = {
 const xrayAsset = "/assets/product/alphadoc/generated/synthetic-chest-xray-rll.jpg";
 
 const MOTION_TIMING = {
-  introDelay: 760,
-  attachmentDelay: 380,
-  typingInterval: 18,
-  typingStep: 4,
-  submitDelay: 160,
-  thinkingDelay: 360,
-  answerDelay: 760,
-  nextInteractionDelay: 2380,
-  restartDelay: 3000,
+  introDelay: 520,
+  attachmentDelay: 280,
+  typingInterval: 16,
+  typingStep: 5,
+  submitDelay: 120,
+  thinkingDelay: 300,
+  answerDelay: 640,
+  nextInteractionDelay: 2600,
+  restartDelay: 2600,
 } as const;
 
 const motionCopy: Record<Language, MotionCopy> = {
@@ -312,37 +313,13 @@ function AttachmentCard({ attachment, mode }: { attachment: MotionAttachment; mo
 
 export function AlphadocHeroMotion({ language, label }: { language: Language; label: string }) {
   const copy = motionCopy[language];
-  const motionRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
+  const { ref: motionRef, inView, reducedMotion, shouldAnimate } = useViewportMotion<HTMLDivElement>(0.18);
   const [phase, setPhase] = useState<MotionPhase>("intro");
   const [interactionIndex, setInteractionIndex] = useState(0);
   const [typedLength, setTypedLength] = useState(0);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    const target = motionRef.current;
-    if (!target) return;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return;
-      setIsPlaying(true);
-      observer.disconnect();
-    }, { threshold: 0.34 });
-
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!isPlaying || reducedMotion) return;
+    if (!shouldAnimate) return;
     const timeouts = new Set<number>();
     let typingTimer = 0;
     let disposed = false;
@@ -402,15 +379,17 @@ export function AlphadocHeroMotion({ language, label }: { language: Language; la
       timeouts.clear();
       if (typingTimer) window.clearInterval(typingTimer);
     };
-  }, [copy.interactions, isPlaying, reducedMotion]);
+  }, [copy.interactions, shouldAnimate]);
 
-  const visiblePhase: MotionPhase = reducedMotion && isPlaying ? "answer" : phase;
-  const visibleInteractionIndex = reducedMotion && isPlaying
+  const showReducedState = reducedMotion && inView;
+  const isPlaying = shouldAnimate || showReducedState;
+  const visiblePhase: MotionPhase = showReducedState ? "answer" : phase;
+  const visibleInteractionIndex = showReducedState
     ? copy.interactions.length - 1
     : interactionIndex;
   const activeInteraction = copy.interactions[visibleInteractionIndex];
   const activeQuestion = activeInteraction.questionParts.join(" ");
-  const visibleTypedLength = reducedMotion && isPlaying ? activeQuestion.length : typedLength;
+  const visibleTypedLength = showReducedState ? activeQuestion.length : typedLength;
   const typedQuestion = activeQuestion.slice(0, visibleTypedLength);
   const isDraftingFollowup = visibleInteractionIndex > 0
     && (visiblePhase === "attaching" || visiblePhase === "typing" || visiblePhase === "submitting");

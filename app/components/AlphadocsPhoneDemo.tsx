@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/no-img-element -- The community photograph is an authored demo asset with fixed crop behavior. */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import type { Language } from "@/app/site-content";
+import { useViewportMotion } from "@/app/components/useViewportMotion";
 
 const communityCopy = {
   ko: {
@@ -123,34 +123,14 @@ function PostActions({ likes, comments, animated = false }: { likes: string; com
 
 export function AlphadocsPhoneDemo({ language }: { language: Language }) {
   const copy = communityCopy[language];
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [playing, setPlaying] = useState(false);
-  const [reducedMotion, setReducedMotion] = useState(false);
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
-  }, []);
-
-  useEffect(() => {
-    if (!rootRef.current) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => setPlaying(entry.isIntersecting),
-      { threshold: 0.24 },
-    );
-    observer.observe(rootRef.current);
-    return () => observer.disconnect();
-  }, []);
+  const { ref: rootRef, inView, reducedMotion, shouldAnimate } = useViewportMotion<HTMLDivElement>(0.24);
 
   const { photo, text, poll, last } = copy.posts;
 
   return (
     <div
       ref={rootRef}
-      className={`ap-alphadocs-demo ${playing && !reducedMotion ? "is-playing" : ""} ${reducedMotion ? "is-reduced" : ""}`}
+      className={`ap-alphadocs-demo${shouldAnimate ? " is-playing" : ""}${inView && reducedMotion ? " is-reduced" : ""}`}
       role="img"
       aria-label={copy.aria}
     >

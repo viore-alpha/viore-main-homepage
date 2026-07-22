@@ -176,7 +176,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "누적 공개 국내외 가이드라인·지침 문헌", ariaLabel: "누적 공개 국내외 가이드라인과 지침 문헌 9,476건 이상" },
       ],
       efficiency: {
-        title: "Alphadoc\nMedical Workspace",
+        title: "Alphadoc\nAI Workspace",
         context: "의료 현장은 수많은 정보와 시스템 사이를 끊임없이 오갑니다.",
         repetition: "기록하고, 계산하고, 검색하고, 확인하는 반복적인 과정은 의료인의 시간을 빼앗습니다.",
         product: "알파닥",
@@ -301,7 +301,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "Current visible guideline corpus", ariaLabel: "More than 9,476 visible Korean and global clinical guidelines" },
       ],
       efficiency: {
-        title: "Alphadoc\nMedical Workspace",
+        title: "Alphadoc\nAI Workspace",
         context: "Medical professionals constantly move between countless sources of information and systems.",
         repetition: "Repetitive recording, calculating, searching, and checking takes time away from medical professionals.",
         product: "Alphadoc",
