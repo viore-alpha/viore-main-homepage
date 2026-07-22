@@ -679,6 +679,7 @@ export function TechnologyMotion({ kind }: { kind: TechnologyMotionKind }) {
       activeClassName="is-active"
       className={`technology-raw-diagram technology-raw-diagram-${kind}`}
       deferChildren
+      eagerOnSmallScreens
       enhancedClassName="is-enhanced"
       mountMargin="720px 0px"
       once
