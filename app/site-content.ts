@@ -167,7 +167,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       title: "의료계의\n새로운 선형을 그리다.",
       lead: "의료계가 오랜 시간 축적해 온 전문성과 시스템을 연결하기 위한 선\n그것이 바이오레 입니다",
       status: "MEDICAL INTELLIGENCE COMPANY",
-      statement: "의료인의 모든 업무가\n하나의 흐름으로 이어지도록",
+      statement: "의료인의 모든 업무를\n하나의 흐름으로",
       statementLead: "혁신은, 더 많이 더하는 일이 아닙니다.\n이미 존재하는 의료의 전문성과 시스템이 더 자연스럽게 이어지도록 만드는 일입니다.\n바이오레는 의료인의 질문과 문서, 지식과 도구가 끊김 없이 이어지는 환경을 Medical OS(Operating System)라고 부릅니다.",
       metricsTitle: "Ever-growing Knowledge",
       metrics: [
