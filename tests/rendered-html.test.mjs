@@ -123,8 +123,8 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.match(html, /새로운 선형을 그리다\./);
   assert.match(html, /의료계가 오랜 시간 축적해 온 전문성과 시스템을 연결하기 위한 선/);
   assert.match(html, /그것이 바이오레 입니다/);
-  assert.match(html, /의료인의 모든 업무가/);
-  assert.match(html, /하나의 흐름으로 이어지도록/);
+  assert.match(html, /의료인의 모든 업무를/);
+  assert.match(html, /하나의 흐름으로/);
   assert.match(html, /혁신은, 더 많이 더하는 일이 아닙니다\./);
   assert.match(html, /이미 존재하는 의료의 전문성과 시스템이 더 자연스럽게 이어지도록 만드는 일입니다\./);
   assert.match(html, /바이오레는 의료인의 질문과 문서, 지식과 도구가 끊김 없이 이어지는 환경을 Medical OS\(Operating System\)라고 부릅니다\./);
@@ -377,6 +377,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /TTP와 DIC를 감별하고 즉시 처치를 정리해줘/);
   assert.match(html, /혈전성 혈소판감소성 자반증/);
   assert.match(html, /ADAMTS13·PLASMIC/);
+  assert.match(html, /예시 흉부 X-ray와 논문 PDF를 첨부해 답변받는 3단계 데모/);
   assert.match(html, /class="ap-motion-composer"/);
   assert.match(html, /class="ap-motion-action-bar"/);
   assert.doesNotMatch(html, /ap-hero-motion-svg/);
@@ -454,10 +455,17 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(html, /class="company-energy-canvas"/);
   assert.match(html, /class="ap-final-logo" src="\/brand\/alphadoc-alpha\.png"/);
   assert.match(productSource, /<CompanyEnergyCanvas quality="balanced" \/>/);
-  assert.match(heroMotionSource, /type MotionPhase = "intro" \| "typing" \| "submitting" \| "thinking" \| "answer"/);
+  assert.match(heroMotionSource, /type MotionPhase = "intro" \| "attaching" \| "typing" \| "submitting" \| "thinking" \| "answer"/);
   assert.match(heroMotionSource, /setTypedLength\(cursor\)/);
+  assert.match(heroMotionSource, /setPhase\("attaching"\)/);
   assert.match(heroMotionSource, /setPhase\("thinking"\)/);
   assert.match(heroMotionSource, /setPhase\("answer"\)/);
+  assert.match(heroMotionSource, /startInteraction\(index \+ 1\)/);
+  assert.match(heroMotionSource, /synthetic-chest-xray-rll\.jpg/);
+  assert.match(heroMotionSource, /이 흉부 X-ray에서 우하폐야 음영을 판독하고/);
+  assert.match(heroMotionSource, /이 논문의 PICO, 주요 결과와 한계를 정리하고/);
+  assert.match(heroMotionSource, /function AttachmentCard/);
+  assert.match(heroMotionSource, /className="ap-motion-composer-file"/);
   assert.doesNotMatch(heroMotionSource, /ap-motion-start|PadakiMark|start:/);
   assert.doesNotMatch(heroMotionSource, /ap-motion-assistant-bubble|ap-motion-answer-metrics|ap-motion-sources/);
   assert.match(workspaceSource, /setIsPlaying\(entry\.isIntersecting && entry\.intersectionRatio >= 0\.08\)/);
@@ -513,10 +521,13 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.ap-button-primary \{[\s\S]*?background: var\(--ap-red\);/);
   assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.58s \.15s/);
   assert.match(productCss, /\.ap-hero-motion-scene \{[^}]*aspect-ratio: 39\/20;/);
-  assert.match(productCss, /\.ap-hero-motion:not\(\.is-thinking\):not\(\.is-answer\) \.ap-hero-motion-scene \{ aspect-ratio: 14\/5; \}/);
+  assert.match(productCss, /\.ap-hero-motion:not\(\.is-followup\):not\(\.is-thinking\):not\(\.is-answer\) \.ap-hero-motion-scene \{ aspect-ratio: 14\/5; \}/);
   assert.match(productCss, /\.ap-motion-user-bubble \{[^}]*background: linear-gradient\(155deg,#353537 0%,#171719 100%\);/);
+  assert.match(productCss, /\.ap-motion-file--message \{[^}]*width: clamp\(150px,30cqw,250px\);/);
+  assert.match(productCss, /\.ap-motion-composer-file \{[^}]*animation: ap-motion-file-arrive/);
   assert.match(productCss, /\.ap-motion-composer \{[^}]*border-radius: 999px;/);
-  assert.match(productCss, /\.ap-hero-motion\.is-answer \.ap-motion-chat \{ opacity: 1;/);
+  assert.match(productCss, /\.ap-hero-motion\.is-followup \.ap-motion-chat \{ opacity: 1;/);
+  assert.match(productCss, /\.ap-hero-motion\.is-thinking \.ap-motion-chat,\.ap-hero-motion\.is-answer \.ap-motion-chat,\.ap-hero-motion\.is-followup \.ap-motion-chat \{ opacity: 1;/);
   assert.match(productCss, /\.ap-hero-motion\.is-answer \.ap-motion-answer \{ opacity: 1;/);
   assert.match(productCss, /@keyframes ap-motion-caret/);
   assert.match(productCss, /\.ap-hero-copy h1 \{[\s\S]*?white-space: nowrap;/);
@@ -538,6 +549,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
 
   const asset = await readFile(new URL("../public/assets/product/alphadoc/01-workspace-apps.jpg", import.meta.url));
   assert.ok(asset.length > 30_000);
+  const xrayAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/synthetic-chest-xray-rll.jpg", import.meta.url));
+  assert.ok(xrayAsset.length > 100_000);
   const generatedNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-chest-pain-night.jpg", import.meta.url));
   const generatedSecondaryNewsAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/news-antibiotic-review.jpg", import.meta.url));
   const generatedCommunityAsset = await readFile(new URL("../public/assets/product/alphadoc/generated/community-chest-pain-handoff.jpg", import.meta.url));
