@@ -178,7 +178,7 @@ export function ProductPage({ language }: { language: Language }) {
       </section>
 
       <ViewportMotion as="section" className="ap-final-cta" threshold={0.12}>
-        <CompanyEnergyCanvas quality="balanced" />
+        <CompanyEnergyCanvas quality="balanced" motion="ambient" />
         <div className="ap-final-screen" aria-hidden="true">
           <div className="ap-final-logo-stage">
             <img className="ap-final-logo" src="/brand/alphadoc-alpha.png" alt="" width="419" height="365" loading="lazy" decoding="async" />

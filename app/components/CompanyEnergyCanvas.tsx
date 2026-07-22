@@ -4,6 +4,9 @@ import { useEffect, useRef } from "react";
 
 type EnergyFamily = 0 | 1 | 2;
 type EnergyCanvasQuality = "full" | "balanced";
+type EnergyCanvasMotion = "layered" | "ambient";
+
+const ENERGY_LAYER_COUNT = 2;
 
 const continueSmoothly = (
   previousControlY: number,
@@ -15,14 +18,25 @@ const continueSmoothly = (
   midpointY +
   (midpointY - previousControlY) * ((nextControlX - midpointX) / (midpointX - previousControlX));
 
-export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanvasQuality }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export function CompanyEnergyCanvas({
+  quality = "full",
+  motion = "layered",
+}: {
+  quality?: EnergyCanvasQuality;
+  motion?: EnergyCanvasMotion;
+}) {
+  const fieldRef = useRef<HTMLDivElement>(null);
+  const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
+  const layerCount = motion === "ambient" ? 1 : ENERGY_LAYER_COUNT;
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas?.getContext("2d", { alpha: true });
-    if (!canvas || !context) return;
+    const field = fieldRef.current;
+    const canvases = canvasRefs.current.slice(0, layerCount);
+    const contexts = canvases.map((canvas) => canvas?.getContext("2d", { alpha: true }) ?? null);
+    if (!field || canvases.some((canvas) => !canvas) || contexts.some((context) => !context)) return;
 
+    const usableCanvases = canvases as HTMLCanvasElement[];
+    const usableContexts = contexts as CanvasRenderingContext2D[];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const balanced = quality === "balanced";
     let width = 1;
@@ -30,7 +44,12 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     let drawFrame = 0;
     let isIntersecting = false;
 
-    const traceStrand = (index: number, count: number, family: EnergyFamily) => {
+    const traceStrand = (
+      context: CanvasRenderingContext2D,
+      index: number,
+      count: number,
+      family: EnergyFamily,
+    ) => {
       const position = count === 1 ? 0 : index / (count - 1);
       const offset = position * 2 - 1;
       const centerY = height * 0.53;
@@ -119,7 +138,7 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       );
     };
 
-    const makeGradient = (family: EnergyFamily) => {
+    const makeGradient = (context: CanvasRenderingContext2D, family: EnergyFamily) => {
       const gradient = context.createLinearGradient(-width * 0.05, 0, width * 1.05, 0);
       if (family === 1) {
         gradient.addColorStop(0, "rgba(248, 195, 70, .2)");
@@ -144,29 +163,34 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     };
 
     const strokeBundle = (
+      context: CanvasRenderingContext2D,
       count: number,
       family: EnergyFamily,
       gradient: CanvasGradient,
+      accepts: (index: number) => boolean,
       haze = false,
     ) => {
       for (let index = 0; index < count; index += 1) {
-        traceStrand(index, count, family);
+        if (!accepts(index)) continue;
+        traceStrand(context, index, count, family);
         const accent = !haze && index % (family === 0 ? 10 : 8) === 0;
         const densityCompensation = balanced && !haze ? 1.12 : 1;
         context.strokeStyle = gradient;
         context.globalAlpha = haze
-          ? 0.055
+          ? 0.045
           : Math.min(1, (accent ? 0.78 : 0.21) * densityCompensation);
-        context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+        context.lineWidth = haze ? 16 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
         context.stroke();
       }
     };
 
-    const draw = () => {
+    const drawLayer = (context: CanvasRenderingContext2D, layer: number) => {
       const compact = width < 700;
-      const primaryGradient = makeGradient(0);
-      const counterGradient = makeGradient(1);
-      const goldGradient = makeGradient(2);
+      const primaryCount = compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64);
+      const counterCount = compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14);
+      const goldCount = compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22);
+      const gradients = [0, 1, 2].map((family) =>
+        makeGradient(context, family as EnergyFamily));
 
       context.clearRect(0, 0, width, height);
       context.save();
@@ -175,38 +199,70 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       context.lineJoin = "round";
       context.shadowBlur = 0;
 
-      strokeBundle(compact ? 6 : 8, 0, primaryGradient, true);
-      strokeBundle(compact ? 3 : 4, 1, counterGradient, true);
-      strokeBundle(compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64), 0, primaryGradient);
-      strokeBundle(compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14), 1, counterGradient);
-      strokeBundle(compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22), 2, goldGradient);
+      if (layerCount === 1) {
+        strokeBundle(context, compact ? 2 : 4, 0, gradients[0], () => true, true);
+        strokeBundle(context, 1, 1, gradients[1], () => true, true);
+        strokeBundle(context, Math.ceil(primaryCount * 0.58), 0, gradients[0], () => true);
+        strokeBundle(context, Math.ceil(counterCount * 0.58), 1, gradients[1], () => true);
+        strokeBundle(context, Math.ceil(goldCount * 0.58), 2, gradients[2], () => true);
+      } else {
+        const evenLayer = layer === 0;
+        if (evenLayer) {
+          strokeBundle(context, compact ? 4 : 6, 0, gradients[0], () => true, true);
+          strokeBundle(context, compact ? 1 : 2, 1, gradients[1], () => true, true);
+        }
+        strokeBundle(
+          context,
+          primaryCount,
+          0,
+          gradients[0],
+          (index) => (index % 2 === 0) === evenLayer,
+        );
+        if (!evenLayer) strokeBundle(context, counterCount, 1, gradients[1], () => true);
+        strokeBundle(
+          context,
+          goldCount,
+          2,
+          gradients[2],
+          (index) => (index % 2 === 0) === evenLayer,
+        );
+      }
+
       context.restore();
     };
 
-    const releaseCanvas = () => {
+    const releaseCanvases = () => {
       width = 1;
       height = 1;
-      if (canvas.width !== 1) canvas.width = 1;
-      if (canvas.height !== 1) canvas.height = 1;
+      for (const canvas of usableCanvases) {
+        if (canvas.width !== 1) canvas.width = 1;
+        if (canvas.height !== 1) canvas.height = 1;
+      }
     };
 
     const resizeAndDraw = () => {
       drawFrame = 0;
       if (!isIntersecting || document.hidden) return;
-      const bounds = canvas.getBoundingClientRect();
+      const bounds = field.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      const pixelRatioCap = width < 700 ? 1 : balanced ? 1.25 : 1.5;
+      const pixelRatioCap = width < 700
+        ? balanced ? 1.35 : 1.5
+        : balanced ? 1.15 : 1.25;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
 
-      if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
-        canvas.width = renderWidth;
-        canvas.height = renderHeight;
+      for (let layer = 0; layer < layerCount; layer += 1) {
+        const canvas = usableCanvases[layer];
+        const context = usableContexts[layer];
+        if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
+          canvas.width = renderWidth;
+          canvas.height = renderHeight;
+        }
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        drawLayer(context, layer);
       }
-      draw();
     };
 
     const requestDraw = () => {
@@ -215,9 +271,9 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
 
     const syncMotion = () => {
       const visible = isIntersecting && !document.hidden;
-      canvas.classList.toggle("is-motion-active", visible && !reducedMotion.matches);
+      field.classList.toggle("is-motion-active", visible && !reducedMotion.matches);
       if (visible) requestDraw();
-      else releaseCanvas();
+      else releaseCanvases();
     };
 
     const resizeObserver = new ResizeObserver(requestDraw);
@@ -229,8 +285,8 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       { rootMargin: "160px 0px" },
     );
 
-    resizeObserver.observe(canvas);
-    intersectionObserver.observe(canvas);
+    resizeObserver.observe(field);
+    intersectionObserver.observe(field);
     reducedMotion.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncMotion);
     syncMotion();
@@ -241,10 +297,22 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
-      canvas.classList.remove("is-motion-active");
-      releaseCanvas();
+      field.classList.remove("is-motion-active");
+      releaseCanvases();
     };
-  }, [quality]);
+  }, [layerCount, quality]);
 
-  return <canvas ref={canvasRef} className="company-energy-canvas" aria-hidden="true" />;
+  return (
+    <div ref={fieldRef} className={`company-energy-field company-energy-field-${motion}`} aria-hidden="true">
+      {Array.from({ length: layerCount }, (_, layer) => (
+        <canvas
+          className={`company-energy-canvas company-energy-layer-${layer}`}
+          key={layer}
+          ref={(canvas) => {
+            canvasRefs.current[layer] = canvas;
+          }}
+        />
+      ))}
+    </div>
+  );
 }

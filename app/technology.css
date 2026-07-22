@@ -1688,6 +1688,26 @@
 }
 
 @media (max-width: 760px) {
+  .site-header.site-header-dark {
+    background: #111114;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .technology-paper-svg .diagram-paper-grain {
+    display: none;
+    filter: none;
+  }
+
+  .technology-raw-diagram.is-enhanced .technology-flow-unit,
+  .technology-raw-diagram.is-enhanced.is-active .technology-flow-unit,
+  .technology-raw-diagram.is-enhanced .technology-svg-step,
+  .technology-raw-diagram.is-enhanced.is-active .technology-svg-step {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   .technology-hero,
   .technology-post,
   .technology-page-footer {

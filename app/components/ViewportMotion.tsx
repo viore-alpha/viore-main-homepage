@@ -9,6 +9,7 @@ interface ViewportMotionProps {
   children: ReactNode;
   className: string;
   deferChildren?: boolean;
+  eagerOnSmallScreens?: boolean;
   enhancedClassName?: string;
   mountMargin?: string;
   once?: boolean;
@@ -24,6 +25,7 @@ export function ViewportMotion({
   children,
   className,
   deferChildren = false,
+  eagerOnSmallScreens = false,
   enhancedClassName,
   mountMargin = "600px 0px",
   once = false,
@@ -42,6 +44,9 @@ export function ViewportMotion({
     if (!root) return;
 
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const shouldEagerMount = deferChildren
+      && eagerOnSmallScreens
+      && window.matchMedia("(max-width: 760px)").matches;
     const syncMotionPreference = () => {
       setReducedMotion(media.matches);
       setEnhanced(!media.matches && "IntersectionObserver" in window);
@@ -60,7 +65,11 @@ export function ViewportMotion({
       };
     }
 
-    const mountObserver = deferChildren
+    const eagerMountFrame = shouldEagerMount
+      ? requestAnimationFrame(() => setMounted(true))
+      : 0;
+
+    const mountObserver = deferChildren && !shouldEagerMount
       ? new IntersectionObserver(
           ([entry]) => {
             if (!entry.isIntersecting) return;
@@ -88,11 +97,12 @@ export function ViewportMotion({
     visibilityObserver.observe(root);
 
     return () => {
+      cancelAnimationFrame(eagerMountFrame);
       media.removeEventListener("change", syncMotionPreference);
       mountObserver?.disconnect();
       visibilityObserver.disconnect();
     };
-  }, [deferChildren, mountMargin, once, threshold]);
+  }, [deferChildren, eagerOnSmallScreens, mountMargin, once, threshold]);
 
   const classes = [
     className,
