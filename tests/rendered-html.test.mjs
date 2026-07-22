@@ -461,6 +461,11 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(heroMotionSource, /setPhase\("thinking"\)/);
   assert.match(heroMotionSource, /setPhase\("answer"\)/);
   assert.match(heroMotionSource, /startInteraction\(index \+ 1\)/);
+  assert.match(heroMotionSource, /typingInterval: 18/);
+  assert.match(heroMotionSource, /typingStep: 4/);
+  assert.match(heroMotionSource, /restartDelay: 3000/);
+  assert.match(heroMotionSource, /function restartSequence\(\)/);
+  assert.match(heroMotionSource, /schedule\(restartSequence, MOTION_TIMING\.restartDelay\)/);
   assert.match(heroMotionSource, /synthetic-chest-xray-rll\.jpg/);
   assert.match(heroMotionSource, /이 흉부 X-ray에서 우하폐야 음영을 판독하고/);
   assert.match(heroMotionSource, /이 논문의 PICO, 주요 결과와 한계를 정리하고/);
@@ -519,8 +524,9 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.alphadoc-product \{[\s\S]*?background-size: var\(--dark-paper-size\);/);
   assert.match(productCss, /--ap-red: #ff8177/);
   assert.match(productCss, /\.ap-button-primary \{[\s\S]*?background: var\(--ap-red\);/);
-  assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.58s \.15s/);
+  assert.match(productCss, /\.ap-hero-motion\.is-playing \.ap-motion-logo \{ animation: ap-motion-ui-in \.36s \.06s/);
   assert.match(productCss, /\.ap-hero-motion-scene \{[^}]*aspect-ratio: 39\/20;/);
+  assert.match(productCss, /\.ap-hero-motion-scene \{[^}]*transition: aspect-ratio \.46s/);
   assert.match(productCss, /\.ap-hero-motion:not\(\.is-followup\):not\(\.is-thinking\):not\(\.is-answer\) \.ap-hero-motion-scene \{ aspect-ratio: 14\/5; \}/);
   assert.match(productCss, /\.ap-motion-user-bubble \{[^}]*background: linear-gradient\(155deg,#353537 0%,#171719 100%\);/);
   assert.match(productCss, /\.ap-motion-file--message \{[^}]*width: clamp\(150px,30cqw,250px\);/);

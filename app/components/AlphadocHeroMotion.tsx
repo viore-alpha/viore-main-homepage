@@ -42,6 +42,18 @@ type MotionCopy = {
 
 const xrayAsset = "/assets/product/alphadoc/generated/synthetic-chest-xray-rll.jpg";
 
+const MOTION_TIMING = {
+  introDelay: 760,
+  attachmentDelay: 380,
+  typingInterval: 18,
+  typingStep: 4,
+  submitDelay: 160,
+  thinkingDelay: 360,
+  answerDelay: 760,
+  nextInteractionDelay: 2380,
+  restartDelay: 3000,
+} as const;
+
 const motionCopy: Record<Language, MotionCopy> = {
   ko: {
     brand: "알파닥",
@@ -331,57 +343,63 @@ export function AlphadocHeroMotion({ language, label }: { language: Language; la
 
   useEffect(() => {
     if (!isPlaying || reducedMotion) return;
-    const timeouts: number[] = [];
+    const timeouts = new Set<number>();
     let typingTimer = 0;
     let disposed = false;
     const schedule = (callback: () => void, delay: number) => {
       const timer = window.setTimeout(() => {
+        timeouts.delete(timer);
         if (!disposed) callback();
       }, delay);
-      timeouts.push(timer);
+      timeouts.add(timer);
     };
 
-    const typeInteraction = (index: number) => {
+    function startInteraction(index: number) {
+      setInteractionIndex(index);
+      setTypedLength(0);
+      if (copy.interactions[index].attachment) {
+        setPhase("attaching");
+        schedule(() => typeInteraction(index), MOTION_TIMING.attachmentDelay);
+        return;
+      }
+      typeInteraction(index);
+    }
+
+    function restartSequence() {
+      setInteractionIndex(0);
+      setTypedLength(0);
+      setPhase("intro");
+      schedule(() => startInteraction(0), MOTION_TIMING.introDelay);
+    }
+
+    function typeInteraction(index: number) {
       const question = copy.interactions[index].questionParts.join(" ");
       setPhase("typing");
       let cursor = 0;
       typingTimer = window.setInterval(() => {
-        cursor = Math.min(cursor + 2, question.length);
+        cursor = Math.min(cursor + MOTION_TIMING.typingStep, question.length);
         setTypedLength(cursor);
         if (cursor < question.length) return;
 
         window.clearInterval(typingTimer);
         typingTimer = 0;
-        schedule(() => setPhase("submitting"), 320);
-        schedule(() => setPhase("thinking"), 720);
-        schedule(() => setPhase("answer"), 1680);
+        schedule(() => setPhase("submitting"), MOTION_TIMING.submitDelay);
+        schedule(() => setPhase("thinking"), MOTION_TIMING.thinkingDelay);
+        schedule(() => setPhase("answer"), MOTION_TIMING.answerDelay);
         if (index < copy.interactions.length - 1) {
-          schedule(() => startInteraction(index + 1), 5280);
+          schedule(() => startInteraction(index + 1), MOTION_TIMING.nextInteractionDelay);
+        } else {
+          schedule(restartSequence, MOTION_TIMING.restartDelay);
         }
-      }, 28);
-    };
+      }, MOTION_TIMING.typingInterval);
+    }
 
-    const startInteraction = (index: number) => {
-      setInteractionIndex(index);
-      setTypedLength(0);
-      if (copy.interactions[index].attachment) {
-        setPhase("attaching");
-        schedule(() => typeInteraction(index), 820);
-        return;
-      }
-      typeInteraction(index);
-    };
-
-    schedule(() => {
-      setInteractionIndex(0);
-      setTypedLength(0);
-      setPhase("intro");
-    }, 0);
-    schedule(() => startInteraction(0), 1350);
+    schedule(restartSequence, 0);
 
     return () => {
       disposed = true;
       timeouts.forEach((timer) => window.clearTimeout(timer));
+      timeouts.clear();
       if (typingTimer) window.clearInterval(typingTimer);
     };
   }, [copy.interactions, isPlaying, reducedMotion]);
