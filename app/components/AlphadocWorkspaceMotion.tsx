@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId } from "react";
 import type { Language } from "@/app/site-content";
+import { useViewportMotion } from "@/app/components/useViewportMotion";
 
 const AD_ASSET = "https://www.alphadoc.ai";
 const GENERATED_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-chest-pain-night.jpg";
@@ -40,14 +41,17 @@ const uiCopy = {
       ["Delta gap", "(28−12)−(24−13)", "+5", "뚜렷한 추가 대사성 장애 없음"],
     ],
     answerConclusion: ["고음이온차 대사성 산증이며 호흡성 보상은 적절합니다.", "Lactate 5.1 mmol/L가 상승해 있어 원인 평가와 추적이 필요합니다."],
-    evidenceLabel: "논문 근거 3건",
+    evidenceLabel: "출처",
     evidenceSources: [
       ["Winter 공식 · 1967", "Albert et al. · PMID 6016545"],
       ["Albumin 보정 · 1998", "Figge et al. · PMID 9824071"],
       ["Delta gap · 1990", "Wrenn · PMID 2240729"],
     ],
+    followups: ["원인별 감별표 만들기", "보상 범위 다시 계산"],
+    savedConversation: "오늘 저장한 대화 · 7건",
+    literatureExtra: ["New evidence for early sepsis bundles", "Critical Care Update · 2026"],
     briefing: "오늘의 브리핑",
-    briefingTime: "15시에 고른 기사에요.",
+    briefingTime: "21시에 고른 기사에요.",
     newsTitle: "응급실 흉통 평가,\n연속 검사 중심으로 개편",
     newsMeta: "메디컬 브리프 · 2시간 전",
     newsParagraphs: [
@@ -59,11 +63,49 @@ const uiCopy = {
     secondaryNewsTitle: "중환자실 항생제 재평가,\n48시간 체크리스트 도입",
     secondaryNewsMeta: "임상저널 · 4시간 전",
     secondaryNewsSummary: ["배양 결과와 임상 반응을 함께 검토해", "광범위 항생제 사용을 줄이는 경로입니다."],
+    newsListTitle: "전체 뉴스",
+    newsListCount: "24개",
+    newsListItems: [
+      {
+        category: "의료",
+        source: "청년의사",
+        time: "4시간 전",
+        title: ["중환자실 항생제 재평가,", "48시간 체크리스트 도입"],
+      },
+      {
+        category: "정책",
+        source: "의협신문",
+        time: "6시간 전",
+        title: ["필수의료 지원체계 개편안,", "현장 의견수렴 시작"],
+      },
+      {
+        category: "산업",
+        source: "메디게이트뉴스",
+        time: "8시간 전",
+        title: ["병원 진료기록 표준화,", "상호운용성 논의 본격화"],
+      },
+    ],
     literatureTitle: "새로 올라온 문헌",
     communityTitle: "핫 포스트",
-    photoPost: "야간 흉통 인계 때 쓰는 체크리스트를 공유합니다.",
-    pollQuestion: "저위험 흉통 환자, hs-cTn 재검 간격은?",
-    pollOptions: ["1시간 경로", "2시간 경로"],
+    communityTextPost: {
+      author: "개원한지2년",
+      time: "13분",
+      body: ["직원 면담을 월 1회로 잡아봤는데 생각보다", "할 이야기가 많네요. 정기 면담을 따로 하시나요?"],
+      replies: [
+        ["동네소아과", "저희는 분기마다 해요. 질문을 미리 받아요."],
+        ["문서정리중", "합의한 한 가지만 적어두니 수월했습니다."],
+      ],
+      likes: "18",
+      comments: "9",
+    },
+    communityPhotoPost: {
+      author: "새벽두시라떼",
+      time: "7분",
+      body: ["내일 컨퍼런스 전에 흉통 프로토콜 다시 보는 중입니다.", "저희는 0/1시간 경로로 바꿨는데, 야간에도", "그대로 적용하시나요?"],
+      likes: "24",
+      comments: "11",
+    },
+    communityNextPost: ["로딩중인전공의", "· 21분", "수련병원 선택에서 가장 크게 본 조건은?"],
   },
   en: {
     greeting: "Have a good day!",
@@ -96,14 +138,17 @@ const uiCopy = {
       ["Delta gap", "(28−12)−(24−13)", "+5", "No clear second metabolic process"],
     ],
     answerConclusion: ["High-anion-gap metabolic acidosis with appropriate respiratory compensation.", "Lactate is elevated at 5.1 mmol/L and warrants etiologic assessment and follow-up."],
-    evidenceLabel: "3 supporting papers",
+    evidenceLabel: "Sources",
     evidenceSources: [
       ["Winter formula · 1967", "Albert et al. · PMID 6016545"],
       ["Albumin correction · 1998", "Figge et al. · PMID 9824071"],
       ["Delta gap · 1990", "Wrenn · PMID 2240729"],
     ],
+    followups: ["Build a differential table", "Recheck compensation range"],
+    savedConversation: "7 conversations saved today",
+    literatureExtra: ["New evidence for early sepsis bundles", "Critical Care Update · 2026"],
     briefing: "Today’s briefing",
-    briefingTime: "Selected at 3 PM.",
+    briefingTime: "Selected at 9 PM.",
     newsTitle: "Chest-pain assessment shifts\nto serial testing",
     newsMeta: "Medical Brief · 2 hours ago",
     newsParagraphs: [
@@ -115,11 +160,49 @@ const uiCopy = {
     secondaryNewsTitle: "ICU antibiotic review adds\na 48-hour checkpoint",
     secondaryNewsMeta: "Clinical Journal · 4 hours ago",
     secondaryNewsSummary: ["Culture results and clinical response guide", "timely de-escalation of broad therapy."],
+    newsListTitle: "All news",
+    newsListCount: "24",
+    newsListItems: [
+      {
+        category: "Clinical",
+        source: "Medical Times",
+        time: "4h",
+        title: ["ICU antibiotic review adds", "a 48-hour checkpoint"],
+      },
+      {
+        category: "Policy",
+        source: "Health Policy",
+        time: "6h",
+        title: ["Essential-care support plan", "opens for field feedback"],
+      },
+      {
+        category: "Industry",
+        source: "Medigate News",
+        time: "8h",
+        title: ["Clinical-record standards", "move into implementation talks"],
+      },
+    ],
     literatureTitle: "New literature",
     communityTitle: "Hot posts",
-    photoPost: "Sharing our overnight chest-pain handoff checklist.",
-    pollQuestion: "Preferred hs-cTn retest interval for low-risk chest pain?",
-    pollOptions: ["1-hour pathway", "2-hour pathway"],
+    communityTextPost: {
+      author: "ClinicYearTwo",
+      time: "13m",
+      body: ["Monthly staff check-ins bring up more than I expected.", "Do other clinic owners schedule regular one-on-ones?"],
+      replies: [
+        ["NeighborhoodPeds", "We meet quarterly and collect questions first."],
+        ["ClosingCharts", "One written action makes the next talk easier."],
+      ],
+      likes: "18",
+      comments: "9",
+    },
+    communityPhotoPost: {
+      author: "LatteAt2AM",
+      time: "7m",
+      body: ["Reviewing our chest-pain protocol before tomorrow’s conference.", "We moved to a 0/1-hour pathway—do you keep it", "unchanged overnight?"],
+      likes: "24",
+      comments: "11",
+    },
+    communityNextPost: ["ResidentLoading", "· 21m", "What mattered most when choosing a training hospital?"],
   },
 } as const;
 
@@ -199,27 +282,27 @@ function TabBar({ active }: { active: "news" | "literature" | "community" }) {
 
 export function AlphadocWorkspaceMotion({ language, label }: { language: Language; label: string }) {
   const copy = uiCopy[language];
-  const rootRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const sourceChipLayout = language === "ko"
+    ? [{ x: 365, width: 140 }, { x: 515, width: 150 }, { x: 675, width: 138 }]
+    : [{ x: 365, width: 156 }, { x: 531, width: 174 }, { x: 715, width: 146 }];
+  const followupChipLayout = language === "ko"
+    ? [{ x: 327, width: 178 }, { x: 515, width: 174 }]
+    : [{ x: 327, width: 194 }, { x: 531, width: 204 }];
+  const { ref: rootRef, inView, reducedMotion, shouldAnimate } = useViewportMotion<HTMLDivElement>(0.08);
   const id = useId().replace(/:/g, "");
   const newsClip = `ap-real-news-${id}`;
-  const secondaryNewsClip = `ap-real-news-secondary-${id}`;
+  const newsListClip = `ap-real-news-list-${id}`;
   const communityClip = `ap-real-community-${id}`;
   const weatherClip = `ap-real-weather-${id}`;
 
-  useEffect(() => {
-    const target = rootRef.current;
-    if (!target) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsPlaying(entry.isIntersecting && entry.intersectionRatio >= 0.08);
-    }, { threshold: [0, 0.08] });
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <div ref={rootRef} className={`ap-workspace-motion${isPlaying ? " is-playing" : ""}`} role="img" aria-label={label}>
-      <svg className="ap-workspace-motion-svg" viewBox="0 0 1280 720" aria-hidden="true">
+    <div
+      ref={rootRef}
+      className={`ap-workspace-motion${shouldAnimate ? " is-playing" : ""}${inView && reducedMotion ? " is-reduced" : ""}`}
+      role="img"
+      aria-label={label}
+    >
+      <svg className="ap-workspace-motion-svg" viewBox="0 0 1280 840" aria-hidden="true">
         <defs>
           <linearGradient id="apRealPage" x1="0" y1="0" x2="1" y2="1">
             <stop stopColor="#fbfbfc" />
@@ -293,12 +376,16 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
             <feGaussianBlur stdDeviation="2.1" />
           </filter>
           <clipPath id={weatherClip}><rect x="20" y="176" width="245" height="133" rx="22" /></clipPath>
-          <clipPath id={newsClip}><rect x="968" y="263" width="288" height="118" rx="21" /></clipPath>
-          <clipPath id={secondaryNewsClip}><rect x="980" y="513" width="92" height="152" rx="14" /></clipPath>
-          <clipPath id={communityClip}><rect x="982" y="276" width="260" height="106" rx="14" /></clipPath>
+          <clipPath id={newsClip}><rect x="968" y="263" width="288" height="146" rx="18" /></clipPath>
+          <clipPath id={newsListClip}>
+            <rect x="976" y="548" width="56" height="56" rx="12" />
+            <rect x="976" y="634" width="56" height="56" rx="12" />
+            <rect x="976" y="720" width="56" height="56" rx="12" />
+          </clipPath>
+          <clipPath id={communityClip}><rect x="984" y="504" width="256" height="126" rx="13" /></clipPath>
         </defs>
 
-        <rect width="1280" height="720" fill="url(#apRealPage)" />
+        <rect width="1280" height="840" fill="url(#apRealPage)" />
 
         <g className="ap-real-shell">
           <rect x="8" y="8" width="1264" height="52" rx="26" fill="url(#apRealHeader)" filter="url(#apRealWindowShadow)" />
@@ -319,7 +406,7 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
         </g>
 
         <g className="ap-real-left-panel">
-          <rect x="8" y="72" width="280" height="648" rx="26" fill="url(#apRealLeft)" />
+          <rect x="8" y="72" width="280" height="768" rx="26" fill="url(#apRealLeft)" />
           <g filter="url(#apRealSoftShadow)">
             <rect x="20" y="82" width="245" height="80" rx="26" fill="rgba(255,255,255,.74)" />
             <text x="36" y="111" fill="#111" fontSize="16" fontWeight="740">{copy.greeting}</text>
@@ -409,18 +496,20 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
           <Cursor className="ap-real-calendar-cursor" />
 
           <g className="ap-real-history">
-            <rect x="20" y="533" width="245" height="187" rx="25" fill="rgba(255,255,255,.70)" />
+            <rect x="20" y="533" width="245" height="307" rx="25" fill="rgba(255,255,255,.70)" />
             <rect x="31" y="544" width="147" height="35" rx="18" fill="#fff" stroke="#ececef" />
             <text x="45" y="566" fill="#25262a" fontSize="12" fontWeight="720">대화 목록</text>
             <circle cx="207" cy="561" r="17" fill="#fff" stroke="#ececef" /><text x="207" y="566" textAnchor="middle" fontSize="15">🗄️</text>
             <circle cx="246" cy="561" r="17" fill="#fff" stroke="#ececef" /><image href={`${AD_ASSET}/brand/feature-icons/controls/search/logo.svg`} x="235" y="550" width="22" height="22" />
             {copy.conversations.map((title,index)=><text key={title} x="37" y={601+index*25} fill="#3b3b3f" fontSize="10.5">{title}</text>)}
-            <circle cx="249" cy="682" r="22" fill="#fff" stroke="#ececef" /><image href={`${AD_ASSET}/brand/feature-icons/chat/new-chat/logo.svg`} x="237" y="670" width="24" height="24" opacity=".8" />
+            <path d="M32 771h221" stroke="#e6e7eb" />
+            <text x="37" y="799" fill="#6f7279" fontSize="9.5" fontWeight="620">{copy.savedConversation}</text>
+            <circle cx="249" cy="800" r="22" fill="#fff" stroke="#ececef" /><image href={`${AD_ASSET}/brand/feature-icons/chat/new-chat/logo.svg`} x="237" y="788" width="24" height="24" opacity=".8" />
           </g>
         </g>
 
         <g className="ap-real-main-panel">
-          <rect x="296" y="72" width="648" height="648" rx="26" fill="url(#apRealMainGlow)" />
+          <rect x="296" y="72" width="648" height="768" rx="26" fill="url(#apRealMainGlow)" />
           <g className="ap-real-launcher">
             {appItems.map(([src, title], index) => {
               const col = index % 4;
@@ -441,11 +530,11 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
 
           <g className="ap-real-chat-view">
             <g className="ap-real-chat-question">
-              <rect x="447" y="145" width="460" height="68" rx="24" fill="#2d2d2f" />
-              <text x="891" y="170" textAnchor="end" fill="#fff" fontSize="11.3" fontWeight="550">
-                {copy.questionLines.map((line,index)=><tspan key={line} x="891" dy={index===0?0:19}>{line}</tspan>)}
+              <rect className="ap-real-chat-question-bubble" x="455" y="143" width="452" height="74" rx="25" fill="#29292b" stroke="rgba(255,255,255,.08)" filter="url(#apRealSoftShadow)" />
+              <text x="886" y="170" textAnchor="end" fill="#fff" fontSize="11.7" fontWeight="560">
+                {copy.questionLines.map((line,index)=><tspan key={line} x="886" dy={index===0?0:20}>{line}</tspan>)}
               </text>
-              <text x="907" y="228" textAnchor="end" fill="#b0afac" fontSize="9">오후 02:24</text>
+              <text x="907" y="232" textAnchor="end" fill="#a7a7aa" fontSize="8.5">오후 02:24</text>
             </g>
             <g className="ap-real-answer">
               <text x="327" y="257" fill="#202124" fontSize="15" fontWeight="760">{copy.answerTitle}</text>
@@ -461,93 +550,140 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
                   return <g key={row[0]}>{row.map((cell,columnIndex)=><text key={cell} x={[338,437,632,744][columnIndex]} y={y} fill={columnIndex===0?'#292b2f':'#4a4d53'} fontSize={columnIndex===3?8.8:9.3} fontWeight={columnIndex===0||columnIndex===2?680:500}>{cell}</text>)}</g>;
                 })}
               </g>
-              <g className="ap-real-answer-evidence">
-                <rect x="327" y="520" width="580" height="91" rx="16" fill="#f5f7fa" stroke="#e1e4e9" />
-                <rect x="340" y="531" width="43" height="18" rx="9" fill="#e4ecf8" />
-                <text x="361.5" y="543.5" textAnchor="middle" fill="#476c9c" fontSize="8.2" fontWeight="760">결론</text>
-                {copy.answerConclusion.map((line,index)=><text key={line} x="394" y={index===0?543:560} fill="#303136" fontSize="9.2" fontWeight={index===0?680:500}>{line}</text>)}
-                <path d="M340 569h554" stroke="#dfe3e9" />
-                <text x="340" y="591" fill="#476c9c" fontSize="8.6" fontWeight="760">{copy.evidenceLabel}</text>
-                {copy.evidenceSources.map(([source, pmid], index) => {
-                  const x = 417 + index * 160;
+              <g className="ap-real-answer-interpretation">
+                <text x="327" y="536" fill="#1d1d1f" fontSize="10.4" fontWeight="760">{language === "ko" ? "핵심 해석" : "Key interpretation"}</text>
+                {copy.answerConclusion.map((line,index) => {
+                  const y = 559 + index * 22;
                   return (
-                    <g key={pmid}>
-                      <rect x={x} y="576" width="153" height="27" rx="13.5" fill="#fff" stroke="#dfe4eb" />
-                      <circle cx={x+13} cy="589.5" r="5" fill="#5a7da9" />
-                      <path d={`m${x+10.7} 589.4 1.6 1.7 3.3-3.6`} fill="none" stroke="#fff" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-                      <text x={x+23} y="587.2" fill="#34373c" fontSize="8.2" fontWeight="670">{source}</text>
-                      <text x={x+23} y="597.1" fill="#7a7f87" fontSize="7" fontWeight="560">{pmid}</text>
+                    <g key={line}>
+                      <circle cx="333" cy={y-3.5} r="2.4" fill="#8e8e93" />
+                      <text x="344" y={y} fill="#303136" fontSize="9.1" fontWeight={index===0?600:480}>{line}</text>
                     </g>
                   );
                 })}
+              </g>
+              <g className="ap-real-answer-actions">
+                <g className="ap-real-answer-source-row">
+                  <text x="327" y="615" fill="#7d7f85" fontSize="8.8" fontWeight="760">{copy.evidenceLabel}</text>
+                  {copy.evidenceSources.map(([source, pmid], index) => {
+                    const { x, width } = sourceChipLayout[index];
+                    return (
+                      <g className="ap-real-answer-source-chip" key={pmid} transform={`translate(${x} 595)`}>
+                        <rect width={width} height="32" rx="16" fill="rgba(255,255,255,.94)" stroke="rgba(29,29,31,.11)" />
+                        <g transform="translate(11 10)" fill="none" stroke="#666970" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4.5 8.5 2.8 10.2a3 3 0 0 1-4.2-4.2L1 3.6" />
+                          <path d="m5.5 3.5 1.7-1.7A3 3 0 0 1 11.4 6L9 8.4M2.5 7.5l6-6" />
+                        </g>
+                        <text x="31" y="20.5" fill="#1d1d1f" fontSize="9" fontWeight="680">{source}</text>
+                      </g>
+                    );
+                  })}
+                </g>
+                <g className="ap-real-answer-suggestion-row">
+                  {copy.followups.map((followup, index) => {
+                    const { x, width } = followupChipLayout[index];
+                    return (
+                      <g className="ap-real-answer-suggestion-chip" key={followup} transform={`translate(${x} 641)`}>
+                        <rect width={width} height="38" rx="19" fill="rgba(255,255,255,.96)" stroke="rgba(29,29,31,.12)" />
+                        <text x="16" y="24" fill="#1d1d1f" fontSize="9.8" fontWeight="570">{followup}</text>
+                        <path d={`M${width-21} 15.5l4 3.5-4 3.5`} fill="none" stroke="#777a80" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round" />
+                      </g>
+                    );
+                  })}
+                </g>
+                <g className="ap-real-answer-message-actions" transform="translate(327 690)">
+                  <rect width="145" height="30" rx="15" fill="rgba(255,255,255,.82)" stroke="rgba(29,29,31,.09)" />
+                  <g fill="none" stroke="#6b6b6b" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+                    <g transform="translate(12 8)"><rect x="3" y="1" width="10" height="11" rx="1.5" /><path d="M10 1V-2H0v11h3" /></g>
+                    <path d="M50 7v15l6-3.4 6 3.4V7Z" />
+                    <path d="M91 19V11l4-4h3v4h5v8l-2 3h-7Z" />
+                    <path d="M124 10v8l4 4h3v-4h5v-8l-2-3h-7Z" />
+                  </g>
+                  <path d="M76 7v16" stroke="rgba(29,29,31,.1)" />
+                </g>
+                <text x="907" y="710" textAnchor="end" fill="#b0afac" fontSize="7.5">오후 02:24</text>
               </g>
             </g>
           </g>
 
           <g className="ap-real-composer" filter="url(#apRealComposerShadow)">
-            <rect x="296" y="622" width="648" height="61" rx="31" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.82)" />
-            <circle cx="324" cy="652.5" r="22" fill="url(#apRealPill)" stroke="rgba(255,255,255,.84)" />
-            <image href={`${AD_ASSET}/brand/feature-icons/chat/attach/logo.svg`} x="309" y="638" width="30" height="30" />
-            <rect x="355" y="629" width="582" height="44" rx="22" fill="rgba(255,255,255,.66)" stroke="rgba(255,255,255,.78)" />
-            <text className="ap-real-input-placeholder" x="374" y="656" fill="#6d7077" fontSize="12">{copy.input}</text>
-            <text className="ap-real-input-typed" x="374" y="656" fill="#2c2c2c" fontSize="12" fontWeight="520">{copy.typedQuestion}</text>
-            <text x="850" y="656" textAnchor="end" fill="#757880" fontSize="7.4">알파닥의 답변은 의료인께서 판단하시는 데 참고로만 사용해 주세요.</text>
-            <circle className="ap-real-send-button" cx="914" cy="651" r="18" fill="#e8ebf0" />
-            <image className="ap-real-send-glyph" href={`${AD_ASSET}/brand/feature-icons/chat/send/logo.svg`} x="905" y="642" width="18" height="18" />
+            <rect x="296" y="742" width="648" height="61" rx="31" fill="rgba(255,255,255,.68)" stroke="rgba(255,255,255,.82)" />
+            <circle cx="324" cy="772.5" r="22" fill="url(#apRealPill)" stroke="rgba(255,255,255,.84)" />
+            <image href={`${AD_ASSET}/brand/feature-icons/chat/attach/logo.svg`} x="309" y="758" width="30" height="30" />
+            <rect x="355" y="749" width="582" height="44" rx="22" fill="rgba(255,255,255,.66)" stroke="rgba(255,255,255,.78)" />
+            <text className="ap-real-input-placeholder" x="374" y="776" fill="#6d7077" fontSize="12">{copy.input}</text>
+            <text className="ap-real-input-typed" x="374" y="776" fill="#2c2c2c" fontSize="12" fontWeight="520">{copy.typedQuestion}</text>
+            <text x="850" y="776" textAnchor="end" fill="#757880" fontSize="7.4">알파닥의 답변은 의료인께서 판단하시는 데 참고로만 사용해 주세요.</text>
+            <circle className="ap-real-send-button" cx="914" cy="771" r="18" fill="#e8ebf0" />
+            <g className="ap-real-send-glyph" color="#8e97a6" aria-hidden="true">
+              <path d="M914 779V764m0 0-6 6m6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+            </g>
           </g>
-          <text x="620" y="701" textAnchor="middle" fill="#9a9da2" fontSize="8">개인정보처리방침 · 이용약관</text>
+          <text x="620" y="821" textAnchor="middle" fill="#9a9da2" fontSize="8">개인정보처리방침 · 이용약관</text>
           <Cursor className="ap-real-chat-cursor" />
         </g>
 
         <g className="ap-real-right-panel">
-          <rect x="952" y="72" width="320" height="648" rx="26" fill="url(#apRealRight)" filter="url(#apRealWindowShadow)" />
+          <rect x="952" y="72" width="320" height="768" rx="26" fill="url(#apRealRight)" filter="url(#apRealWindowShadow)" />
 
           <g className="ap-real-news-state">
             <g transform="translate(999 80)"><TabBar active="news" /></g>
             <rect x="968" y="150" width="288" height="44" rx="22" fill="rgba(255,255,255,.74)" />
-            {['종합','의료','정치','경제','사회','IT','문화','세계'].map((item,index)=><g key={item}>{index===0&&<circle cx="989" cy="172" r="17" fill="#fff" filter="url(#apRealSoftShadow)" />}<text x={989+index*34} y="176" textAnchor="middle" fill={index===0?'#242529':'#8b8d92'} fontSize="8" fontWeight={index===0?720:560}>{item}</text></g>)}
+            {(language === "ko"
+              ? ["종합", "의료", "정치", "경제", "사회", "IT", "문화", "세계", "스포츠", "연예"]
+              : ["All", "Med", "Policy", "Biz", "Soc", "IT", "Life", "World", "Sport", "Culture"]
+            ).map((item,index)=><g key={item}>{index===0&&<rect x="974" y="155" width="28" height="34" rx="17" fill="#fff" filter="url(#apRealSoftShadow)" />}<text x={988+index*28.5} y="176" textAnchor="middle" fill={index===0?'#242529':'#8b8d92'} fontSize={item.length > 3 ? "6.2" : "7"} fontWeight={index===0?720:560}>{item}</text></g>)}
             <rect x="968" y="207" width="288" height="47" rx="24" fill="rgba(255,255,255,.78)" filter="url(#apRealSoftShadow)" />
             <text x="984" y="230" fill="#303136" fontSize="13" fontWeight="740">{copy.briefing}</text><text x="1077" y="230" fill="#44464b" fontSize="8.5">{copy.briefingTime}</text>
             <image href={`${AD_ASSET}/brand/feature-icons/controls/search/logo.svg`} x="1221" y="217" width="26" height="26" />
-            <g filter="url(#apRealPhotoShadow)">
-              <rect x="968" y="263" width="288" height="226" rx="21" fill="rgba(255,255,255,.92)" />
-              <image href={GENERATED_NEWS_IMAGE} x="968" y="263" width="288" height="118" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${newsClip})`} />
-              <rect x="968" y="309" width="288" height="72" fill="url(#apRealNewsShade)" clipPath={`url(#${newsClip})`} />
+            <g className="ap-real-news-pick-card" filter="url(#apRealPhotoShadow)">
+              <rect x="968" y="263" width="288" height="246" rx="18" fill="rgba(255,255,255,.92)" />
+              <image href={GENERATED_NEWS_IMAGE} x="968" y="263" width="288" height="146" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${newsClip})`} />
+              <rect x="968" y="314" width="288" height="95" fill="url(#apRealNewsShade)" clipPath={`url(#${newsClip})`} />
               <rect x="980" y="275" width="34" height="19" rx="10" fill="rgba(255,255,255,.92)" /><text x="997" y="288" textAnchor="middle" fill="#51545b" fontSize="8" fontWeight="700">의료</text>
               <rect x="1153" y="275" width="90" height="19" rx="10" fill="rgba(54,54,58,.68)" /><text x="1198" y="288" textAnchor="middle" fill="#fff" fontSize="8" fontWeight="700">✦ 알파닥 Pick</text>
-              <text x="981" y="329" fill="rgba(255,255,255,.78)" fontSize="7.7">{copy.newsMeta}</text>
-              <text x="981" y="348" fill="#fff" fontSize="12.4" fontWeight="760">
+              <text x="981" y="354" fill="rgba(255,255,255,.82)" fontSize="7.7" fontWeight="600">{copy.newsMeta}</text>
+              <text x="981" y="375" fill="#fff" fontSize="12.4" fontWeight="760">
                 {copy.newsTitle.split("\n").map((line,index)=><tspan key={line} x="981" dy={index===0?0:16}>{line}</tspan>)}
               </text>
               {copy.newsParagraphs.slice(0, 2).map((paragraph,index) => {
-                const y = 389 + index * 45;
+                const y = 417 + index * 43;
                 return (
                   <g key={paragraph[0]}>
-                    <rect x="980" y={y} width="264" height="38" rx="10" fill="#f6f6f7" />
-                    <text x="990" y={y+15} fill="#44464b" fontSize="7.9" fontWeight="500">
-                      {paragraph.map((line,lineIndex)=><tspan key={line} x="990" dy={lineIndex===0?0:12}>{line}</tspan>)}
+                    <rect x="980" y={y} width="264" height="36" rx="9" fill="rgba(29,29,31,.025)" />
+                    <text x="990" y={y+14} fill="#55585e" fontSize="7.45" fontWeight="500">
+                      {paragraph.map((line,lineIndex)=><tspan key={line} x="990" dy={lineIndex===0?0:11}>{line}</tspan>)}
                     </text>
+                    {index === 1 && <text x="1233" y={y+23} textAnchor="middle" fill="#878a90" fontSize="10" fontWeight="650">↗</text>}
                   </g>
                 );
               })}
-              <text x="1242" y="480" textAnchor="end" fill="#7d8086" fontSize="10" fontWeight="650">↗</text>
             </g>
-            <g filter="url(#apRealPhotoShadow)">
-              <rect x="968" y="501" width="288" height="176" rx="21" fill="rgba(255,255,255,.92)" />
-              <image href={GENERATED_SECONDARY_NEWS_IMAGE} x="980" y="513" width="92" height="152" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${secondaryNewsClip})`} />
-              <rect x="1085" y="514" width="34" height="18" rx="9" fill="#edf2f7" />
-              <text x="1102" y="526.5" textAnchor="middle" fill="#52677e" fontSize="7.4" fontWeight="720">감염</text>
-              <text x="1243" y="526.5" textAnchor="end" fill="#8a8d93" fontSize="7.2">{copy.secondaryNewsMeta}</text>
-              <text x="1085" y="550" fill="#27292d" fontSize="10.2" fontWeight="760">
-                {copy.secondaryNewsTitle.split("\n").map((line,index)=><tspan key={line} x="1085" dy={index===0?0:15}>{line}</tspan>)}
-              </text>
-              <path d="M1085 579h158" stroke="#e7e8eb" />
-              <text x="1085" y="596" fill="#53565d" fontSize="7.8" fontWeight="500">
-                {copy.secondaryNewsSummary.map((line,index)=><tspan key={line} x="1085" dy={index===0?0:12}>{line}</tspan>)}
-              </text>
-              <rect x="1085" y="628" width="90" height="22" rx="11" fill="#f4f5f7" />
-              <text x="1130" y="642.5" textAnchor="middle" fill="#656970" fontSize="7.2" fontWeight="650">항생제 스튜어드십</text>
-              <text x="1242" y="653" textAnchor="end" fill="#7d8086" fontSize="10" fontWeight="650">↗</text>
+            <g className="ap-real-news-list-heading">
+              <text x="972" y="529" fill="#1d1d1f" fontSize="10" fontWeight="760">{copy.newsListTitle}</text>
+              <text x="1247" y="529" textAnchor="end" fill="#999ba1" fontSize="7.5" fontWeight="650">{copy.newsListCount}</text>
+            </g>
+            <g className="ap-real-news-list-surface" filter="url(#apRealSoftShadow)">
+              <rect x="968" y="536" width="288" height="270" rx="18" fill="rgba(255,255,255,.68)" />
+              {copy.newsListItems.map((item, index) => {
+                const y = 540 + index * 86;
+                const imageHref = index === 0 ? GENERATED_SECONDARY_NEWS_IMAGE : index === 1 ? GENERATED_NEWS_IMAGE : GENERATED_SECONDARY_NEWS_IMAGE;
+                const categoryWidth = language === "ko" ? 34 : 46;
+                return (
+                  <g className="ap-real-news-list-row" key={`${item.source}-${item.time}`}>
+                    <image href={imageHref} x="976" y={y+8} width="56" height="56" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${newsListClip})`} />
+                    <rect x="1043" y={y+8} width={categoryWidth} height="16" rx="8" fill="#eef2f6" />
+                    <text x={1043+categoryWidth/2} y={y+19.5} textAnchor="middle" fill="#566372" fontSize="6.4" fontWeight="720">{item.category}</text>
+                    <text x={1049+categoryWidth} y={y+19.5} fill="#85888e" fontSize="6.6" fontWeight="600">{item.source}</text>
+                    <text x="1239" y={y+19.5} textAnchor="end" fill="#a0a2a7" fontSize="6.4">{item.time}</text>
+                    <text x="1043" y={y+43} fill="#292b2f" fontSize="9.15" fontWeight="700">
+                      {item.title.map((line,lineIndex)=><tspan key={line} x="1043" dy={lineIndex===0?0:13}>{line}</tspan>)}
+                    </text>
+                    <path d={`m1241 ${y+44} 4 4-4 4`} fill="none" stroke="#a5a7ac" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    {index < copy.newsListItems.length - 1 && <path d={`M1043 ${y+85.5}h202`} stroke="rgba(29,29,31,.065)" />}
+                  </g>
+                );
+              })}
             </g>
           </g>
 
@@ -586,6 +722,13 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
               <text x="982" y="659" fill="#25262a" fontSize="11.2" fontWeight="720">Inhibitor Initiation in HFpEF</text>
               <text x="982" y="680" fill="#797c82" fontSize="8">Evidence Practice Journal · 2026</text>
             </g>
+            <g className="ap-real-stream-card" filter="url(#apRealSoftShadow)">
+              <rect x="968" y="704" width="288" height="112" rx="21" fill="rgba(255,255,255,.86)" />
+              <rect x="982" y="718" width="42" height="18" rx="9" fill="#eef2f6" /><text x="1003" y="731" textAnchor="middle" fill="#4d545d" fontSize="7" fontWeight="700">중환자</text>
+              <text x="982" y="759" fill="#25262a" fontSize="10.8" fontWeight="720">{copy.literatureExtra[0]}</text>
+              <text x="982" y="783" fill="#797c82" fontSize="8">{copy.literatureExtra[1]}</text>
+              <rect x="1164" y="778" width="78" height="22" rx="11" fill="#f2f4f7" /><text x="1203" y="792.5" textAnchor="middle" fill="#5d6672" fontSize="7.2" fontWeight="650">근거 저장</text>
+            </g>
           </g>
 
           <g className="ap-real-community-state">
@@ -598,37 +741,56 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
             </g>
             <circle cx="1244" cy="158" r="16" fill="url(#apRealGlass)" filter="url(#apRealSoftShadow)" />
             <text className="ap-real-tossface" x="1244" y="164" textAnchor="middle" fontSize="18">🔍</text>
-            <g filter="url(#apRealSoftShadow)">
-              <rect x="968" y="198" width="288" height="219" rx="20" fill="rgba(255,255,255,.88)" />
-              <text x="983" y="221" fill="#242529" fontSize="10.2" fontWeight="760">응급의</text><text x="1021" y="221" fill="#8e9095" fontSize="8.5" fontWeight="520">· 18분</text>
-              <text x="983" y="250" fill="#292b2f" fontSize="10.5" fontWeight="520">{copy.photoPost}</text>
-              <image href={GENERATED_COMMUNITY_IMAGE} x="982" y="276" width="260" height="106" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${communityClip})`} />
-              <rect x="982" y="276" width="260" height="106" rx="14" fill="none" stroke="rgba(29,29,31,.08)" />
-              <g transform="translate(983 397)" fill="none" stroke="#585b61" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 5c0-4 5-5 7-1 2-4 7-3 7 1 0 4-7 8-7 8S1 9 1 5Z" /><path d="M35 2h13v9h-7l-4 3v-3h-2Z" /><path d="M77 2v12l5-3 5 3V2Z" />
+            <g className="ap-real-community-post ap-real-community-post--text" filter="url(#apRealSoftShadow)">
+              <rect x="968" y="190" width="288" height="210" rx="18" fill="rgba(255,255,255,.88)" />
+              <text x="984" y="216" fill="#111113" fontSize="10.5" fontWeight="760">{copy.communityTextPost.author}</text>
+              <text x="1055" y="216" fill="#8e8e93" fontSize="8" fontWeight="540">· {copy.communityTextPost.time}</text>
+              <text x="1240" y="215" textAnchor="middle" fill="#a2a3a8" fontSize="11" fontWeight="700">•••</text>
+              <text x="984" y="245" fill="#292b2f" fontSize="9.4" fontWeight="520">
+                {copy.communityTextPost.body.map((line,index)=><tspan key={line} x="984" dy={index===0?0:15}>{line}</tspan>)}
+              </text>
+              <path d="M984 283h256" stroke="rgba(29,29,31,.07)" />
+              {copy.communityTextPost.replies.map(([author,reply],index) => {
+                const y = 307 + index * 27;
+                return (
+                  <g className="ap-real-community-reply" key={author}>
+                    <text x="984" y={y} fill="#3a3a3c" fontSize="7.7" fontWeight="720">{author}</text>
+                    <text x="1041" y={y} fill="#6e6e73" fontSize="7.25" fontWeight="500">{reply}</text>
+                    {index === 0 && <g transform={`translate(1225 ${y-9})`} fill="#8e8e93"><path d="M0 4c0-2.8 3.5-3.6 5-1 1.5-2.6 5-1.8 5 1 0 2.8-5 5.5-5 5.5S0 6.8 0 4Z" /><text x="13" y="8" fontSize="6.5" fontWeight="650">3</text></g>}
+                  </g>
+                );
+              })}
+              <g className="ap-real-community-post-actions" transform="translate(984 366)" fill="none" stroke="#62656b" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 5c0-4 5-5 7-1 2-4 7-3 7 1 0 4-7 8-7 8S1 9 1 5Z" /><text x="20" y="11" fill="#676a70" stroke="none" fontSize="8" fontWeight="650">{copy.communityTextPost.likes}</text>
+                <path d="M47 2h4v10h-4Zm5 1h7l2 2v2l-3 6h-3l1-4h-4Z" />
+                <path d="M84 2h13v9h-7l-4 3v-3h-2Z" /><text x="103" y="11" fill="#676a70" stroke="none" fontSize="8" fontWeight="650">{copy.communityTextPost.comments}</text>
+                <path d="M137 2v12l5-3 5 3V2Z" />
               </g>
-              <text x="1002" y="408" fill="#676a70" fontSize="8.3" fontWeight="620">24</text><text x="1035" y="408" fill="#676a70" fontSize="8.3" fontWeight="620">9</text><text x="1076" y="408" fill="#676a70" fontSize="8.3" fontWeight="620">저장 31</text>
             </g>
-            <g filter="url(#apRealSoftShadow)">
-              <rect x="968" y="429" width="288" height="228" rx="20" fill="rgba(255,255,255,.88)" />
-              <text x="983" y="453" fill="#242529" fontSize="10.2" fontWeight="760">내과의</text><text x="1021" y="453" fill="#8e9095" fontSize="8.5" fontWeight="520">· 42분</text>
-              <text x="983" y="480" fill="#292b2f" fontSize="10.5" fontWeight="520">{copy.pollQuestion}</text>
-              <g transform="translate(982 495)">
-                <rect width="260" height="130" rx="16" fill="#f6f9ff" />
-                <rect x="191" y="10" width="57" height="20" rx="10" fill="#e9f2ff" /><text x="219.5" y="24" textAnchor="middle" fill="#315d9e" fontSize="8" fontWeight="720">▥ 38명</text>
-                <text x="12" y="24" fill="#303136" fontSize="9" fontWeight="720">진료 현황 투표</text>
-                <g transform="translate(10 40)"><rect width="240" height="34" rx="12" fill="#fdfefe" /><rect width="156" height="34" rx="12" fill="#cfe3ff" /><text x="12" y="22" fill="#242529" fontSize="9.5" fontWeight="680">{copy.pollOptions[0]}</text><text x="226" y="22" textAnchor="end" fill="#315d9e" fontSize="9.2" fontWeight="720">65% · 25</text></g>
-                <g transform="translate(10 81)"><rect width="240" height="34" rx="12" fill="#fdfefe" /><rect width="84" height="34" rx="12" fill="#ddeaff" /><text x="12" y="22" fill="#242529" fontSize="9.5" fontWeight="680">{copy.pollOptions[1]}</text><text x="226" y="22" textAnchor="end" fill="#315d9e" fontSize="9.2" fontWeight="720">35% · 13</text></g>
+            <g className="ap-real-community-post ap-real-community-post--photo" filter="url(#apRealSoftShadow)">
+              <rect x="968" y="412" width="288" height="292" rx="18" fill="rgba(255,255,255,.88)" />
+              <text x="984" y="438" fill="#111113" fontSize="10.5" fontWeight="760">{copy.communityPhotoPost.author}</text>
+              <text x="1056" y="438" fill="#8e8e93" fontSize="8" fontWeight="540">· {copy.communityPhotoPost.time}</text>
+              <text x="1240" y="437" textAnchor="middle" fill="#a2a3a8" fontSize="11" fontWeight="700">•••</text>
+              <text x="984" y="466" fill="#292b2f" fontSize="9.15" fontWeight="520">
+                {copy.communityPhotoPost.body.map((line,index)=><tspan key={line} x="984" dy={index===0?0:14}>{line}</tspan>)}
+              </text>
+              <image href={GENERATED_COMMUNITY_IMAGE} x="984" y="504" width="256" height="126" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${communityClip})`} />
+              <rect x="984" y="504" width="256" height="126" rx="13" fill="none" stroke="rgba(29,29,31,.08)" />
+              <g className="ap-real-community-post-actions" transform="translate(984 668)" fill="none" stroke="#62656b" strokeWidth="1.35" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 5c0-4 5-5 7-1 2-4 7-3 7 1 0 4-7 8-7 8S1 9 1 5Z" /><text x="20" y="11" fill="#676a70" stroke="none" fontSize="8" fontWeight="650">{copy.communityPhotoPost.likes}</text>
+                <path d="M47 2h4v10h-4Zm5 1h7l2 2v2l-3 6h-3l1-4h-4Z" />
+                <path d="M84 2h13v9h-7l-4 3v-3h-2Z" /><text x="103" y="11" fill="#676a70" stroke="none" fontSize="8" fontWeight="650">{copy.communityPhotoPost.comments}</text>
+                <path d="M137 2v12l5-3 5 3V2Z" />
               </g>
-              <g transform="translate(983 637)" fill="none" stroke="#585b61" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M1 5c0-4 5-5 7-1 2-4 7-3 7 1 0 4-7 8-7 8S1 9 1 5Z" />
-                <path d="M37 2h4v10h-4Zm5 1h7l2 2v2l-3 6h-3l1-4h-4Z" />
-                <path d="M77 2h13v9h-7l-4 3v-3h-2Z" />
-                <path d="M116 2v12l5-3 5 3V2Z" />
-              </g>
-              <text x="1002" y="648" fill="#676a70" fontSize="8.3" fontWeight="620">18</text><text x="1037" y="648" fill="#676a70" fontSize="8.3" fontWeight="620">3</text><text x="1078" y="648" fill="#676a70" fontSize="8.3" fontWeight="620">11</text>
             </g>
-            <g transform="translate(968 664)" filter="url(#apRealSoftShadow)"><rect width="288" height="48" rx="24" fill="rgba(255,255,255,.9)" /><rect x="5" y="4" width="48" height="40" rx="20" fill="rgba(255,255,255,.78)" stroke="rgba(255,255,255,.9)" />{['🏠','✉️','✏️','❤️','👤'].map((item,index)=><text className="ap-real-tossface" key={`${item}-${index}`} x={29+index*58} y="31" textAnchor="middle" fontSize={index===2?20:16}>{item}</text>)}</g>
+            <g className="ap-real-community-post ap-real-community-post--peek ap-real-stream-card" filter="url(#apRealSoftShadow)">
+              <rect x="968" y="716" width="288" height="56" rx="18" fill="rgba(255,255,255,.88)" />
+              <text x="984" y="740" fill="#111113" fontSize="9.7" fontWeight="760">{copy.communityNextPost[0]}</text>
+              <text x="1060" y="740" fill="#8e8e93" fontSize="7.7">{copy.communityNextPost[1]}</text>
+              <text x="984" y="760" fill="#45474c" fontSize="8.4" fontWeight="520">{copy.communityNextPost[2]}</text>
+            </g>
+            <g transform="translate(968 784)" filter="url(#apRealSoftShadow)"><rect width="288" height="48" rx="24" fill="rgba(255,255,255,.9)" /><rect x="5" y="4" width="48" height="40" rx="20" fill="rgba(255,255,255,.78)" stroke="rgba(255,255,255,.9)" />{['🏠','✉️','✏️','❤️','👤'].map((item,index)=><text className="ap-real-tossface" key={`${item}-${index}`} x={29+index*58} y="31" textAnchor="middle" fontSize={index===2?20:16}>{item}</text>)}</g>
           </g>
           <Cursor className="ap-real-tab-cursor" />
         </g>

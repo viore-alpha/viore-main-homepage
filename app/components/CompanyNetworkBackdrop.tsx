@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const FRAME_INTERVAL = 1000 / 24;
+const FRAME_INTERVAL = 1000 / 20;
 type EnergyFamily = 0 | 1 | 2;
 type Rgb = readonly [number, number, number];
 
@@ -63,7 +63,11 @@ export function CompanyNetworkBackdrop() {
     let animationFrame = 0;
     let scrollFrame = 0;
     let lastFrame = 0;
-    let isIntersecting = true;
+    let isIntersecting = false;
+    let primaryGradient: CanvasGradient | null = null;
+    let counterGradient: CanvasGradient | null = null;
+    let goldGradient: CanvasGradient | null = null;
+    let gradientProgress = -1;
 
     const traceStrand = (index: number, count: number, seconds: number, family: EnergyFamily) => {
       const position = count === 1 ? 0 : index / (count - 1);
@@ -71,19 +75,20 @@ export function CompanyNetworkBackdrop() {
       const localProgress = clamp(progress + 0.035 * (1 - progress));
       const convergence = Math.pow(localProgress, 2.6);
       const compact = width < 700;
+      const lateralScale = compact ? 0.64 : 1;
       const spreadScale = family === 0 ? 0.38 : family === 1 ? 0.31 : 0.43;
-      const initialSpread = width * (compact ? spreadScale * 1.08 : spreadScale);
+      const initialSpread = width * spreadScale * lateralScale;
       const finalSpread = Math.max(compact ? 2.4 : 3.2, width * 0.0035);
       const spread = offset * mix(initialSpread, finalSpread, convergence);
       const flowScale = 1 - convergence;
-      const curveScale = flowScale;
+      const curveScale = flowScale * lateralScale;
       const pulse = Math.sin(seconds * (0.22 + family * 0.025) + index * 0.13 + family * 1.7);
       const counterPulse = Math.cos(seconds * (0.15 + family * 0.018) - index * 0.09 + family * 1.1);
-      const drift = pulse * width * 0.024 * flowScale;
-      const fineDrift = counterPulse * width * 0.011 * flowScale;
-      const jitterA = Math.sin((index + 1) * 1.91 + family * 2.7) * width * 0.018 * flowScale;
-      const jitterB = Math.cos((index + 1) * 2.47 + family * 1.3) * width * 0.014 * flowScale;
-      const jitterC = Math.sin((index + 1) * 3.31 + family * 0.8) * width * 0.012 * flowScale;
+      const drift = pulse * width * 0.024 * flowScale * lateralScale;
+      const fineDrift = counterPulse * width * 0.011 * flowScale * lateralScale;
+      const jitterA = Math.sin((index + 1) * 1.91 + family * 2.7) * width * 0.018 * flowScale * lateralScale;
+      const jitterB = Math.cos((index + 1) * 2.47 + family * 1.3) * width * 0.014 * flowScale * lateralScale;
+      const jitterC = Math.sin((index + 1) * 3.31 + family * 0.8) * width * 0.012 * flowScale * lateralScale;
       const centerX = width * 0.5;
 
       context.beginPath();
@@ -233,6 +238,18 @@ export function CompanyNetworkBackdrop() {
     };
 
     const draw = (seconds: number) => {
+      if (
+        !primaryGradient ||
+        !counterGradient ||
+        !goldGradient ||
+        Math.abs(gradientProgress - progress) > 0.0005
+      ) {
+        primaryGradient = makeGradient(0);
+        counterGradient = makeGradient(1);
+        goldGradient = makeGradient(2);
+        gradientProgress = progress;
+      }
+
       context.clearRect(0, 0, width, height);
       context.save();
       context.globalCompositeOperation = "screen";
@@ -240,15 +257,12 @@ export function CompanyNetworkBackdrop() {
       context.lineJoin = "round";
 
       const compact = width < 700;
-      const primaryGradient = makeGradient(0);
-      const counterGradient = makeGradient(1);
-      const goldGradient = makeGradient(2);
 
       strokeFamily(compact ? 6 : 8, seconds, 0, primaryGradient, true);
       strokeFamily(compact ? 3 : 4, seconds, 1, counterGradient, true);
-      strokeFamily(compact ? 40 : 64, seconds, 0, primaryGradient);
-      strokeFamily(compact ? 9 : 14, seconds, 1, counterGradient);
-      strokeFamily(compact ? 14 : 22, seconds, 2, goldGradient);
+      strokeFamily(compact ? 32 : 48, seconds, 0, primaryGradient);
+      strokeFamily(compact ? 7 : 11, seconds, 1, counterGradient);
+      strokeFamily(compact ? 11 : 17, seconds, 2, goldGradient);
 
       context.restore();
     };
@@ -273,15 +287,36 @@ export function CompanyNetworkBackdrop() {
       if (!scrollFrame) scrollFrame = window.requestAnimationFrame(updateProgress);
     };
 
+    const releaseCanvas = () => {
+      width = 1;
+      height = 1;
+      primaryGradient = null;
+      counterGradient = null;
+      goldGradient = null;
+      gradientProgress = -1;
+      if (canvas.width !== 1) canvas.width = 1;
+      if (canvas.height !== 1) canvas.height = 1;
+    };
+
     const resize = () => {
+      if (!isIntersecting || document.hidden) return;
       const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      const pixelRatioCap = width < 700 ? 1 : 1.35;
+      const pixelRatioCap = width < 700 ? 1 : 1.15;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
-      canvas.width = Math.round(width * pixelRatio);
-      canvas.height = Math.round(height * pixelRatio);
-      context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      const renderWidth = Math.round(width * pixelRatio);
+      const renderHeight = Math.round(height * pixelRatio);
+
+      if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        primaryGradient = null;
+        counterGradient = null;
+        goldGradient = null;
+        gradientProgress = -1;
+      }
       updateProgress();
       draw(reducedMotion.matches ? 0 : performance.now() / 1000);
     };
@@ -299,7 +334,11 @@ export function CompanyNetworkBackdrop() {
       animationFrame = 0;
       lastFrame = 0;
 
-      if (!isIntersecting || document.hidden) return;
+      if (!isIntersecting || document.hidden) {
+        releaseCanvas();
+        return;
+      }
+      resize();
       if (reducedMotion.matches) draw(0);
       else animationFrame = window.requestAnimationFrame(animate);
     };
@@ -312,10 +351,10 @@ export function CompanyNetworkBackdrop() {
     const resizeObserver = new ResizeObserver(resize);
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
-        isIntersecting = entry?.isIntersecting ?? false;
+        isIntersecting = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.01);
         syncMotion();
       },
-      { rootMargin: "120px 0px" },
+      { rootMargin: "0px", threshold: [0, 0.01] },
     );
 
     resizeObserver.observe(canvas);
@@ -324,7 +363,6 @@ export function CompanyNetworkBackdrop() {
     window.addEventListener("resize", requestProgressUpdate);
     reducedMotion.addEventListener("change", handleMotionChange);
     document.addEventListener("visibilitychange", syncMotion);
-    resize();
     syncMotion();
 
     return () => {
@@ -336,6 +374,7 @@ export function CompanyNetworkBackdrop() {
       window.removeEventListener("resize", requestProgressUpdate);
       reducedMotion.removeEventListener("change", handleMotionChange);
       document.removeEventListener("visibilitychange", syncMotion);
+      releaseCanvas();
     };
   }, []);
 
