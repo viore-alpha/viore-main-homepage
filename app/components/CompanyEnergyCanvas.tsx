@@ -246,9 +246,7 @@ export function CompanyEnergyCanvas({
       const bounds = field.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      const pixelRatioCap = width < 700
-        ? balanced ? 1.35 : 1.5
-        : balanced ? 1.15 : 1.25;
+      const pixelRatioCap = width < 700 ? 2 : balanced ? 1.15 : 1.25;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
