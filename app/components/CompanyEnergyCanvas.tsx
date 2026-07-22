@@ -2,11 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
+const FRAME_INTERVAL = 1000 / 30;
 type EnergyFamily = 0 | 1 | 2;
 type EnergyCanvasQuality = "full" | "balanced";
-type EnergyCanvasMotion = "layered" | "ambient";
-
-const ENERGY_LAYER_COUNT = 2;
 
 const continueSmoothly = (
   previousControlY: number,
@@ -18,45 +16,34 @@ const continueSmoothly = (
   midpointY +
   (midpointY - previousControlY) * ((nextControlX - midpointX) / (midpointX - previousControlX));
 
-export function CompanyEnergyCanvas({
-  quality = "full",
-  motion = "layered",
-}: {
-  quality?: EnergyCanvasQuality;
-  motion?: EnergyCanvasMotion;
-}) {
-  const fieldRef = useRef<HTMLDivElement>(null);
-  const canvasRefs = useRef<Array<HTMLCanvasElement | null>>([]);
-  const layerCount = motion === "ambient" ? 1 : ENERGY_LAYER_COUNT;
+export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanvasQuality }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const field = fieldRef.current;
-    const canvases = canvasRefs.current.slice(0, layerCount);
-    const contexts = canvases.map((canvas) => canvas?.getContext("2d", { alpha: true }) ?? null);
-    if (!field || canvases.some((canvas) => !canvas) || contexts.some((context) => !context)) return;
+    const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d", { alpha: true });
+    if (!canvas || !context) return;
 
-    const usableCanvases = canvases as HTMLCanvasElement[];
-    const usableContexts = contexts as CanvasRenderingContext2D[];
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const balanced = quality === "balanced";
     let width = 1;
     let height = 1;
-    let drawFrame = 0;
+    let frame = 0;
+    let lastFrame = 0;
     let isIntersecting = false;
+    let primaryGradient: CanvasGradient | null = null;
+    let counterGradient: CanvasGradient | null = null;
+    let goldGradient: CanvasGradient | null = null;
+    const balanced = quality === "balanced";
+    const frameInterval = balanced ? 1000 / 24 : FRAME_INTERVAL;
 
-    const traceStrand = (
-      context: CanvasRenderingContext2D,
-      index: number,
-      count: number,
-      family: EnergyFamily,
-    ) => {
+    const traceStrand = (index: number, count: number, seconds: number, family: EnergyFamily) => {
       const position = count === 1 ? 0 : index / (count - 1);
       const offset = position * 2 - 1;
       const centerY = height * 0.53;
       const spreadScale = family === 0 ? 0.105 : family === 1 ? 0.085 : 0.12;
       const spread = offset * height * spreadScale;
-      const pulse = Math.sin(index * 0.13 + family * 1.7);
-      const counterPulse = Math.cos(-index * 0.09 + family * 1.1);
+      const pulse = Math.sin(seconds * (0.72 + family * 0.08) + index * 0.13 + family * 1.7);
+      const counterPulse = Math.cos(seconds * (0.5 + family * 0.06) - index * 0.09 + family * 1.1);
       const drift = pulse * height * 0.024;
       const fineDrift = counterPulse * height * 0.011;
       const jitterA = Math.sin((index + 1) * 1.91 + family * 2.7) * height * 0.018;
@@ -138,7 +125,7 @@ export function CompanyEnergyCanvas({
       );
     };
 
-    const makeGradient = (context: CanvasRenderingContext2D, family: EnergyFamily) => {
+    const makeGradient = (family: EnergyFamily) => {
       const gradient = context.createLinearGradient(-width * 0.05, 0, width * 1.05, 0);
       if (family === 1) {
         gradient.addColorStop(0, "rgba(248, 195, 70, .2)");
@@ -146,171 +133,155 @@ export function CompanyEnergyCanvas({
         gradient.addColorStop(0.58, "rgba(255, 78, 29, .92)");
         gradient.addColorStop(0.82, "rgba(245, 176, 54, .72)");
         gradient.addColorStop(1, "rgba(246, 204, 91, .16)");
-      } else if (family === 2) {
+        return gradient;
+      }
+      if (family === 2) {
         gradient.addColorStop(0, "rgba(255, 112, 35, .14)");
         gradient.addColorStop(0.3, "rgba(246, 188, 59, .74)");
         gradient.addColorStop(0.56, "rgba(255, 111, 31, .82)");
         gradient.addColorStop(0.8, "rgba(244, 199, 83, .64)");
         gradient.addColorStop(1, "rgba(255, 139, 43, .12)");
-      } else {
-        gradient.addColorStop(0, "rgba(246, 187, 58, .18)");
-        gradient.addColorStop(0.22, "rgba(255, 126, 29, .84)");
-        gradient.addColorStop(0.5, "rgba(255, 70, 24, .96)");
-        gradient.addColorStop(0.74, "rgba(255, 147, 38, .8)");
-        gradient.addColorStop(1, "rgba(246, 198, 77, .16)");
+        return gradient;
       }
+      gradient.addColorStop(0, "rgba(246, 187, 58, .18)");
+      gradient.addColorStop(0.22, "rgba(255, 126, 29, .84)");
+      gradient.addColorStop(0.5, "rgba(255, 70, 24, .96)");
+      gradient.addColorStop(0.74, "rgba(255, 147, 38, .8)");
+      gradient.addColorStop(1, "rgba(246, 198, 77, .16)");
       return gradient;
     };
 
     const strokeBundle = (
-      context: CanvasRenderingContext2D,
       count: number,
+      seconds: number,
       family: EnergyFamily,
       gradient: CanvasGradient,
-      accepts: (index: number) => boolean,
       haze = false,
     ) => {
       for (let index = 0; index < count; index += 1) {
-        if (!accepts(index)) continue;
-        traceStrand(context, index, count, family);
+        traceStrand(index, count, seconds, family);
         const accent = !haze && index % (family === 0 ? 10 : 8) === 0;
-        const densityCompensation = balanced && !haze ? 1.12 : 1;
+        const shimmer = 0.86 + Math.sin(seconds * 0.72 + index * 0.57 + family) * 0.14;
         context.strokeStyle = gradient;
+        const densityCompensation = balanced && !haze ? 1.12 : 1;
         context.globalAlpha = haze
-          ? 0.045
-          : Math.min(1, (accent ? 0.78 : 0.21) * densityCompensation);
-        context.lineWidth = haze ? 16 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+          ? 0.055
+          : Math.min(1, (accent ? 0.78 : 0.21) * shimmer * densityCompensation);
+        context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+        if (haze || accent) {
+          context.shadowColor = family === 2 ? "rgba(248, 183, 53, .24)" : "rgba(255, 93, 31, .3)";
+          context.shadowBlur = haze ? 20 : 8;
+        } else {
+          context.shadowBlur = 0;
+        }
         context.stroke();
       }
     };
 
-    const drawLayer = (context: CanvasRenderingContext2D, layer: number) => {
-      const compact = width < 700;
-      const primaryCount = compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64);
-      const counterCount = compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14);
-      const goldCount = compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22);
-      const gradients = [0, 1, 2].map((family) =>
-        makeGradient(context, family as EnergyFamily));
+    const draw = (seconds: number) => {
+      if (!primaryGradient || !counterGradient || !goldGradient) return;
 
       context.clearRect(0, 0, width, height);
       context.save();
       context.globalCompositeOperation = "multiply";
       context.lineCap = "round";
       context.lineJoin = "round";
-      context.shadowBlur = 0;
 
-      if (layerCount === 1) {
-        strokeBundle(context, compact ? 2 : 4, 0, gradients[0], () => true, true);
-        strokeBundle(context, 1, 1, gradients[1], () => true, true);
-        strokeBundle(context, Math.ceil(primaryCount * 0.58), 0, gradients[0], () => true);
-        strokeBundle(context, Math.ceil(counterCount * 0.58), 1, gradients[1], () => true);
-        strokeBundle(context, Math.ceil(goldCount * 0.58), 2, gradients[2], () => true);
-      } else {
-        const evenLayer = layer === 0;
-        if (evenLayer) {
-          strokeBundle(context, compact ? 4 : 6, 0, gradients[0], () => true, true);
-          strokeBundle(context, compact ? 1 : 2, 1, gradients[1], () => true, true);
-        }
-        strokeBundle(
-          context,
-          primaryCount,
-          0,
-          gradients[0],
-          (index) => (index % 2 === 0) === evenLayer,
-        );
-        if (!evenLayer) strokeBundle(context, counterCount, 1, gradients[1], () => true);
-        strokeBundle(
-          context,
-          goldCount,
-          2,
-          gradients[2],
-          (index) => (index % 2 === 0) === evenLayer,
-        );
-      }
+      const compact = width < 700;
+
+      strokeBundle(compact ? 6 : 8, seconds, 0, primaryGradient, true);
+      strokeBundle(compact ? 3 : 4, seconds, 1, counterGradient, true);
+      strokeBundle(compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64), seconds, 0, primaryGradient);
+      strokeBundle(compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14), seconds, 1, counterGradient);
+      strokeBundle(compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22), seconds, 2, goldGradient);
 
       context.restore();
     };
 
-    const releaseCanvases = () => {
+    const releaseCanvas = () => {
       width = 1;
       height = 1;
-      for (const canvas of usableCanvases) {
-        if (canvas.width !== 1) canvas.width = 1;
-        if (canvas.height !== 1) canvas.height = 1;
-      }
+      primaryGradient = null;
+      counterGradient = null;
+      goldGradient = null;
+      if (canvas.width !== 1) canvas.width = 1;
+      if (canvas.height !== 1) canvas.height = 1;
     };
 
-    const resizeAndDraw = () => {
-      drawFrame = 0;
+    const resize = () => {
       if (!isIntersecting || document.hidden) return;
-      const bounds = field.getBoundingClientRect();
+      const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      const pixelRatioCap = width < 700 ? 2 : balanced ? 1.15 : 1.25;
+      const pixelRatioCap = width < 700 ? 1 : balanced ? 1.25 : 1.5;
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
+      const sizeChanged = canvas.width !== renderWidth || canvas.height !== renderHeight;
 
-      for (let layer = 0; layer < layerCount; layer += 1) {
-        const canvas = usableCanvases[layer];
-        const context = usableContexts[layer];
-        if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
-          canvas.width = renderWidth;
-          canvas.height = renderHeight;
-        }
+      if (sizeChanged) {
+        canvas.width = renderWidth;
+        canvas.height = renderHeight;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        drawLayer(context, layer);
+        primaryGradient = makeGradient(0);
+        counterGradient = makeGradient(1);
+        goldGradient = makeGradient(2);
       }
+
+      if (!primaryGradient || !counterGradient || !goldGradient) {
+        primaryGradient = makeGradient(0);
+        counterGradient = makeGradient(1);
+        goldGradient = makeGradient(2);
+      }
+      draw(reducedMotion.matches ? 0 : performance.now() / 1000);
     };
 
-    const requestDraw = () => {
-      if (!drawFrame) drawFrame = window.requestAnimationFrame(resizeAndDraw);
+    const animate = (timestamp: number) => {
+      if (timestamp - lastFrame >= frameInterval) {
+        draw(timestamp / 1000);
+        lastFrame = timestamp;
+      }
+      frame = window.requestAnimationFrame(animate);
     };
 
     const syncMotion = () => {
-      const visible = isIntersecting && !document.hidden;
-      field.classList.toggle("is-motion-active", visible && !reducedMotion.matches);
-      if (visible) requestDraw();
-      else releaseCanvases();
+      window.cancelAnimationFrame(frame);
+      frame = 0;
+      lastFrame = 0;
+
+      if (!isIntersecting || document.hidden) {
+        releaseCanvas();
+        return;
+      }
+      resize();
+      if (reducedMotion.matches) draw(0);
+      else frame = window.requestAnimationFrame(animate);
     };
 
-    const resizeObserver = new ResizeObserver(requestDraw);
+    const resizeObserver = new ResizeObserver(resize);
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         isIntersecting = entry?.isIntersecting ?? false;
         syncMotion();
       },
-      { rootMargin: "160px 0px" },
+      { rootMargin: "120px 0px" },
     );
 
-    resizeObserver.observe(field);
-    intersectionObserver.observe(field);
+    resizeObserver.observe(canvas);
+    intersectionObserver.observe(canvas);
     reducedMotion.addEventListener("change", syncMotion);
     document.addEventListener("visibilitychange", syncMotion);
     syncMotion();
 
     return () => {
-      window.cancelAnimationFrame(drawFrame);
+      window.cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
-      field.classList.remove("is-motion-active");
-      releaseCanvases();
+      releaseCanvas();
     };
-  }, [layerCount, quality]);
+  }, [quality]);
 
-  return (
-    <div ref={fieldRef} className={`company-energy-field company-energy-field-${motion}`} aria-hidden="true">
-      {Array.from({ length: layerCount }, (_, layer) => (
-        <canvas
-          className={`company-energy-canvas company-energy-layer-${layer}`}
-          key={layer}
-          ref={(canvas) => {
-            canvasRefs.current[layer] = canvas;
-          }}
-        />
-      ))}
-    </div>
-  );
+  return <canvas ref={canvasRef} className="company-energy-canvas" aria-hidden="true" />;
 }
