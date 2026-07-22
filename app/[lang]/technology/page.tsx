@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import "../../technology.css";
 import { getAlphaEvidencePublicSnapshot } from "@/app/alphaevidence-snapshot";
 import { TechnologyPage } from "@/app/components/TechnologyPage";
 import { buildPageMetadata } from "@/app/seo";

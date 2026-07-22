@@ -1,15 +1,13 @@
 /* eslint-disable @next/next/no-img-element -- Real product captures need predictable layering for crossfades and motion. */
-"use client";
-
-import { useEffect, useState } from "react";
 import { technologyRouteFor, type Language } from "@/app/site-content";
 import { AlphadocHeroMotion } from "@/app/components/AlphadocHeroMotion";
 import { AlphadocWorkspaceMotion } from "@/app/components/AlphadocWorkspaceMotion";
 import { AlphadocsPhoneDemo } from "@/app/components/AlphadocsPhoneDemo";
 import { AlphadocFeatureRail } from "@/app/components/AlphadocFeatureRail";
+import { AlphadocLocalNav } from "@/app/components/AlphadocLocalNav";
 import type { AlphadocFeatureItem } from "@/app/components/AlphadocFeatureCard";
 import { CompanyEnergyCanvas } from "@/app/components/CompanyEnergyCanvas";
-import { useViewportMotion } from "@/app/components/useViewportMotion";
+import { ViewportMotion } from "@/app/components/ViewportMotion";
 
 const productCopy = {
   ko: {
@@ -108,18 +106,6 @@ const productCopy = {
 
 export function ProductPage({ language }: { language: Language }) {
   const content = productCopy[language];
-  const [activeSection, setActiveSection] = useState("overview");
-  const { ref: finalCtaRef, shouldAnimate: finalCtaPlaying } = useViewportMotion<HTMLElement>(0.12);
-
-  useEffect(() => {
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-ap-section]"));
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible?.target.id) setActiveSection(visible.target.id);
-    }, { rootMargin: "-24% 0px -62%", threshold: [0, 0.2, 0.5] });
-    sections.forEach((section) => observer.observe(section));
-    return () => observer.disconnect();
-  }, []);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -155,11 +141,7 @@ export function ProductPage({ language }: { language: Language }) {
         </div>
       </section>
 
-      <nav className="ap-local-nav" aria-label={language === "ko" ? "알파닥 제품 페이지" : "Alphadoc product page"}>
-        <div>
-          {content.nav.map(([id, label]) => <a href={`#${id}`} aria-current={activeSection === id ? "location" : undefined} key={id}>{label}</a>)}
-        </div>
-      </nav>
+      <AlphadocLocalNav items={content.nav} language={language} />
 
       <section className="ap-anatomy ap-shell" id="workspace">
         <header className="ap-section-head">
@@ -195,7 +177,7 @@ export function ProductPage({ language }: { language: Language }) {
         </div>
       </section>
 
-      <section ref={finalCtaRef} className={`ap-final-cta${finalCtaPlaying ? " is-playing" : ""}`}>
+      <ViewportMotion as="section" className="ap-final-cta" threshold={0.12}>
         <CompanyEnergyCanvas quality="balanced" />
         <div className="ap-final-screen" aria-hidden="true">
           <div className="ap-final-logo-stage">
@@ -209,7 +191,7 @@ export function ProductPage({ language }: { language: Language }) {
             <a className="ap-text-link" href={technologyRouteFor(language)}>{content.cta.secondary}<span aria-hidden="true">→</span></a>
           </div>
         </div>
-      </section>
+      </ViewportMotion>
     </article>
   );
 }

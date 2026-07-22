@@ -20,8 +20,10 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
   const { ref: galleryRef, inView, reducedMotion, shouldAnimate } = useViewportMotion<HTMLDivElement>(0.04);
   const railRef = useRef<HTMLDivElement>(null);
   const autoFrameRef = useRef<number | null>(null);
+  const cardMetricsRef = useRef<Array<{ center: number; index: number }>>([]);
   const lastAutoFrameRef = useRef<number | null>(null);
   const loopWidthRef = useRef(0);
+  const mountedInstancesRef = useRef<Set<string>>(new Set());
   const scrollFrameRef = useRef<number | null>(null);
   const interactionResumeRef = useRef<number | null>(null);
   const [active, setActive] = useState(0);
@@ -38,6 +40,11 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
       const duplicate = rail.querySelector<HTMLElement>('[data-feature-copy="1"][data-feature-index="0"]');
       if (!first || !duplicate) return;
       loopWidthRef.current = Math.max(0, duplicate.offsetLeft - first.offsetLeft);
+      cardMetricsRef.current = Array.from(rail.querySelectorAll<HTMLElement>("[data-feature-index]"))
+        .map((card) => ({
+          center: card.offsetLeft + card.offsetWidth / 2,
+          index: Number(card.dataset.featureIndex ?? 0),
+        }));
     };
 
     measureLoop();
@@ -56,35 +63,85 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
     if (!rail) return;
     const cards = Array.from(rail.querySelectorAll<HTMLElement>("[data-feature-instance]"));
     const Observer = window.IntersectionObserver;
+    const pendingInstances = new Set<string>();
+    let mountTimer: number | undefined;
+    let idleHandle: number | undefined;
+
+    function cancelScheduledMount() {
+      if (mountTimer !== undefined) window.clearTimeout(mountTimer);
+      if (idleHandle !== undefined && typeof cancelIdleCallback === "function") {
+        cancelIdleCallback(idleHandle);
+      }
+      mountTimer = undefined;
+      idleHandle = undefined;
+    }
+
+    function mountNext() {
+      idleHandle = undefined;
+      const instance = pendingInstances.values().next().value;
+      if (!instance) return;
+      pendingInstances.delete(instance);
+      mountedInstancesRef.current.add(instance);
+      setVisibleInstances((current) => {
+        if (current.has(instance)) return current;
+        const next = new Set(current);
+        next.add(instance);
+        return next;
+      });
+      scheduleQueuedMount(140);
+    }
+
+    function scheduleQueuedMount(delay = 220) {
+      cancelScheduledMount();
+      if (pendingInstances.size === 0) return;
+      mountTimer = window.setTimeout(() => {
+        mountTimer = undefined;
+        if (typeof requestIdleCallback === "function") {
+          idleHandle = requestIdleCallback(mountNext, { timeout: 700 });
+        } else {
+          mountNext();
+        }
+      }, delay);
+    }
+
+    const deferDuringPageScroll = () => {
+      if (pendingInstances.size > 0) scheduleQueuedMount();
+    };
 
     if (!Observer) {
-      setVisibleInstances(new Set(cards.map((card) => card.dataset.featureInstance ?? "").filter(Boolean)));
-      return;
+      cards.forEach((card) => {
+        const instance = card.dataset.featureInstance;
+        if (instance) pendingInstances.add(instance);
+      });
+      scheduleQueuedMount();
+      window.addEventListener("scroll", deferDuringPageScroll, { passive: true });
+      return () => {
+        window.removeEventListener("scroll", deferDuringPageScroll);
+        cancelScheduledMount();
+      };
     }
 
     const observer = new Observer((entries) => {
-      setVisibleInstances((current) => {
-        const next = new Set(current);
-        let changed = false;
-
-        entries.forEach((entry) => {
-          const instance = (entry.target as HTMLElement).dataset.featureInstance;
-          if (!instance) return;
-          const visible = entry.isIntersecting && entry.intersectionRatio >= 0.06;
-          if (visible && !next.has(instance)) {
-            next.add(instance);
-            changed = true;
-          } else if (!visible && next.delete(instance)) {
-            changed = true;
-          }
-        });
-
-        return changed ? next : current;
+      entries.forEach((entry) => {
+        const instance = (entry.target as HTMLElement).dataset.featureInstance;
+        if (!instance) return;
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.06;
+        if (visible && !mountedInstancesRef.current.has(instance)) {
+          pendingInstances.add(instance);
+        } else if (!visible) {
+          pendingInstances.delete(instance);
+        }
       });
+      scheduleQueuedMount();
     }, { root: rail, rootMargin: "0px 48px", threshold: [0, 0.06] });
 
     cards.forEach((card) => observer.observe(card));
-    return () => observer.disconnect();
+    window.addEventListener("scroll", deferDuringPageScroll, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", deferDuringPageScroll);
+      cancelScheduledMount();
+    };
   }, [items.length]);
 
   const railPaused = paused || interactionPaused;
@@ -129,17 +186,16 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
     if (scrollFrameRef.current !== null) window.cancelAnimationFrame(scrollFrameRef.current);
 
     scrollFrameRef.current = window.requestAnimationFrame(() => {
-      const cards = Array.from(rail.querySelectorAll<HTMLElement>("[data-feature-index]"));
+      const cards = cardMetricsRef.current;
       const viewportCenter = rail.scrollLeft + rail.clientWidth / 2;
       let nearestIndex = active;
       let nearestDistance = Number.POSITIVE_INFINITY;
 
       cards.forEach((card) => {
-        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-        const distance = Math.abs(cardCenter - viewportCenter);
+        const distance = Math.abs(card.center - viewportCenter);
         if (distance < nearestDistance) {
           nearestDistance = distance;
-          nearestIndex = Number(card.dataset.featureIndex ?? 0);
+          nearestIndex = card.index;
         }
       });
 

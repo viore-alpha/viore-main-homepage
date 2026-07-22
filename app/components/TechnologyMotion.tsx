@@ -1,6 +1,5 @@
-"use client";
-
-import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { ViewportMotion } from "@/app/components/ViewportMotion";
 
 export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "evaluation" | "document" | "layer";
 type SvgTone = "ink" | "blue" | "red" | "muted";
@@ -675,30 +674,17 @@ function DiagramPair({ kind }: { kind: TechnologyMotionKind }) {
 }
 
 export function TechnologyMotion({ kind }: { kind: TechnologyMotionKind }) {
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || !("IntersectionObserver" in window)) return;
-
-    root.classList.add("is-enhanced");
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        root.classList.add("is-active");
-        observer.disconnect();
-      },
-      { threshold: 0.14, rootMargin: "0px 0px -8%" },
-    );
-    observer.observe(root);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <div ref={rootRef} className={`technology-raw-diagram technology-raw-diagram-${kind}`}>
+    <ViewportMotion
+      activeClassName="is-active"
+      className={`technology-raw-diagram technology-raw-diagram-${kind}`}
+      deferChildren
+      enhancedClassName="is-enhanced"
+      mountMargin="720px 0px"
+      once
+      threshold={0.14}
+    >
       <DiagramPair kind={kind} />
-    </div>
+    </ViewportMotion>
   );
 }

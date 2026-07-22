@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 
-const FRAME_INTERVAL = 1000 / 30;
 type EnergyFamily = 0 | 1 | 2;
 type EnergyCanvasQuality = "full" | "balanced";
 
@@ -25,25 +24,20 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     if (!canvas || !context) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const balanced = quality === "balanced";
     let width = 1;
     let height = 1;
-    let frame = 0;
-    let lastFrame = 0;
+    let drawFrame = 0;
     let isIntersecting = false;
-    let primaryGradient: CanvasGradient | null = null;
-    let counterGradient: CanvasGradient | null = null;
-    let goldGradient: CanvasGradient | null = null;
-    const balanced = quality === "balanced";
-    const frameInterval = balanced ? 1000 / 24 : FRAME_INTERVAL;
 
-    const traceStrand = (index: number, count: number, seconds: number, family: EnergyFamily) => {
+    const traceStrand = (index: number, count: number, family: EnergyFamily) => {
       const position = count === 1 ? 0 : index / (count - 1);
       const offset = position * 2 - 1;
       const centerY = height * 0.53;
       const spreadScale = family === 0 ? 0.105 : family === 1 ? 0.085 : 0.12;
       const spread = offset * height * spreadScale;
-      const pulse = Math.sin(seconds * (0.72 + family * 0.08) + index * 0.13 + family * 1.7);
-      const counterPulse = Math.cos(seconds * (0.5 + family * 0.06) - index * 0.09 + family * 1.1);
+      const pulse = Math.sin(index * 0.13 + family * 1.7);
+      const counterPulse = Math.cos(-index * 0.09 + family * 1.1);
       const drift = pulse * height * 0.024;
       const fineDrift = counterPulse * height * 0.011;
       const jitterA = Math.sin((index + 1) * 1.91 + family * 2.7) * height * 0.018;
@@ -133,82 +127,71 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
         gradient.addColorStop(0.58, "rgba(255, 78, 29, .92)");
         gradient.addColorStop(0.82, "rgba(245, 176, 54, .72)");
         gradient.addColorStop(1, "rgba(246, 204, 91, .16)");
-        return gradient;
-      }
-      if (family === 2) {
+      } else if (family === 2) {
         gradient.addColorStop(0, "rgba(255, 112, 35, .14)");
         gradient.addColorStop(0.3, "rgba(246, 188, 59, .74)");
         gradient.addColorStop(0.56, "rgba(255, 111, 31, .82)");
         gradient.addColorStop(0.8, "rgba(244, 199, 83, .64)");
         gradient.addColorStop(1, "rgba(255, 139, 43, .12)");
-        return gradient;
+      } else {
+        gradient.addColorStop(0, "rgba(246, 187, 58, .18)");
+        gradient.addColorStop(0.22, "rgba(255, 126, 29, .84)");
+        gradient.addColorStop(0.5, "rgba(255, 70, 24, .96)");
+        gradient.addColorStop(0.74, "rgba(255, 147, 38, .8)");
+        gradient.addColorStop(1, "rgba(246, 198, 77, .16)");
       }
-      gradient.addColorStop(0, "rgba(246, 187, 58, .18)");
-      gradient.addColorStop(0.22, "rgba(255, 126, 29, .84)");
-      gradient.addColorStop(0.5, "rgba(255, 70, 24, .96)");
-      gradient.addColorStop(0.74, "rgba(255, 147, 38, .8)");
-      gradient.addColorStop(1, "rgba(246, 198, 77, .16)");
       return gradient;
     };
 
     const strokeBundle = (
       count: number,
-      seconds: number,
       family: EnergyFamily,
       gradient: CanvasGradient,
       haze = false,
     ) => {
       for (let index = 0; index < count; index += 1) {
-        traceStrand(index, count, seconds, family);
+        traceStrand(index, count, family);
         const accent = !haze && index % (family === 0 ? 10 : 8) === 0;
-        const shimmer = 0.86 + Math.sin(seconds * 0.72 + index * 0.57 + family) * 0.14;
-        context.strokeStyle = gradient;
         const densityCompensation = balanced && !haze ? 1.12 : 1;
+        context.strokeStyle = gradient;
         context.globalAlpha = haze
           ? 0.055
-          : Math.min(1, (accent ? 0.78 : 0.21) * shimmer * densityCompensation);
+          : Math.min(1, (accent ? 0.78 : 0.21) * densityCompensation);
         context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
-        if (haze || accent) {
-          context.shadowColor = family === 2 ? "rgba(248, 183, 53, .24)" : "rgba(255, 93, 31, .3)";
-          context.shadowBlur = haze ? 20 : 8;
-        } else {
-          context.shadowBlur = 0;
-        }
         context.stroke();
       }
     };
 
-    const draw = (seconds: number) => {
-      if (!primaryGradient || !counterGradient || !goldGradient) return;
+    const draw = () => {
+      const compact = width < 700;
+      const primaryGradient = makeGradient(0);
+      const counterGradient = makeGradient(1);
+      const goldGradient = makeGradient(2);
 
       context.clearRect(0, 0, width, height);
       context.save();
       context.globalCompositeOperation = "multiply";
       context.lineCap = "round";
       context.lineJoin = "round";
+      context.shadowBlur = 0;
 
-      const compact = width < 700;
-
-      strokeBundle(compact ? 6 : 8, seconds, 0, primaryGradient, true);
-      strokeBundle(compact ? 3 : 4, seconds, 1, counterGradient, true);
-      strokeBundle(compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64), seconds, 0, primaryGradient);
-      strokeBundle(compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14), seconds, 1, counterGradient);
-      strokeBundle(compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22), seconds, 2, goldGradient);
-
+      strokeBundle(compact ? 6 : 8, 0, primaryGradient, true);
+      strokeBundle(compact ? 3 : 4, 1, counterGradient, true);
+      strokeBundle(compact ? (balanced ? 32 : 40) : (balanced ? 48 : 64), 0, primaryGradient);
+      strokeBundle(compact ? (balanced ? 7 : 9) : (balanced ? 11 : 14), 1, counterGradient);
+      strokeBundle(compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22), 2, goldGradient);
       context.restore();
     };
 
     const releaseCanvas = () => {
       width = 1;
       height = 1;
-      primaryGradient = null;
-      counterGradient = null;
-      goldGradient = null;
       if (canvas.width !== 1) canvas.width = 1;
       if (canvas.height !== 1) canvas.height = 1;
     };
 
-    const resize = () => {
+    const resizeAndDraw = () => {
+      drawFrame = 0;
       if (!isIntersecting || document.hidden) return;
       const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
@@ -217,54 +200,33 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
-      const sizeChanged = canvas.width !== renderWidth || canvas.height !== renderHeight;
 
-      if (sizeChanged) {
+      if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
         canvas.width = renderWidth;
         canvas.height = renderHeight;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        primaryGradient = makeGradient(0);
-        counterGradient = makeGradient(1);
-        goldGradient = makeGradient(2);
       }
-
-      if (!primaryGradient || !counterGradient || !goldGradient) {
-        primaryGradient = makeGradient(0);
-        counterGradient = makeGradient(1);
-        goldGradient = makeGradient(2);
-      }
-      draw(reducedMotion.matches ? 0 : performance.now() / 1000);
+      draw();
     };
 
-    const animate = (timestamp: number) => {
-      if (timestamp - lastFrame >= frameInterval) {
-        draw(timestamp / 1000);
-        lastFrame = timestamp;
-      }
-      frame = window.requestAnimationFrame(animate);
+    const requestDraw = () => {
+      if (!drawFrame) drawFrame = window.requestAnimationFrame(resizeAndDraw);
     };
 
     const syncMotion = () => {
-      window.cancelAnimationFrame(frame);
-      frame = 0;
-      lastFrame = 0;
-
-      if (!isIntersecting || document.hidden) {
-        releaseCanvas();
-        return;
-      }
-      resize();
-      if (reducedMotion.matches) draw(0);
-      else frame = window.requestAnimationFrame(animate);
+      const visible = isIntersecting && !document.hidden;
+      canvas.classList.toggle("is-motion-active", visible && !reducedMotion.matches);
+      if (visible) requestDraw();
+      else releaseCanvas();
     };
 
-    const resizeObserver = new ResizeObserver(resize);
+    const resizeObserver = new ResizeObserver(requestDraw);
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
         isIntersecting = entry?.isIntersecting ?? false;
         syncMotion();
       },
-      { rootMargin: "120px 0px" },
+      { rootMargin: "160px 0px" },
     );
 
     resizeObserver.observe(canvas);
@@ -274,11 +236,12 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     syncMotion();
 
     return () => {
-      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(drawFrame);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       reducedMotion.removeEventListener("change", syncMotion);
       document.removeEventListener("visibilitychange", syncMotion);
+      canvas.classList.remove("is-motion-active");
       releaseCanvas();
     };
   }, [quality]);

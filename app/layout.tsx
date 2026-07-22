@@ -1,7 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import "./technology.css";
-import "./knowledge.css";
 import {
   HOME_SEO,
   SEO_KEYWORDS,
@@ -91,15 +89,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
-      <head>
-        <link
-          href="https://cdn.jsdelivr.net/gh/toss/tossface@1.6.1/dist/tossface.css"
-          rel="stylesheet"
-          integrity="sha384-NvFWxNBCtS/t7ARZAnagIacT7UimQmV2ye6DK4dEJvzGQthX59t7e+f1Ll/6xMXR"
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />
-      </head>
       <body>{children}</body>
     </html>
   );

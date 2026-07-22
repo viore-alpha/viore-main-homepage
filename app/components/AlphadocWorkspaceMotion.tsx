@@ -1,13 +1,10 @@
-"use client";
-
-import { useId } from "react";
 import type { Language } from "@/app/site-content";
-import { useViewportMotion } from "@/app/components/useViewportMotion";
+import { ViewportMotion } from "@/app/components/ViewportMotion";
 
 const AD_ASSET = "https://www.alphadoc.ai";
-const GENERATED_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-chest-pain-night.jpg";
-const GENERATED_SECONDARY_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-antibiotic-review.jpg";
-const GENERATED_COMMUNITY_IMAGE = "/assets/product/alphadoc/generated/community-chest-pain-handoff.jpg";
+const GENERATED_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-chest-pain-night-optimized.webp";
+const GENERATED_SECONDARY_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-antibiotic-review-optimized.webp";
+const GENERATED_COMMUNITY_IMAGE = "/assets/product/alphadoc/generated/community-chest-pain-handoff-optimized.webp";
 
 const uiCopy = {
   ko: {
@@ -288,19 +285,20 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
   const followupChipLayout = language === "ko"
     ? [{ x: 327, width: 178 }, { x: 515, width: 174 }]
     : [{ x: 327, width: 194 }, { x: 531, width: 204 }];
-  const { ref: rootRef, inView, reducedMotion, shouldAnimate } = useViewportMotion<HTMLDivElement>(0.08);
-  const id = useId().replace(/:/g, "");
+  const id = `workspace-${language}`;
   const newsClip = `ap-real-news-${id}`;
   const newsListClip = `ap-real-news-list-${id}`;
   const communityClip = `ap-real-community-${id}`;
   const weatherClip = `ap-real-weather-${id}`;
 
   return (
-    <div
-      ref={rootRef}
-      className={`ap-workspace-motion${shouldAnimate ? " is-playing" : ""}${inView && reducedMotion ? " is-reduced" : ""}`}
+    <ViewportMotion
+      className="ap-workspace-motion"
+      deferChildren
+      mountMargin="520px 0px"
+      threshold={0.08}
       role="img"
-      aria-label={label}
+      ariaLabel={label}
     >
       <svg className="ap-workspace-motion-svg" viewBox="0 0 1280 840" aria-hidden="true">
         <defs>
@@ -795,6 +793,6 @@ export function AlphadocWorkspaceMotion({ language, label }: { language: Languag
           <Cursor className="ap-real-tab-cursor" />
         </g>
       </svg>
-    </div>
+    </ViewportMotion>
   );
 }

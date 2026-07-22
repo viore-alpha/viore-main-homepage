@@ -41,7 +41,7 @@ type MotionCopy = {
   interactions: MotionInteraction[];
 };
 
-const xrayAsset = "/assets/product/alphadoc/generated/synthetic-chest-xray-rll.jpg";
+const xrayAsset = "/assets/product/alphadoc/generated/synthetic-chest-xray-rll-optimized.webp";
 
 const MOTION_TIMING = {
   introDelay: 520,
