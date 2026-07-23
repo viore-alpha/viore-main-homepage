@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type UIEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type TouchEvent as ReactTouchEvent, type UIEvent } from "react";
 import type { Language } from "@/app/site-content";
 import { AlphadocFeatureCard, type AlphadocFeatureItem } from "@/app/components/AlphadocFeatureCard";
 import { useViewportMotion } from "@/app/components/useViewportMotion";
 
 const AUTO_SCROLL_PX_PER_SECOND = 18;
-const INTERACTION_RESUME_MS = 1200;
 const RAIL_COPIES = [0, 1] as const;
 
 interface AlphadocFeatureRailProps {
@@ -22,13 +21,14 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
   const autoFrameRef = useRef<number | null>(null);
   const cardMetricsRef = useRef<Array<{ center: number; index: number }>>([]);
   const lastAutoFrameRef = useRef<number | null>(null);
+  const loopInitializedRef = useRef(false);
   const loopWidthRef = useRef(0);
   const mountedInstancesRef = useRef<Set<string>>(new Set());
   const scrollFrameRef = useRef<number | null>(null);
-  const interactionResumeRef = useRef<number | null>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [interactionPaused, setInteractionPaused] = useState(false);
+  const [hoverPaused, setHoverPaused] = useState(false);
+  const [touchPaused, setTouchPaused] = useState(false);
   const [visibleInstances, setVisibleInstances] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
@@ -39,14 +39,26 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
       const first = rail.querySelector<HTMLElement>('[data-feature-copy="0"][data-feature-index="0"]');
       const duplicate = rail.querySelector<HTMLElement>('[data-feature-copy="1"][data-feature-index="0"]');
       if (!first || !duplicate) return;
-      loopWidthRef.current = Math.max(0, duplicate.offsetLeft - first.offsetLeft);
+      const previousLoopWidth = loopWidthRef.current;
+      const nextLoopWidth = Math.max(0, duplicate.offsetLeft - first.offsetLeft);
+      loopWidthRef.current = nextLoopWidth;
       cardMetricsRef.current = Array.from(rail.querySelectorAll<HTMLElement>("[data-feature-index]"))
         .map((card) => ({
           center: card.offsetLeft + card.offsetWidth / 2,
           index: Number(card.dataset.featureIndex ?? 0),
         }));
+
+      if (nextLoopWidth <= 0) return;
+      if (!loopInitializedRef.current) {
+        rail.scrollLeft = nextLoopWidth;
+        loopInitializedRef.current = true;
+      } else if (previousLoopWidth > 0 && previousLoopWidth !== nextLoopWidth) {
+        const loopProgress = Math.min(1, Math.max(0, rail.scrollLeft / previousLoopWidth));
+        rail.scrollLeft = loopProgress * nextLoopWidth;
+      }
     };
 
+    loopInitializedRef.current = false;
     measureLoop();
     const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measureLoop);
     resizeObserver?.observe(rail);
@@ -144,10 +156,11 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
     };
   }, [items.length]);
 
-  const railPaused = paused || interactionPaused;
+  const railPaused = paused || hoverPaused || touchPaused;
+  const autoScrollRunning = shouldAnimate && !railPaused && items.length >= 2;
 
   useEffect(() => {
-    if (!shouldAnimate || railPaused || items.length < 2) return;
+    if (!autoScrollRunning) return;
 
     const tick = (time: number) => {
       const rail = railRef.current;
@@ -159,8 +172,9 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
       const loopWidth = loopWidthRef.current;
 
       if (loopWidth > 0) {
-        let next = rail.scrollLeft + (elapsed * AUTO_SCROLL_PX_PER_SECOND) / 1000;
-        if (next >= loopWidth) next -= loopWidth;
+        let next = rail.scrollLeft - (elapsed * AUTO_SCROLL_PX_PER_SECOND) / 1000;
+        if (next <= 0) next += loopWidth;
+        else if (next > loopWidth) next -= loopWidth;
         rail.scrollLeft = next;
       }
 
@@ -173,12 +187,11 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
       autoFrameRef.current = null;
       lastAutoFrameRef.current = null;
     };
-  }, [items.length, railPaused, shouldAnimate]);
+  }, [autoScrollRunning]);
 
   useEffect(() => () => {
     if (autoFrameRef.current !== null) window.cancelAnimationFrame(autoFrameRef.current);
     if (scrollFrameRef.current !== null) window.cancelAnimationFrame(scrollFrameRef.current);
-    if (interactionResumeRef.current !== null) window.clearTimeout(interactionResumeRef.current);
   }, []);
 
   function handleScroll(event: UIEvent<HTMLDivElement>) {
@@ -204,25 +217,16 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
     });
   }
 
-  function scheduleInteractionResume() {
-    if (interactionResumeRef.current !== null) window.clearTimeout(interactionResumeRef.current);
-    interactionResumeRef.current = window.setTimeout(() => {
-      setInteractionPaused(false);
-      interactionResumeRef.current = null;
-    }, INTERACTION_RESUME_MS);
-  }
+  const handleCardPointerEnter = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse") setHoverPaused(true);
+  }, []);
 
-  function handlePointerEnter(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse") setInteractionPaused(true);
-  }
+  const handleCardPointerLeave = useCallback((event: ReactPointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse") setHoverPaused(false);
+  }, []);
 
-  function handlePointerLeave(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse") setInteractionPaused(false);
-    else scheduleInteractionResume();
-  }
-
-  function handlePointerRelease(event: ReactPointerEvent<HTMLDivElement>) {
-    if (event.pointerType !== "mouse") scheduleInteractionResume();
+  function handleTouchRelease(event: ReactTouchEvent<HTMLDivElement>) {
+    setTouchPaused(event.touches.length > 0);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -249,11 +253,7 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
       id={id}
       aria-label={ariaLabel}
       role="region"
-      data-auto-scroll={motionPaused ? "paused" : "running"}
-      onPointerEnter={handlePointerEnter}
-      onPointerLeave={handlePointerLeave}
-      onFocusCapture={() => setInteractionPaused(true)}
-      onBlurCapture={() => setInteractionPaused(false)}
+      data-auto-scroll={autoScrollRunning ? "running" : "paused"}
     >
       <div className="ap-feature-rail-viewport">
         <div
@@ -261,14 +261,10 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
           className="ap-feature-rail"
           aria-label={railLabel}
           onKeyDown={handleKeyDown}
-          onPointerDown={() => setInteractionPaused(true)}
-          onPointerUp={handlePointerRelease}
-          onPointerCancel={handlePointerRelease}
           onScroll={handleScroll}
-          onWheel={() => {
-            setInteractionPaused(true);
-            scheduleInteractionResume();
-          }}
+          onTouchStart={() => setTouchPaused(true)}
+          onTouchEnd={handleTouchRelease}
+          onTouchCancel={handleTouchRelease}
           role="list"
           tabIndex={0}
         >
@@ -285,6 +281,8 @@ export function AlphadocFeatureRail({ ariaLabel, id, items, language }: Alphadoc
                 language={language}
                 key={instanceId}
                 motionVisible={visibleInstances.has(instanceId)}
+                onPointerEnter={handleCardPointerEnter}
+                onPointerLeave={handleCardPointerLeave}
               />
             );
           }))}

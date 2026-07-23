@@ -542,7 +542,9 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(featureRailSource, /const AUTO_SCROLL_PX_PER_SECOND = 18/);
   assert.match(featureRailSource, /const RAIL_COPIES = \[0, 1\] as const/);
   assert.match(featureRailSource, /autoFrameRef\.current = window\.requestAnimationFrame\(tick\)/);
-  assert.match(featureRailSource, /if \(next >= loopWidth\) next -= loopWidth/);
+  assert.match(featureRailSource, /rail\.scrollLeft = nextLoopWidth/);
+  assert.match(featureRailSource, /let next = rail\.scrollLeft - \(elapsed \* AUTO_SCROLL_PX_PER_SECOND\) \/ 1000/);
+  assert.match(featureRailSource, /if \(next <= 0\) next \+= loopWidth/);
   assert.match(featureRailSource, /new Observer\(\(entries\) =>/);
   assert.match(featureRailSource, /\{ root: rail, rootMargin: "0px 48px", threshold: \[0, 0\.06\] \}/);
   assert.match(featureRailSource, /motionVisible=\{visibleInstances\.has\(instanceId\)\}/);
@@ -552,10 +554,12 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(featureRailSource, /const cards = cardMetricsRef\.current/);
   assert.doesNotMatch(featureRailSource, /AUTO_ADVANCE_MS|directionRef|rail\.scrollTo/);
   assert.match(featureRailSource, /useViewportMotion<HTMLDivElement>\(0\.04\)/);
-  assert.match(featureRailSource, /onPointerEnter=\{handlePointerEnter\}/);
-  assert.match(featureRailSource, /onPointerDown=\{\(\) => setInteractionPaused\(true\)\}/);
-  assert.match(featureRailSource, /onWheel=\{\(\) => \{/);
-  assert.match(featureRailSource, /data-auto-scroll=\{motionPaused \? "paused" : "running"\}/);
+  assert.match(featureRailSource, /onPointerEnter=\{handleCardPointerEnter\}/);
+  assert.match(featureRailSource, /onTouchStart=\{\(\) => setTouchPaused\(true\)\}/);
+  assert.match(featureRailSource, /onTouchEnd=\{handleTouchRelease\}/);
+  assert.match(featureRailSource, /onTouchCancel=\{handleTouchRelease\}/);
+  assert.match(featureRailSource, /data-auto-scroll=\{autoScrollRunning \? "running" : "paused"\}/);
+  assert.doesNotMatch(featureRailSource, /INTERACTION_RESUME_MS|interactionResumeRef|onWheel=|onFocusCapture|onBlurCapture|handleRailPointer/);
   assert.match(featureRailSource, /event\.key !== "ArrowLeft" && event\.key !== "ArrowRight"/);
   assert.match(featureCardSource, /<AlphadocFeatureMotionSvg/);
   assert.match(featureCardSource, /lazy\(async \(\) =>/);
@@ -563,6 +567,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(featureCardSource, /is-motion-visible/);
   assert.match(featureCardSource, /data-feature-instance=\{instanceId\}/);
   assert.match(featureCardSource, /aria-hidden=\{duplicate \? "true" : undefined\}/);
+  assert.match(featureCardSource, /onPointerEnter=\{onPointerEnter\}/);
+  assert.match(featureCardSource, /onPointerLeave=\{onPointerLeave\}/);
   assert.doesNotMatch(featureCardSource, /key=\{`\$\{item\.id\}-\$\{active/);
   assert.doesNotMatch(featureCardSource, /ap-feature-motion-(?:query|scan|focus|result)|ap-feature-screen-crop/);
   assert.match(featureMotionSource, /SGLT2 심부전/);
