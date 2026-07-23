@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- External Alphadoc app icons are served from the product asset registry. */
 "use client";
 
-import { lazy, memo, Suspense } from "react";
+import { lazy, memo, Suspense, type PointerEvent as ReactPointerEvent } from "react";
 import type { Language } from "@/app/site-content";
 import type { AlphadocFeatureId } from "@/app/components/AlphadocFeatureMotionSvg";
 
@@ -30,9 +30,11 @@ interface AlphadocFeatureCardProps {
   item: AlphadocFeatureItem;
   language: Language;
   motionVisible: boolean;
+  onPointerEnter: (event: ReactPointerEvent<HTMLElement>) => void;
+  onPointerLeave: (event: ReactPointerEvent<HTMLElement>) => void;
 }
 
-export const AlphadocFeatureCard = memo(function AlphadocFeatureCard({ active, copyIndex, duplicate, index, instanceId, item, language, motionVisible }: AlphadocFeatureCardProps) {
+export const AlphadocFeatureCard = memo(function AlphadocFeatureCard({ active, copyIndex, duplicate, index, instanceId, item, language, motionVisible, onPointerEnter, onPointerLeave }: AlphadocFeatureCardProps) {
   return (
     <article
       className={`ap-feature-card${active ? " is-current" : ""}${motionVisible ? " is-motion-visible" : ""}`}
@@ -42,6 +44,8 @@ export const AlphadocFeatureCard = memo(function AlphadocFeatureCard({ active, c
       data-feature-instance={instanceId}
       aria-current={!duplicate && active ? "true" : undefined}
       aria-hidden={duplicate ? "true" : undefined}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
       role="listitem"
     >
       <div className="ap-feature-motion">
