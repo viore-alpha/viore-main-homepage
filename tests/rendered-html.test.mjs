@@ -95,6 +95,8 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
   assert.match(llms, /Korean homepage: https:\/\/vioreai\.com\/ko/);
   assert.doesNotMatch(llms, /vioreai\.com\/ko\/company/);
   assert.match(llms, /Knowledge: https:\/\/vioreai\.com\/ko\/knowledge/);
+  assert.match(llms, /Technology Journal documents an expanding technology system/);
+  assert.match(llms, /New technologies are added to the journal/);
   assert.doesNotMatch(llms, /Council:|\/council/);
 
   const manifest = JSON.parse(manifestText);
@@ -887,7 +889,7 @@ test("routes Company and Contact navigation into the locale homepage", async () 
   assert.match(chrome, /site-footer \$\{isDarkFooter \? "site-footer-dark" : ""\}/);
 });
 
-test("server-renders one accessible Technology journal with four independent articles", async () => {
+test("server-renders an accessible, expanding Technology journal with its current articles", async () => {
   const [response, englishResponse] = await Promise.all([
     render("/ko/technology"),
     render("/en/technology"),
@@ -906,15 +908,17 @@ test("server-renders one accessible Technology journal with four independent art
   assert.match(html, /만드는 과정/);
   assert.match(html, /Viore Team/);
   assert.match(html, /서로 다른 기술이 모여 하나의 의료 경험을 만듭니다/);
+  assert.match(html, /이 구조는 지금 소개하는 기술로 끝나지 않습니다/);
+  assert.match(html, /새로운 기술이 같은 연결 원칙 위에 더해집니다/);
   assert.match(html, /Evidence Foundation/);
-  assert.match(html, /AlphaEvidence DB, 살아 있는 근거의 중심/);
+  assert.match(html, /AlphaEvidence DB, 근거의 계보를 잇는 데이터 계층/);
   assert.match(html, /매일 더 깊어지는 AlphaEvidence DB/);
-  assert.match(html, /모델이 아니라, 의료 업무의 목적을 중심에 둡니다/);
+  assert.match(html, /의료 업무의 목적에서 시작합니다/);
   assert.match(html, /AlphaDoc Engine/);
   assert.match(html, /Medical Workflow Orchestration/);
-  assert.match(html, /문서 파일을 재사용 가능한 artifact로/);
+  assert.match(html, /문서 파일을 재사용 가능한 아티팩트로/);
   assert.match(html, /Deterministic Document-to-Artifact Engine/);
-  assert.match(html, /보안을 설정이 아니라 실행 구조로 만듭니다/);
+  assert.match(html, /보호 원칙을 실행 구조에 담습니다/);
   assert.match(html, /Protected Inference Gateway/);
   for (const id of [
     "technology-alphaevidence",
@@ -935,8 +939,11 @@ test("server-renders one accessible Technology journal with four independent art
   assert.match(html, /초록 보유 논문/);
   assert.match(html, /노출 가능한 진료지침/);
   assert.match(html, /출처·변경 관찰 기록/);
+  assert.match(html, /실시간 집계/);
+  assert.match(html, /현재 집계/);
   assert.match(html, /의료인의 검토와 판단/);
   assert.match(html, /TechArticle/);
+  assert.match(html, /CollectionPage/);
   assert.equal((html.match(/<figcaption>/g) ?? []).length, 5);
   assert.match(html, /technology-raw-diagram-overview/);
   assert.match(html, /technology-raw-diagram-evidence/);
@@ -945,12 +952,14 @@ test("server-renders one accessible Technology journal with four independent art
   assert.match(html, /technology-raw-diagram-layer/);
   assert.doesNotMatch(html, /개발 지시 — 비공개|개발 계약 — 비공개|내부 근거 지도/);
 
-  assert.match(englishHtml, /How we draw/);
-  assert.match(englishHtml, /our own linearity/);
-  assert.match(englishHtml, /AlphaEvidence DB, the living center of evidence/);
-  assert.match(englishHtml, /Purpose comes before the model/);
+  assert.match(englishHtml, /How we build/);
+  assert.match(englishHtml, /our own technology system/);
+  assert.match(englishHtml, /The system does not end with the technologies presented here/);
+  assert.match(englishHtml, /NEW TECHNOLOGIES EXTEND THE SAME SYSTEM/);
+  assert.match(englishHtml, /AlphaEvidence DB, the data layer that carries evidence lineage/);
+  assert.match(englishHtml, /Medical work starts with purpose/);
   assert.match(englishHtml, /From document files to reusable artifacts/);
-  assert.match(englishHtml, /Security becomes an execution architecture/);
+  assert.match(englishHtml, /Protection principles built into execution/);
   assert.doesNotMatch(englishHtml, /우리만의 선형|살아 있는 근거의 중심|보안을 설정이 아니라/);
   assert.match(englishHtml, /"inLanguage":"en-US"/);
 });
@@ -983,15 +992,19 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(motion, /<title/);
   assert.match(motion, /<desc/);
   assert.doesNotMatch(motion, /<iframe|raw-paper-mint/);
-  assert.match(motion, /function Node/);
-  assert.match(motion, /function Orbit/);
+  assert.match(motion, /function Boundary/);
+  assert.match(motion, /function PlateModule/);
+  assert.match(motion, /function TokenStrip/);
   assert.match(motion, /technology-paper-svg-mobile/);
-  assert.match(motion, /diagram-paper-grain/);
-  assert.match(motion, /AlphaEvidence DB/);
-  assert.match(motion, /DETERMINISTIC CORE/);
-  assert.match(motion, /PROTECTED GATEWAY/);
+  assert.doesNotMatch(motion, /diagram-paper-grain|function Orbit|diagram-orbit/);
+  assert.match(motion, /ALPHAEVIDENCE FOUNDATION/);
+  assert.match(motion, /CAPABILITY FABRIC/);
+  assert.match(motion, /PROTECTED EXECUTION/);
   assert.match(motion, /Document Artifact/);
-  assert.match(motion, /diagram-orbit/);
+  assert.match(motion, /Evidence Packet/);
+  assert.match(motion, /ARTIFACT LINEAGE/);
+  assert.match(motion, /REVIEW_REQUIRED/);
+  assert.match(motion, /PAYLOAD-FREE ASSURANCE/);
   assert.match(motion, /<ViewportMotion/);
   assert.match(motion, /deferChildren/);
   assert.match(motion, /is-enhanced/);
@@ -1017,8 +1030,10 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.doesNotMatch(css, /Pretendard Variable/);
   assert.match(css, /--diagram-paper: #f7f6f1/);
   assert.match(css, /\.technology-paper-svg-mobile/);
-  assert.match(css, /\.technology-paper-svg \.diagram-box\.is-dashed/);
-  assert.match(css, /\.technology-paper-svg \.diagram-paper-grain/);
+  assert.match(css, /\.technology-paper-svg \.diagram-boundary/);
+  assert.match(css, /\.technology-paper-svg \.diagram-token/);
+  assert.match(css, /\.technology-paper-svg \.diagram-module\.is-dashed/);
+  assert.doesNotMatch(css, /diagram-paper-grain|diagram-orbit/);
   assert.doesNotMatch(css, /#e7efe9|raw-paper-mint|raw-paper-lilac|radial-gradient\(circle at 50% -8%/);
   assert.match(css, /\.site-header\.site-header-dark/);
   assert.match(css, /\.site-header\.site-header-dark \{[\s\S]*?color: #f5f5f7;/);

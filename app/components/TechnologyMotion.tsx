@@ -3,70 +3,71 @@ import { ViewportMotion } from "@/app/components/ViewportMotion";
 import type { Language } from "@/app/site-content";
 
 export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "layer";
-type SvgTone = "ink" | "blue" | "red" | "muted";
+type DiagramTone = "ink" | "blue" | "red" | "muted";
+type DiagramLines = string | readonly string[];
 
 const diagramCopy = {
   ko: {
     overview: {
-      title: "바이오레 기술 생태계",
-      description: "AlphaDoc Engine을 중심으로 AlphaEvidence, AlphaDocument, AlphaLayer와 Alphadoc이 서로 다른 역할로 연결되는 비직렬 기술 구조입니다.",
+      title: "바이오레 기술 시스템 맵",
+      description: "현재 공개된 기술과 Alphadoc이 각자의 책임을 유지하면서 근거, 문서, 실행, 검토와 무결성 기록을 주고받습니다. 새 기술도 같은 연결 원칙 위에서 확장됩니다.",
     },
     evidence: {
-      title: "AlphaEvidence 근거 생태계",
-      description: "AlphaEvidence DB를 중심으로 출처, 변화, 권리 맥락, 품질과 검색 계약이 함께 연결되는 Evidence Foundation 구조입니다.",
+      title: "AlphaEvidence 근거 계보 구조",
+      description: "공개 근거가 출처 식별, 정규화, 변화 이력, 권리 맥락과 품질 관찰을 거쳐 검토 가능한 Evidence Packet과 Retrieval Contract로 구성됩니다.",
     },
     engine: {
-      title: "AlphaDoc Engine 실행 오케스트레이션",
-      description: "AlphaDoc Engine을 중심으로 질문, 근거, 문서, 도구와 검토가 목적별 capability로 연결되는 구조입니다.",
+      title: "AlphaDoc Engine 기능 단위 구조",
+      description: "의료 업무의 의도와 제약을 조립하고 여러 기능 단위(capability)와 평가 게이트, 의료인의 검토와 수정 흐름을 비직렬 구조로 연결합니다.",
     },
     document: {
-      title: "AlphaDocument artifact 구조",
-      description: "다양한 디지털 문서가 AlphaDocument에서 출처와 구조가 보존된 하나의 artifact로 수렴하고 여러 기술에서 다시 활용되는 구조입니다.",
+      title: "AlphaDocument 디지털 아티팩트 구조",
+      description: "디지털 문서를 블록, 의미 앵커, 스키마와 출처 연결로 분해하고 검증한 뒤 재사용 가능한 문서 아티팩트로 조립합니다.",
     },
     layer: {
-      title: "AlphaLayer 보호 실행 구조",
-      description: "AlphaLayer를 중심으로 목적 확인, 정보 최소화, 외부 실행 통제, 응답 무결성과 실행 기록이 동시에 작동하는 구조입니다.",
+      title: "AlphaLayer 보호 실행 경계",
+      description: "목적과 정책, 최소화, 보호 실행, 응답 무결성과 원문 없는 실행 증거가 중첩된 경계 안에서 요청과 응답을 연결합니다.",
     },
   },
   en: {
     overview: {
-      title: "The Viore technology constellation",
-      description: "A non-linear system where AlphaEvidence, AlphaDocument, AlphaLayer, and Alphadoc connect around AlphaDoc Engine through distinct responsibilities.",
+      title: "Viore technology system map",
+      description: "The technologies currently presented and Alphadoc preserve distinct responsibilities while exchanging evidence, documents, execution, review, and integrity records. New technologies extend the same connection principles.",
     },
     evidence: {
-      title: "The AlphaEvidence evidence constellation",
-      description: "An Evidence Foundation where source, change, rights context, quality, and retrieval contracts connect around AlphaEvidence DB.",
+      title: "AlphaEvidence provenance architecture",
+      description: "Public evidence is organized through source identity, normalization, version history, rights context, and quality observation into reviewable Evidence Packets and Retrieval Contracts.",
     },
     engine: {
-      title: "AlphaDoc Engine orchestration",
-      description: "Questions, evidence, documents, tools, and review connect around AlphaDoc Engine through purpose-defined capabilities.",
+      title: "AlphaDoc Engine capability architecture",
+      description: "Medical intent and constraints are assembled across a non-linear capability fabric, evaluation gates, professional review, and revision loops.",
     },
     document: {
-      title: "The AlphaDocument artifact system",
-      description: "Digital documents converge into one provenance-carrying artifact and become reusable across Viore technologies.",
+      title: "AlphaDocument digital artifact architecture",
+      description: "Digital documents are decomposed into blocks, semantic anchors, schema, and provenance links, then validated and assembled into reusable artifacts.",
     },
     layer: {
-      title: "The AlphaLayer protected execution system",
-      description: "Purpose, minimization, external execution control, response integrity, and execution records operate around AlphaLayer.",
+      title: "AlphaLayer protected execution boundary",
+      description: "Purpose and policy, minimization, protected execution, response integrity, and payload-free assurance connect requests and responses through nested boundaries.",
     },
   },
 } as const;
+
+function pick(language: Language, ko: string, en: string) {
+  return language === "ko" ? ko : en;
+}
 
 function stepStyle(step: number): CSSProperties {
   return { "--svg-step": step } as CSSProperties;
 }
 
-function textLines(value: string | readonly string[]) {
+function asLines(value: DiagramLines) {
   return typeof value === "string" ? [value] : value;
 }
 
-function SvgDefs({ id }: { id: string }) {
+function DiagramDefs({ id }: { id: string }) {
   return (
     <defs>
-      <filter id={`${id}-paper-grain`} x="0" y="0" width="100%" height="100%">
-        <feTurbulence type="fractalNoise" baseFrequency=".82" numOctaves="2" seed="11" />
-        <feColorMatrix type="matrix" values=".18 0 0 0 .72  0 .18 0 0 .72  0 0 .18 0 .7  0 0 0 .12 0" />
-      </filter>
       {(["ink", "blue", "red", "muted"] as const).map((tone) => (
         <marker
           id={`${id}-arrow-${tone}`}
@@ -83,93 +84,6 @@ function SvgDefs({ id }: { id: string }) {
         </marker>
       ))}
     </defs>
-  );
-}
-
-function Node({
-  x,
-  y,
-  width,
-  height,
-  eyebrow,
-  title,
-  detail,
-  tone = "ink",
-  step,
-  center = false,
-}: {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  eyebrow: string;
-  title: string | readonly string[];
-  detail?: string | readonly string[];
-  tone?: SvgTone;
-  step: number;
-  center?: boolean;
-}) {
-  const titles = textLines(title);
-  const details = detail ? textLines(detail) : [];
-  const textX = center ? x + width / 2 : x + 14;
-  const anchor = center ? "middle" : "start";
-  const titleY = y + (height <= 62 ? 35 : 44);
-  const detailY = y + height - 13 - Math.max(0, details.length - 1) * 11;
-
-  return (
-    <g className="technology-svg-step" style={stepStyle(step)}>
-      <rect x={x} y={y} width={width} height={height} rx="7" className={`diagram-box diagram-box-${tone}`} />
-      <circle cx={x + 9} cy={y + 9} r="3.3" className={`diagram-dot diagram-dot-${tone}`} />
-      <text x={textX} y={y + 20} textAnchor={anchor} className="diagram-eyebrow">{eyebrow}</text>
-      <text x={textX} y={titleY} textAnchor={anchor} className="diagram-title">
-        {titles.map((line, index) => (
-          <tspan x={textX} dy={index === 0 ? 0 : 17} key={line}>{line}</tspan>
-        ))}
-      </text>
-      {details.length > 0 && (
-        <text x={textX} y={detailY} textAnchor={anchor} className="diagram-detail">
-          {details.map((line, index) => (
-            <tspan x={textX} dy={index === 0 ? 0 : 11} key={line}>{line}</tspan>
-          ))}
-        </text>
-      )}
-    </g>
-  );
-}
-
-function Curve({
-  d,
-  id,
-  tone = "ink",
-  step,
-  arrow = false,
-}: {
-  d: string;
-  id: string;
-  tone?: SvgTone;
-  step: number;
-  arrow?: boolean;
-}) {
-  return (
-    <path
-      d={d}
-      className={`diagram-link diagram-link-${tone} technology-svg-step`}
-      markerEnd={arrow ? `url(#${id}-arrow-${tone})` : undefined}
-      style={stepStyle(step)}
-    />
-  );
-}
-
-function Orbit({ cx, cy, rx, ry, step }: { cx: number; cy: number; rx: number; ry: number; step: number }) {
-  return (
-    <ellipse
-      cx={cx}
-      cy={cy}
-      rx={rx}
-      ry={ry}
-      className="diagram-orbit technology-svg-step"
-      style={stepStyle(step)}
-    />
   );
 }
 
@@ -203,227 +117,1221 @@ function DiagramSvg({
     >
       <title id={titleId}>{copy.title}</title>
       <desc id={descriptionId}>{copy.description}</desc>
-      <SvgDefs id={id} />
-      <rect width={width} height={height} className="diagram-paper" />
-      <rect width={width} height={height} className="diagram-paper-grain" filter={`url(#${id}-paper-grain)`} />
+      <DiagramDefs id={id} />
+      <rect width={width} height={height} rx={mobile ? 10 : 12} className="diagram-paper" />
       {children}
     </svg>
   );
 }
 
-function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean }) {
-  const id = `technology-overview-${language}-${mobile ? "mobile" : "desktop"}`;
-  const ko = language === "ko";
+function Boundary({
+  x,
+  y,
+  width,
+  height,
+  label,
+  tone = "ink",
+  step,
+  solid = false,
+  emphasized = false,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  tone?: DiagramTone;
+  step: number;
+  solid?: boolean;
+  emphasized?: boolean;
+}) {
+  return (
+    <g className="technology-svg-step" style={stepStyle(step)}>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx="9"
+        className={[
+          "diagram-boundary",
+          `diagram-boundary-${tone}`,
+          solid ? "is-solid" : "",
+          emphasized ? "is-emphasized" : "",
+        ].filter(Boolean).join(" ")}
+      />
+      <text x={x + 13} y={y + 20} className={`diagram-domain-label diagram-text-${tone}`}>
+        {label}
+      </text>
+    </g>
+  );
+}
+
+function PlateModule({
+  x,
+  y,
+  width,
+  height,
+  label,
+  tone = "ink",
+  step,
+  center = false,
+  dashed = false,
+  strong = false,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: DiagramLines;
+  tone?: DiagramTone;
+  step: number;
+  center?: boolean;
+  dashed?: boolean;
+  strong?: boolean;
+}) {
+  const lines = asLines(label);
+  const textX = center ? x + width / 2 : x + 10;
+  const textY = y + height / 2 - ((lines.length - 1) * 7);
+
+  return (
+    <g className="technology-svg-step" style={stepStyle(step)}>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx="4"
+        className={[
+          "diagram-module",
+          `diagram-module-${tone}`,
+          dashed ? "is-dashed" : "",
+          strong ? "is-strong" : "",
+        ].filter(Boolean).join(" ")}
+      />
+      <text
+        x={textX}
+        y={textY}
+        textAnchor={center ? "middle" : "start"}
+        dominantBaseline="middle"
+        className={`diagram-module-label ${strong ? "is-strong" : ""}`}
+      >
+        {lines.map((line, index) => (
+          <tspan x={textX} dy={index === 0 ? 0 : 14} key={`${line}-${index}`}>
+            {line}
+          </tspan>
+        ))}
+      </text>
+    </g>
+  );
+}
+
+function StackPanel({
+  x,
+  y,
+  width,
+  height,
+  title,
+  rows,
+  tone = "ink",
+  step,
+  tokens = 0,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  title: string;
+  rows: readonly DiagramLines[];
+  tone?: DiagramTone;
+  step: number;
+  tokens?: number;
+}) {
+  const headerHeight = 30;
+  const tokenHeight = tokens > 0 ? 25 : 0;
+  const contentHeight = height - headerHeight - tokenHeight;
+  const rowHeight = contentHeight / rows.length;
+
+  return (
+    <g className="technology-svg-step" style={stepStyle(step)}>
+      <rect x={x} y={y} width={width} height={height} rx="5" className={`diagram-panel diagram-panel-${tone}`} />
+      <text x={x + 11} y={y + 19} className={`diagram-panel-title diagram-text-${tone}`}>{title}</text>
+      <line x1={x} y1={y + headerHeight} x2={x + width} y2={y + headerHeight} className="diagram-panel-rule" />
+      {rows.map((row, index) => {
+        const lines = asLines(row);
+        const rowTop = y + headerHeight + rowHeight * index;
+        const rowCenter = rowTop + rowHeight / 2 - ((lines.length - 1) * 6);
+        return (
+          <g key={`${title}-${index}`}>
+            {index > 0 && (
+              <line x1={x + 8} y1={rowTop} x2={x + width - 8} y2={rowTop} className="diagram-panel-rule is-light" />
+            )}
+            <text x={x + 11} y={rowCenter} dominantBaseline="middle" className="diagram-panel-row">
+              {lines.map((line, lineIndex) => (
+                <tspan x={x + 11} dy={lineIndex === 0 ? 0 : 12} key={`${line}-${lineIndex}`}>{line}</tspan>
+              ))}
+            </text>
+          </g>
+        );
+      })}
+      {tokens > 0 && (
+        <>
+          <line x1={x} y1={y + height - tokenHeight} x2={x + width} y2={y + height - tokenHeight} className="diagram-panel-rule" />
+          <TokenStrip x={x + 11} y={y + height - 17} count={tokens} tone={tone} step={step} size={8} gap={4} />
+        </>
+      )}
+    </g>
+  );
+}
+
+function TokenStrip({
+  x,
+  y,
+  count,
+  tone,
+  step,
+  size = 9,
+  gap = 4,
+  hollowEvery = 0,
+}: {
+  x: number;
+  y: number;
+  count: number;
+  tone: DiagramTone;
+  step: number;
+  size?: number;
+  gap?: number;
+  hollowEvery?: number;
+}) {
+  return (
+    <g className="technology-svg-step" style={stepStyle(step)}>
+      {Array.from({ length: count }, (_, index) => (
+        <rect
+          key={index}
+          x={x + index * (size + gap)}
+          y={y}
+          width={size}
+          height={size}
+          rx="1"
+          className={`diagram-token diagram-token-${tone} ${hollowEvery > 0 && (index + 1) % hollowEvery === 0 ? "is-hollow" : ""}`}
+        />
+      ))}
+    </g>
+  );
+}
+
+function Link({
+  d,
+  id,
+  tone = "ink",
+  step,
+  arrow = true,
+  dashed = false,
+  startArrow = false,
+}: {
+  d: string;
+  id: string;
+  tone?: DiagramTone;
+  step: number;
+  arrow?: boolean;
+  dashed?: boolean;
+  startArrow?: boolean;
+}) {
+  return (
+    <path
+      d={d}
+      className={`diagram-link diagram-link-${tone} technology-svg-step ${dashed ? "is-dashed" : ""}`}
+      markerEnd={arrow ? `url(#${id}-arrow-${tone})` : undefined}
+      markerStart={startArrow ? `url(#${id}-arrow-${tone})` : undefined}
+      style={stepStyle(step)}
+    />
+  );
+}
+
+function MicroLabel({
+  x,
+  y,
+  children,
+  tone = "muted",
+  anchor = "start",
+  step,
+}: {
+  x: number;
+  y: number;
+  children: ReactNode;
+  tone?: DiagramTone;
+  anchor?: "start" | "middle" | "end";
+  step: number;
+}) {
+  return (
+    <text
+      x={x}
+      y={y}
+      textAnchor={anchor}
+      className={`diagram-micro-label diagram-text-${tone} technology-svg-step`}
+      style={stepStyle(step)}
+    >
+      {children}
+    </text>
+  );
+}
+
+function ArtifactChain({
+  id,
+  language,
+  y,
+  mobile = false,
+}: {
+  id: string;
+  language: Language;
+  y: number;
+  mobile?: boolean;
+}) {
+  const items = [
+    "Evidence Packet",
+    pick(language, "검토 상태", "Review State"),
+    "Document Artifact",
+    "Citation Map",
+    "Integrity Record",
+  ];
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="overview" language={language} mobile width={420} height={590}>
-        <Orbit cx={210} cy={292} rx={170} ry={208} step={1} />
-        <Orbit cx={210} cy={292} rx={112} ry={142} step={1} />
-        <Curve d="M 210 195 C 140 170 100 160 74 143" id={id} tone="blue" step={2} />
-        <Curve d="M 210 195 C 280 170 320 160 346 143" id={id} tone="red" step={2} />
-        <Curve d="M 145 300 C 90 300 74 310 60 332" id={id} tone="blue" step={3} />
-        <Curve d="M 275 300 C 330 300 346 310 360 332" id={id} tone="red" step={3} />
-        <Curve d="M 210 387 C 210 430 210 448 210 470" id={id} tone="ink" step={4} />
-        <Node x={135} y={238} width={150} height={108} eyebrow="ORCHESTRATION" title={["AlphaDoc", "Engine"]} detail={ko ? "목적 · 맥락 · 실행" : "purpose · context · action"} tone="red" step={5} center />
-        <Node x={20} y={72} width={150} height={86} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence" detail={ko ? "출처 · 변화 · 근거" : "source · change · evidence"} tone="blue" step={6} />
-        <Node x={250} y={72} width={150} height={86} eyebrow="DOCUMENT ARTIFACTS" title="AlphaDocument" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={7} />
-        <Node x={18} y={332} width={150} height={88} eyebrow="PROTECTED EXECUTION" title="AlphaLayer" detail={ko ? "보호 · 통제 · 증거" : "protect · control · assure"} tone="red" step={8} />
-        <Node x={252} y={332} width={150} height={88} eyebrow="AI MEDICAL WORKSPACE" title="Alphadoc" detail={ko ? "질문 · 문서 · 도구" : "questions · documents · tools"} tone="ink" step={9} />
-        <Node x={126} y={474} width={168} height={76} eyebrow="HUMAN IN THE LOOP" title={ko ? "의료인의 검토" : "Professional review"} tone="ink" step={10} center />
+      <g>
+        <MicroLabel x={24} y={y} tone="ink" step={13}>ARTIFACT LINEAGE</MicroLabel>
+        {items.map((item, index) => {
+          const column = index % 2;
+          const row = Math.floor(index / 2);
+          const x = 24 + column * 186;
+          const boxY = y + 14 + row * 42;
+          return (
+            <g key={item}>
+              <PlateModule x={x} y={boxY} width={164} height={28} label={item} tone={index % 2 === 0 ? "blue" : "red"} step={14 + index} />
+              {index < items.length - 1 && (
+                <Link
+                  d={column === 0
+                    ? `M ${x + 164} ${boxY + 14} H ${x + 181}`
+                    : `M ${x + 82} ${boxY + 28} V ${boxY + 38} H 106 V ${boxY + 42}`}
+                  id={id}
+                  tone="muted"
+                  step={14 + index}
+                  dashed={index === 1}
+                />
+              )}
+            </g>
+          );
+        })}
+      </g>
+    );
+  }
+
+  const xPositions = [118, 276, 434, 592, 750];
+  return (
+    <g>
+      <MicroLabel x={28} y={y + 18} tone="ink" step={13}>ARTIFACT LINEAGE</MicroLabel>
+      {items.map((item, index) => (
+        <g key={item}>
+          <PlateModule
+            x={xPositions[index]}
+            y={y}
+            width={132}
+            height={32}
+            label={item}
+            tone={index % 2 === 0 ? "blue" : "red"}
+            step={14 + index}
+            center
+          />
+          {index < items.length - 1 && (
+            <Link
+              d={`M ${xPositions[index] + 132} ${y + 16} H ${xPositions[index + 1] - 8}`}
+              id={id}
+              tone="muted"
+              step={14 + index}
+              dashed={index === 1}
+            />
+          )}
+        </g>
+      ))}
+    </g>
+  );
+}
+
+function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-overview-${language}-${mobile ? "mobile" : "desktop"}`;
+
+  if (mobile) {
+    return (
+      <DiagramSvg id={id} kind="overview" language={language} mobile width={420} height={990}>
+        <Boundary x={20} y={24} width={180} height={190} label="ALPHAEVIDENCE" tone="blue" step={1} solid />
+        <StackPanel
+          x={34}
+          y={54}
+          width={152}
+          height={140}
+          title="EVIDENCE FOUNDATION"
+          rows={["Source Identity", "Version / Change", "Rights Context", "Quality"]}
+          tone="blue"
+          step={2}
+          tokens={6}
+        />
+        <Boundary x={220} y={24} width={180} height={190} label="ALPHADOCUMENT" tone="blue" step={1} solid />
+        <StackPanel
+          x={234}
+          y={54}
+          width={152}
+          height={140}
+          title="DOCUMENT DOMAIN"
+          rows={["Block Structure", "Provenance", "Validation", "Assembly"]}
+          tone="blue"
+          step={3}
+          tokens={6}
+        />
+
+        <Boundary x={24} y={248} width={372} height={298} label="ALPHADOC ENGINE" tone="red" step={4} emphasized />
+        <MicroLabel x={210} y={285} anchor="middle" tone="red" step={5}>
+          INTENT + CONSTRAINT ASSEMBLY
+        </MicroLabel>
+        <PlateModule x={48} y={302} width={100} height={34} label="Intent" tone="red" step={5} center />
+        <PlateModule x={160} y={302} width={100} height={34} label="Constraints" tone="red" step={5} center />
+        <PlateModule x={272} y={302} width={100} height={34} label="Context" tone="red" step={5} center />
+        <Boundary x={46} y={356} width={328} height={142} label="CAPABILITY FABRIC" tone="ink" step={6} />
+        <PlateModule x={64} y={390} width={88} height={34} label={["Evidence", "Retrieval"]} tone="blue" step={7} center />
+        <PlateModule x={166} y={378} width={88} height={34} label={["Reasoning", "Synthesis"]} tone="red" step={7} center strong />
+        <PlateModule x={268} y={390} width={88} height={34} label={["Document", "Assembly"]} tone="blue" step={7} center />
+        <PlateModule x={115} y={444} width={88} height={34} label={["Citation", "Binding"]} tone="ink" step={8} center />
+        <PlateModule x={217} y={444} width={88} height={34} label={["Quality", "Check"]} tone="ink" step={8} center />
+        <Link d="M 152 407 L 166 395" id={id} tone="blue" step={9} />
+        <Link d="M 254 395 L 268 407" id={id} tone="red" step={9} />
+        <Link d="M 190 412 L 172 444" id={id} tone="ink" step={9} />
+        <Link d="M 230 412 L 248 444" id={id} tone="ink" step={9} />
+        <TokenStrip x={155} y={518} count={8} tone="red" step={10} />
+
+        <Boundary x={20} y={584} width={180} height={208} label="ALPHALAYER" tone="red" step={10} solid />
+        <StackPanel
+          x={34}
+          y={616}
+          width={152}
+          height={154}
+          title="PROTECTED EXECUTION"
+          rows={["Purpose Binding", "Minimization", "Integrity", "Assurance"]}
+          tone="red"
+          step={11}
+          tokens={6}
+        />
+        <Boundary x={220} y={584} width={180} height={208} label="ALPHADOC" tone="blue" step={10} solid />
+        <StackPanel
+          x={234}
+          y={616}
+          width={152}
+          height={154}
+          title="AI MEDICAL WORKSPACE"
+          rows={["Workspace Apps", pick(language, "의료인의 검토", "Human Review"), "Permissions", "Records / UI"]}
+          tone="blue"
+          step={12}
+          tokens={6}
+        />
+
+        <Link d="M 110 214 V 236 H 168 V 248" id={id} tone="blue" step={5} />
+        <Link d="M 310 214 V 236 H 252 V 248" id={id} tone="blue" step={5} />
+        <Link d="M 142 546 V 570 H 110 V 584" id={id} tone="red" step={11} />
+        <Link d="M 278 546 V 570 H 310 V 584" id={id} tone="blue" step={12} />
+        <Link d="M 200 688 H 220" id={id} tone="red" step={12} dashed startArrow />
+
+        <MicroLabel x={210} y={812} anchor="middle" tone="muted" step={13}>
+          {pick(language, "새로운 기술이 같은 연결 원칙 위에 더해집니다", "NEW TECHNOLOGIES EXTEND THE SAME SYSTEM")}
+        </MicroLabel>
+        <ArtifactChain id={id} language={language} y={840} mobile />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="overview" language={language} mobile={false} width={820} height={510}>
-      <Orbit cx={410} cy={255} rx={322} ry={184} step={1} />
-      <Orbit cx={410} cy={255} rx={218} ry={128} step={1} />
-      <Curve d="M 340 218 C 276 150 220 132 178 136" id={id} tone="blue" step={2} />
-      <Curve d="M 480 218 C 544 150 600 132 642 136" id={id} tone="blue" step={2} />
-      <Curve d="M 340 290 C 274 350 222 368 178 366" id={id} tone="red" step={3} />
-      <Curve d="M 480 290 C 546 350 598 368 642 366" id={id} tone="ink" step={3} />
-      <Curve d="M 410 311 C 410 370 410 402 410 428" id={id} tone="ink" step={4} />
-      <Node x={315} y={198} width={190} height={114} eyebrow="ORCHESTRATION" title="AlphaDoc Engine" detail={ko ? "목적 · 맥락 · 근거 · 실행" : "purpose · context · evidence · action"} tone="red" step={5} center />
-      <Node x={35} y={86} width={206} height={96} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence" detail={ko ? "출처 · 변화 · 근거의 계보" : "source · change · evidence lineage"} tone="blue" step={6} />
-      <Node x={579} y={86} width={206} height={96} eyebrow="DOCUMENT ARTIFACTS" title="AlphaDocument" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={7} />
-      <Node x={35} y={322} width={206} height={96} eyebrow="PROTECTED EXECUTION" title="AlphaLayer" detail={ko ? "보호 · 통제 · 실행 증거" : "protection · control · assurance"} tone="red" step={8} />
-      <Node x={579} y={322} width={206} height={96} eyebrow="AI MEDICAL WORKSPACE" title="Alphadoc" detail={ko ? "질문 · 문서 · 도구 · 커뮤니티" : "questions · documents · tools · community"} tone="ink" step={9} />
-      <Node x={316} y={420} width={188} height={64} eyebrow="HUMAN IN THE LOOP" title={ko ? "의료인의 검토와 판단" : "Professional review"} tone="ink" step={10} center />
+    <DiagramSvg id={id} kind="overview" language={language} mobile={false} width={960} height={610}>
+      <Boundary x={26} y={34} width={224} height={220} label="ALPHAEVIDENCE" tone="blue" step={1} solid />
+      <StackPanel
+        x={42}
+        y={67}
+        width={192}
+        height={165}
+        title="EVIDENCE FOUNDATION"
+        rows={["Source Identity", "Version / Change", "Rights Context", "Quality Observation"]}
+        tone="blue"
+        step={2}
+        tokens={8}
+      />
+
+      <Boundary x={288} y={72} width={384} height={326} label="ALPHADOC ENGINE" tone="red" step={2} emphasized />
+      <MicroLabel x={480} y={111} anchor="middle" tone="red" step={3}>INTENT + CONSTRAINT ASSEMBLY</MicroLabel>
+      <PlateModule x={316} y={127} width={98} height={34} label="Intent" tone="red" step={3} center />
+      <PlateModule x={431} y={127} width={98} height={34} label="Constraints" tone="red" step={3} center />
+      <PlateModule x={546} y={127} width={98} height={34} label="Context" tone="red" step={3} center />
+      <Boundary x={314} y={180} width={332} height={164} label="CAPABILITY FABRIC" tone="ink" step={4} />
+      <PlateModule x={332} y={216} width={88} height={38} label={["Evidence", "Retrieval"]} tone="blue" step={5} center />
+      <PlateModule x={436} y={204} width={88} height={38} label={["Reasoning", "Synthesis"]} tone="red" step={5} center strong />
+      <PlateModule x={540} y={216} width={88} height={38} label={["Document", "Assembly"]} tone="blue" step={5} center />
+      <PlateModule x={384} y={286} width={88} height={38} label={["Citation", "Binding"]} tone="ink" step={6} center />
+      <PlateModule x={488} y={286} width={88} height={38} label={["Quality", "Check"]} tone="ink" step={6} center />
+      <Link d="M 420 235 L 436 223" id={id} tone="blue" step={7} />
+      <Link d="M 524 223 L 540 235" id={id} tone="red" step={7} />
+      <Link d="M 460 242 L 440 286" id={id} tone="ink" step={7} />
+      <Link d="M 500 242 L 520 286" id={id} tone="ink" step={7} />
+      <Link d="M 420 235 C 455 265 505 265 540 235" id={id} tone="muted" step={7} dashed />
+      <TokenStrip x={424} y={366} count={9} tone="red" step={8} />
+
+      <Boundary x={710} y={34} width={224} height={220} label="ALPHADOCUMENT" tone="blue" step={1} solid />
+      <StackPanel
+        x={726}
+        y={67}
+        width={192}
+        height={165}
+        title="DOCUMENT DOMAIN"
+        rows={["Block Structure", "Semantic Anchors", "Provenance", "Validation / Assembly"]}
+        tone="blue"
+        step={3}
+        tokens={8}
+      />
+
+      <Boundary x={62} y={318} width={230} height={208} label="ALPHALAYER" tone="red" step={8} solid />
+      <StackPanel
+        x={78}
+        y={351}
+        width={198}
+        height={152}
+        title="PROTECTED EXECUTION"
+        rows={["Purpose Binding", "Minimization", "Response Integrity", "Payload-free Assurance"]}
+        tone="red"
+        step={9}
+        tokens={8}
+      />
+      <Boundary x={668} y={318} width={230} height={208} label="ALPHADOC" tone="blue" step={8} solid />
+      <StackPanel
+        x={684}
+        y={351}
+        width={198}
+        height={152}
+        title="AI MEDICAL WORKSPACE"
+        rows={["Workspace Apps", pick(language, "의료인의 검토", "Human Review"), "User Permissions", "Records / UI"]}
+        tone="blue"
+        step={10}
+        tokens={8}
+      />
+
+      <Boundary
+        x={346}
+        y={424}
+        width={268}
+        height={102}
+        label={pick(language, "의료인의 검토와 판단", "PROFESSIONAL REVIEW CONTROL")}
+        tone="ink"
+        step={9}
+      />
+      <PlateModule x={365} y={462} width={72} height={30} label="REVIEW" tone="blue" step={10} center />
+      <PlateModule x={444} y={462} width={72} height={30} label="DECIDE" tone="ink" step={10} center />
+      <PlateModule x={523} y={462} width={72} height={30} label="REVISE" tone="red" step={10} center />
+
+      <Link d="M 250 142 H 272 V 224 H 288" id={id} tone="blue" step={4} />
+      <Link d="M 710 142 H 688 V 224 H 672" id={id} tone="blue" step={4} startArrow />
+      <Link d="M 365 398 V 424" id={id} tone="red" step={9} />
+      <Link d="M 595 398 V 424" id={id} tone="ink" step={9} />
+      <Link d="M 314 336 C 312 366 308 394 292 410" id={id} tone="red" step={9} dashed />
+      <Link d="M 646 336 C 648 366 652 394 668 410" id={id} tone="blue" step={10} dashed />
+      <Link d="M 292 422 H 346" id={id} tone="ink" step={10} />
+      <Link d="M 614 475 H 668" id={id} tone="ink" step={10} />
+      <Link d="M 292 500 C 374 545 586 545 668 500" id={id} tone="red" step={11} dashed startArrow />
+
+      <MicroLabel x={480} y={544} anchor="middle" tone="muted" step={12}>
+        {pick(language, "새로운 기술이 같은 연결 원칙 위에 더해집니다", "NEW TECHNOLOGIES EXTEND THE SAME SYSTEM")}
+      </MicroLabel>
+      <ArtifactChain id={id} language={language} y={562} />
     </DiagramSvg>
   );
 }
 
 function EvidenceSvg({ language, mobile }: { language: Language; mobile: boolean }) {
   const id = `technology-evidence-${language}-${mobile ? "mobile" : "desktop"}`;
-  const ko = language === "ko";
-  const width = mobile ? 420 : 820;
-  const height = mobile ? 610 : 470;
-  const cx = width / 2;
-  const cy = mobile ? 305 : 235;
-  const hubX = mobile ? 125 : 300;
-  const hubY = mobile ? 248 : 178;
-  const hubW = mobile ? 170 : 220;
+  const sourceRows = [
+    pick(language, "의학 문헌", "Medical Literature"),
+    pick(language, "진료지침", "Clinical Guidelines"),
+    pick(language, "규제 공지", "Regulatory Notices"),
+    pick(language, "공개 데이터", "Open Data"),
+  ];
+
+  if (mobile) {
+    return (
+      <DiagramSvg id={id} kind="evidence" language={language} mobile width={420} height={900}>
+        <Boundary x={22} y={24} width={376} height={150} label="SOURCE CLASSES" tone="ink" step={1} />
+        {sourceRows.map((source, index) => (
+          <PlateModule
+            key={source}
+            x={38 + (index % 2) * 174}
+            y={58 + Math.floor(index / 2) * 48}
+            width={158}
+            height={34}
+            label={source}
+            tone={index < 2 ? "blue" : "ink"}
+            step={2 + index}
+          />
+        ))}
+        <TokenStrip x={149} y={153} count={9} tone="blue" step={5} />
+
+        <Boundary x={22} y={210} width={376} height={454} label="ALPHAEVIDENCE FOUNDATION" tone="blue" step={6} emphasized />
+        <PlateModule x={42} y={250} width={152} height={42} label="Source Identity" tone="blue" step={7} center />
+        <PlateModule x={226} y={250} width={152} height={42} label="Normalization" tone="blue" step={7} center />
+        <PlateModule x={42} y={326} width={152} height={94} label="Version / Change Graph" tone="ink" step={8} center />
+        <circle cx="72" cy="380" r="4" className="diagram-version-node diagram-version-node-blue" />
+        <circle cx="112" cy="360" r="4" className="diagram-version-node" />
+        <circle cx="112" cy="400" r="4" className="diagram-version-node diagram-version-node-muted" />
+        <circle cx="162" cy="380" r="4" className="diagram-version-node diagram-version-node-blue" />
+        <Link d="M 76 380 H 96 L 108 362" id={id} tone="blue" step={9} arrow={false} />
+        <Link d="M 96 380 L 108 398" id={id} tone="muted" step={9} arrow={false} />
+        <Link d="M 116 360 L 158 380" id={id} tone="ink" step={9} arrow={false} />
+        <Link d="M 116 400 L 158 380" id={id} tone="ink" step={9} arrow={false} />
+        <PlateModule x={226} y={326} width={152} height={42} label="Rights Context" tone="red" step={8} center />
+        <PlateModule x={226} y={378} width={152} height={42} label="Quality Observation" tone="red" step={8} center />
+        <Link d="M 194 271 H 226" id={id} tone="blue" step={9} startArrow />
+        <Link d="M 118 292 V 326" id={id} tone="ink" step={9} />
+        <Link d="M 302 292 V 326" id={id} tone="red" step={9} />
+        <Link d="M 194 373 H 226" id={id} tone="muted" step={9} />
+
+        <Boundary x={42} y={448} width={336} height={184} label="TYPED EVIDENCE OUTPUTS" tone="ink" step={10} solid />
+        <StackPanel
+          x={58}
+          y={484}
+          width={144}
+          height={124}
+          title="EVIDENCE PACKET"
+          rows={["Normalized Entities", "Citations", "Version Graph"]}
+          tone="blue"
+          step={11}
+          tokens={7}
+        />
+        <StackPanel
+          x={218}
+          y={484}
+          width={144}
+          height={124}
+          title="RETRIEVAL CONTRACT"
+          rows={["Query Intent", "Filters / Scope", "Access / Use"]}
+          tone="blue"
+          step={11}
+          tokens={7}
+        />
+
+        <Link d="M 210 174 V 210" id={id} tone="blue" step={6} />
+        <Link d="M 118 420 V 448" id={id} tone="ink" step={10} />
+        <Link d="M 302 420 V 448" id={id} tone="red" step={10} />
+
+        <Boundary x={22} y={704} width={376} height={164} label="PROVENANCE CONTRACT" tone="ink" step={12} />
+        <PlateModule x={42} y={744} width={154} height={36} label="Citation Map" tone="blue" step={13} />
+        <PlateModule x={224} y={744} width={154} height={36} label="Review Anchor" tone="ink" step={13} />
+        <PlateModule x={42} y={798} width={154} height={36} label="Retrieval Identity" tone="red" step={14} />
+        <PlateModule x={224} y={798} width={154} height={36} label="Evidence Packet" tone="blue" step={14} />
+        <Link d="M 130 632 V 680 H 210 V 704" id={id} tone="blue" step={12} />
+        <Link d="M 290 632 V 680 H 210" id={id} tone="red" step={12} />
+      </DiagramSvg>
+    );
+  }
 
   return (
-    <DiagramSvg id={id} kind="evidence" language={language} mobile={mobile} width={width} height={height}>
-      <Orbit cx={cx} cy={cy} rx={mobile ? 174 : 314} ry={mobile ? 230 : 164} step={1} />
-      <Orbit cx={cx} cy={cy} rx={mobile ? 116 : 206} ry={mobile ? 150 : 108} step={1} />
-      <Curve d={mobile ? "M 160 248 C 118 195 90 160 78 130" : "M 330 178 C 280 130 236 105 204 108"} id={id} tone="blue" step={2} />
-      <Curve d={mobile ? "M 260 248 C 302 195 330 160 342 130" : "M 490 178 C 540 130 584 105 616 108"} id={id} tone="blue" step={2} />
-      <Curve d={mobile ? "M 125 305 C 88 310 70 340 66 375" : "M 300 235 C 240 235 204 260 182 300"} id={id} tone="red" step={3} />
-      <Curve d={mobile ? "M 295 305 C 332 310 350 340 354 375" : "M 520 235 C 580 235 616 260 638 300"} id={id} tone="red" step={3} />
-      <Curve d={mobile ? "M 210 362 C 210 420 210 456 210 486" : "M 410 292 C 410 344 410 372 410 392"} id={id} tone="ink" step={4} />
-      <Node x={hubX} y={hubY} width={hubW} height={114} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence DB" detail={ko ? "살아 있는 근거의 중심" : "a living center of evidence"} tone="blue" step={5} center />
-      <Node x={mobile ? 18 : 38} y={mobile ? 64 : 60} width={mobile ? 154 : 210} height={90} eyebrow="SOURCE IDENTITY" title={ko ? "출처를 잃지 않는 근거" : "Evidence with identity"} detail={ko ? "source · provenance" : "source · provenance"} tone="blue" step={6} />
-      <Node x={mobile ? 248 : 572} y={mobile ? 64 : 60} width={mobile ? 154 : 210} height={90} eyebrow="LIVING HISTORY" title={ko ? "변화를 기억하는 지식" : "Knowledge that remembers"} detail={ko ? "version · observation" : "version · observation"} tone="blue" step={7} />
-      <Node x={mobile ? 16 : 36} y={mobile ? 365 : 286} width={mobile ? 154 : 210} height={94} eyebrow="RIGHTS CONTEXT" title={ko ? "이용 맥락까지 함께" : "Rights in context"} detail={ko ? "policy · scope" : "policy · scope"} tone="red" step={8} />
-      <Node x={mobile ? 250 : 574} y={mobile ? 365 : 286} width={mobile ? 154 : 210} height={94} eyebrow="SOURCE HEALTH" title={ko ? "계속 확인되는 품질" : "Continuously observed"} detail={ko ? "freshness · quality" : "freshness · quality"} tone="red" step={9} />
-      <Node x={mobile ? 126 : 306} y={mobile ? 490 : 386} width={mobile ? 168 : 208} height={76} eyebrow="RETRIEVAL CONTRACT" title="AlphaDoc Engine" detail={ko ? "검토 가능한 근거로 전달" : "reviewable evidence delivery"} tone="ink" step={10} center />
+    <DiagramSvg id={id} kind="evidence" language={language} mobile={false} width={960} height={560}>
+      <Boundary x={24} y={46} width={190} height={424} label="SOURCE CLASSES" tone="ink" step={1} />
+      <StackPanel
+        x={40}
+        y={82}
+        width={158}
+        height={344}
+        title="PUBLIC EVIDENCE"
+        rows={sourceRows}
+        tone="ink"
+        step={2}
+        tokens={8}
+      />
+
+      <Boundary x={250} y={30} width={424} height={472} label="ALPHAEVIDENCE FOUNDATION" tone="blue" step={3} emphasized />
+      <PlateModule x={274} y={72} width={170} height={54} label="Source Identity" tone="blue" step={4} />
+      <PlateModule x={478} y={72} width={170} height={54} label="Normalization" tone="blue" step={4} />
+      <TokenStrip x={326} y={136} count={7} tone="blue" step={5} size={7} gap={3} />
+      <TokenStrip x={530} y={136} count={7} tone="blue" step={5} size={7} gap={3} />
+
+      <Boundary x={274} y={154} width={374} height={152} label="VERSION / CHANGE GRAPH" tone="ink" step={6} solid />
+      <circle cx="304" cy="230" r="5" className="diagram-version-node diagram-version-node-blue technology-svg-step" style={stepStyle(7)} />
+      <circle cx="368" cy="204" r="5" className="diagram-version-node technology-svg-step" style={stepStyle(7)} />
+      <circle cx="368" cy="256" r="5" className="diagram-version-node diagram-version-node-muted technology-svg-step" style={stepStyle(7)} />
+      <circle cx="450" cy="230" r="5" className="diagram-version-node diagram-version-node-blue technology-svg-step" style={stepStyle(7)} />
+      <circle cx="526" cy="194" r="5" className="diagram-version-node technology-svg-step" style={stepStyle(7)} />
+      <circle cx="526" cy="266" r="5" className="diagram-version-node diagram-version-node-muted technology-svg-step" style={stepStyle(7)} />
+      <circle cx="612" cy="230" r="5" className="diagram-version-node diagram-version-node-blue technology-svg-step" style={stepStyle(7)} />
+      <Link d="M 309 230 H 338 L 363 206" id={id} tone="blue" step={7} arrow={false} />
+      <Link d="M 338 230 L 363 254" id={id} tone="muted" step={7} arrow={false} />
+      <Link d="M 373 204 L 445 228" id={id} tone="ink" step={7} arrow={false} />
+      <Link d="M 373 256 L 445 232" id={id} tone="ink" step={7} arrow={false} />
+      <Link d="M 455 230 H 486 L 521 196" id={id} tone="blue" step={7} arrow={false} />
+      <Link d="M 486 230 L 521 264" id={id} tone="muted" step={7} arrow={false} />
+      <Link d="M 531 194 L 607 228" id={id} tone="ink" step={7} arrow={false} />
+      <Link d="M 531 266 L 607 232" id={id} tone="ink" step={7} arrow={false} />
+      <MicroLabel x={304} y={278} tone="blue" step={7}>BASE</MicroLabel>
+      <MicroLabel x={450} y={278} anchor="middle" tone="ink" step={7}>BRANCH</MicroLabel>
+      <MicroLabel x={612} y={278} anchor="end" tone="blue" step={7}>CURRENT</MicroLabel>
+
+      <PlateModule x={274} y={330} width={178} height={66} label={["Rights Context", "License · Scope · Use"]} tone="red" step={8} />
+      <PlateModule x={470} y={330} width={178} height={66} label={["Quality Observation", "Freshness · Consistency"]} tone="red" step={8} />
+      <PlateModule x={274} y={416} width={374} height={58} label="Evidence Packet Assembly" tone="blue" step={9} center strong />
+      <TokenStrip x={418} y={481} count={10} tone="blue" step={9} size={7} gap={3} hollowEvery={5} />
+
+      <Link d="M 214 148 H 238 V 99 H 250" id={id} tone="ink" step={4} />
+      <Link d="M 214 258 H 232 V 230 H 250" id={id} tone="blue" step={6} />
+      <Link d="M 214 368 H 238 V 363 H 250" id={id} tone="red" step={8} />
+      <Link d="M 359 126 V 154" id={id} tone="blue" step={6} />
+      <Link d="M 563 126 V 154" id={id} tone="blue" step={6} />
+      <Link d="M 374 306 V 330" id={id} tone="ink" step={8} />
+      <Link d="M 548 306 V 330" id={id} tone="muted" step={8} />
+      <Link d="M 363 396 V 416" id={id} tone="red" step={9} />
+      <Link d="M 559 396 V 416" id={id} tone="red" step={9} />
+
+      <Boundary x={714} y={64} width={220} height={406} label="RETRIEVAL CONTRACT" tone="blue" step={9} solid />
+      <StackPanel
+        x={732}
+        y={104}
+        width={184}
+        height={180}
+        title="EVIDENCE PACKET"
+        rows={["Normalized Entities", "Assertions", "Citations", "Version Graph"]}
+        tone="blue"
+        step={10}
+        tokens={8}
+      />
+      <StackPanel
+        x={732}
+        y={306}
+        width={184}
+        height={138}
+        title="QUERY CONTRACT"
+        rows={["Intent / Constraints", "Scope / Time", "Access / Use"]}
+        tone="blue"
+        step={11}
+        tokens={8}
+      />
+      <Link d="M 648 222 H 694 V 194 H 714" id={id} tone="blue" step={10} />
+      <Link d="M 648 445 H 688 V 375 H 714" id={id} tone="blue" step={11} />
+      <Link d="M 714 262 H 694 V 350 H 648" id={id} tone="muted" step={11} dashed />
+
+      <MicroLabel x={24} y={530} tone="muted" step={12}>
+        SOURCE IDENTITY · VERSION LINEAGE · RIGHTS CONTEXT · QUALITY OBSERVATION
+      </MicroLabel>
+      <TokenStrip x={776} y={519} count={12} tone="blue" step={12} size={8} gap={4} hollowEvery={6} />
     </DiagramSvg>
   );
 }
 
 function EngineSvg({ language, mobile }: { language: Language; mobile: boolean }) {
   const id = `technology-engine-${language}-${mobile ? "mobile" : "desktop"}`;
-  const ko = language === "ko";
+  const inputRows = [
+    pick(language, "의료 업무 의도", "Medical Intent"),
+    pick(language, "임상 맥락", "Clinical Context"),
+    "Evidence Packet",
+    "Document Artifact",
+  ];
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="engine" language={language} mobile width={420} height={650}>
-        <Orbit cx={210} cy={318} rx={176} ry={248} step={1} />
-        <Curve d="M 170 270 C 124 210 92 170 76 140" id={id} tone="red" step={2} />
-        <Curve d="M 250 270 C 296 210 328 170 344 140" id={id} tone="blue" step={2} />
-        <Curve d="M 130 318 C 88 318 70 340 60 376" id={id} tone="blue" step={3} />
-        <Curve d="M 290 318 C 332 318 350 340 360 376" id={id} tone="red" step={3} />
-        <Curve d="M 170 372 C 130 430 106 466 90 494" id={id} tone="ink" step={4} />
-        <Curve d="M 250 372 C 290 430 314 466 330 494" id={id} tone="ink" step={4} />
-        <Node x={126} y={265} width={168} height={112} eyebrow="PURPOSE-DEFINED" title={["AlphaDoc", "Engine"]} detail={ko ? "업무 의도를 실행으로" : "intent into action"} tone="red" step={5} center />
-        <Node x={18} y={74} width={154} height={88} eyebrow="QUESTION" title={ko ? "임상 질문" : "Clinical question"} detail={ko ? "맥락을 이해" : "context understood"} tone="red" step={6} />
-        <Node x={248} y={74} width={154} height={88} eyebrow="EVIDENCE" title="AlphaEvidence" detail={ko ? "근거를 결합" : "evidence connected"} tone="blue" step={7} />
-        <Node x={16} y={372} width={154} height={88} eyebrow="DOCUMENT" title="AlphaDocument" detail={ko ? "artifact를 활용" : "artifacts in context"} tone="blue" step={8} />
-        <Node x={250} y={372} width={154} height={88} eyebrow="PROTECTED AI" title="AlphaLayer" detail={ko ? "보호된 실행" : "protected execution"} tone="red" step={9} />
-        <Node x={28} y={502} width={164} height={80} eyebrow="TOOLS & WORKFLOWS" title={ko ? "다음 업무" : "Next actions"} tone="ink" step={10} />
-        <Node x={228} y={502} width={164} height={80} eyebrow="REVIEW" title={ko ? "의료인의 판단" : "Professional judgment"} tone="ink" step={11} />
+      <DiagramSvg id={id} kind="engine" language={language} mobile width={420} height={1030}>
+        <Boundary x={22} y={24} width={376} height={166} label="CONTEXT INPUTS" tone="ink" step={1} />
+        {inputRows.map((row, index) => (
+          <PlateModule
+            key={row}
+            x={38 + (index % 2) * 174}
+            y={60 + Math.floor(index / 2) * 48}
+            width={158}
+            height={34}
+            label={row}
+            tone={index >= 2 ? "blue" : "ink"}
+            step={2 + index}
+          />
+        ))}
+        <TokenStrip x={149} y={169} count={9} tone="blue" step={5} />
+
+        <Boundary x={22} y={222} width={376} height={526} label="ALPHADOC ENGINE" tone="red" step={6} emphasized />
+        <Boundary x={40} y={258} width={340} height={118} label="INTENT + CONSTRAINT ASSEMBLY" tone="red" step={7} />
+        <PlateModule x={56} y={296} width={96} height={44} label={["Intent", "Parsing"]} tone="red" step={8} center />
+        <PlateModule x={162} y={296} width={96} height={44} label={["Constraint", "Mapping"]} tone="red" step={8} center />
+        <PlateModule x={268} y={296} width={96} height={44} label={["Scope", "Definition"]} tone="red" step={8} center />
+        <TokenStrip x={155} y={354} count={8} tone="red" step={8} />
+
+        <Boundary x={40} y={398} width={340} height={214} label="CAPABILITY FABRIC" tone="ink" step={9} solid />
+        <PlateModule x={56} y={430} width={86} height={36} label={["Evidence", "Retrieval"]} tone="blue" step={10} center />
+        <PlateModule x={167} y={430} width={86} height={36} label={["Knowledge", "Grounding"]} tone="blue" step={10} center />
+        <PlateModule x={278} y={430} width={86} height={36} label={["Terminology", "Mapping"]} tone="blue" step={10} center />
+        <PlateModule x={56} y={486} width={86} height={36} label={["Logic", "Evaluation"]} tone="ink" step={11} center />
+        <PlateModule x={167} y={486} width={86} height={36} label={["Reasoning", "Synthesis"]} tone="red" step={11} center strong />
+        <PlateModule x={278} y={486} width={86} height={36} label={["Conflict", "Detection"]} tone="ink" step={11} center />
+        <PlateModule x={56} y={542} width={86} height={36} label={["Citation", "Binding"]} tone="ink" step={12} center />
+        <PlateModule x={167} y={542} width={86} height={36} label={["Explanation", "Assembly"]} tone="ink" step={12} center />
+        <PlateModule x={278} y={542} width={86} height={36} label={["Quality", "Check"]} tone="ink" step={12} center />
+        <Link d="M 99 466 V 486" id={id} tone="blue" step={12} />
+        <Link d="M 142 448 L 167 504" id={id} tone="blue" step={12} />
+        <Link d="M 188 466 L 142 486" id={id} tone="ink" step={12} />
+        <Link d="M 210 466 V 486" id={id} tone="red" step={12} />
+        <Link d="M 232 466 L 278 486" id={id} tone="ink" step={12} />
+        <Link d="M 278 448 L 253 504" id={id} tone="blue" step={12} />
+        <Link d="M 321 466 V 486" id={id} tone="blue" step={12} />
+        <Link d="M 99 522 V 542" id={id} tone="ink" step={12} />
+        <Link d="M 142 504 L 167 560" id={id} tone="ink" step={12} />
+        <Link d="M 188 522 L 142 542" id={id} tone="red" step={12} />
+        <Link d="M 210 522 V 542" id={id} tone="red" step={12} />
+        <Link d="M 232 522 L 278 542" id={id} tone="red" step={12} />
+        <Link d="M 278 504 L 253 560" id={id} tone="ink" step={12} />
+        <Link d="M 321 522 V 542" id={id} tone="ink" step={12} />
+        <Link d="M 142 560 C 190 524 230 524 278 560" id={id} tone="muted" step={12} dashed />
+
+        <Boundary x={40} y={634} width={340} height={88} label="EVALUATION GATES" tone="red" step={13} />
+        {["Source-bound", "Complete", "Consistent", "Traceable"].map((label, index) => (
+          <PlateModule
+            key={label}
+            x={52 + index * 80}
+            y={672}
+            width={72}
+            height={28}
+            label={label}
+            tone={index % 2 === 0 ? "blue" : "ink"}
+            step={14}
+            center
+          />
+        ))}
+
+        <Boundary x={22} y={786} width={176} height={210} label="PROFESSIONAL REVIEW" tone="blue" step={15} />
+        <PlateModule x={40} y={830} width={140} height={34} label="REVIEW_REQUIRED" tone="blue" step={16} center strong />
+        <PlateModule x={40} y={876} width={140} height={34} label="CLINICIAN DECISION" tone="blue" step={16} center />
+        <PlateModule x={40} y={922} width={140} height={34} label="REVISION LOOP" tone="red" step={16} center />
+
+        <Boundary x={220} y={786} width={178} height={210} label="TYPED OUTPUTS" tone="red" step={15} />
+        <PlateModule x={238} y={830} width={142} height={34} label="Answer Artifact" tone="red" step={16} />
+        <PlateModule x={238} y={876} width={142} height={34} label="Evidence Pack" tone="blue" step={16} />
+        <PlateModule x={238} y={922} width={142} height={34} label="Release Identity" tone="ink" step={16} />
+
+        <Link d="M 210 190 V 222" id={id} tone="red" step={6} />
+        <Link d="M 210 376 V 398" id={id} tone="red" step={9} />
+        <Link d="M 210 612 V 634" id={id} tone="ink" step={13} />
+        <Link d="M 210 722 V 766 H 110 V 786" id={id} tone="blue" step={15} />
+        <Link d="M 210 766 H 309 V 786" id={id} tone="red" step={15} />
+        <Link d="M 110 956 V 1010 H 14 V 504 H 40" id={id} tone="ink" step={17} dashed />
+        <MicroLabel x={26} y={1020} tone="ink" step={17}>REVISE / RETRY LOOP</MicroLabel>
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="engine" language={language} mobile={false} width={820} height={510}>
-      <Orbit cx={410} cy={255} rx={330} ry={188} step={1} />
-      <Orbit cx={410} cy={255} rx={218} ry={125} step={1} />
-      <Curve d="M 340 210 C 286 148 236 126 190 128" id={id} tone="red" step={2} />
-      <Curve d="M 480 210 C 534 148 584 126 630 128" id={id} tone="blue" step={2} />
-      <Curve d="M 315 255 C 252 255 210 264 172 292" id={id} tone="blue" step={3} />
-      <Curve d="M 505 255 C 568 255 610 264 648 292" id={id} tone="red" step={3} />
-      <Curve d="M 348 308 C 296 366 256 386 208 390" id={id} tone="ink" step={4} />
-      <Curve d="M 472 308 C 524 366 564 386 612 390" id={id} tone="ink" step={4} />
-      <Node x={315} y={196} width={190} height={118} eyebrow="PURPOSE-DEFINED" title="AlphaDoc Engine" detail={ko ? "업무 의도를 실행 가능한 흐름으로" : "medical intent into executable flow"} tone="red" step={5} center />
-      <Node x={34} y={82} width={210} height={94} eyebrow="QUESTION" title={ko ? "임상 질문과 맥락" : "Clinical question"} detail={ko ? "질문의 목적을 이해" : "intent in context"} tone="red" step={6} />
-      <Node x={576} y={82} width={210} height={94} eyebrow="EVIDENCE" title="AlphaEvidence" detail={ko ? "출처가 살아 있는 근거" : "source-bound evidence"} tone="blue" step={7} />
-      <Node x={28} y={270} width={210} height={94} eyebrow="DOCUMENT" title="AlphaDocument" detail={ko ? "문서 artifact를 활용" : "artifacts in context"} tone="blue" step={8} />
-      <Node x={582} y={270} width={210} height={94} eyebrow="PROTECTED AI" title="AlphaLayer" detail={ko ? "보호된 외부 실행" : "protected external execution"} tone="red" step={9} />
-      <Node x={82} y={382} width={220} height={80} eyebrow="TOOLS & WORKFLOWS" title={ko ? "답변 다음의 업무" : "Actions beyond answers"} tone="ink" step={10} />
-      <Node x={518} y={382} width={220} height={80} eyebrow="REVIEW" title={ko ? "의료인의 검토와 판단" : "Professional judgment"} tone="ink" step={11} />
+    <DiagramSvg id={id} kind="engine" language={language} mobile={false} width={960} height={600}>
+      <Boundary x={20} y={54} width={174} height={416} label="CONTEXT INPUTS" tone="ink" step={1} />
+      <StackPanel
+        x={36}
+        y={92}
+        width={142}
+        height={330}
+        title="PURPOSE + CONTEXT"
+        rows={inputRows}
+        tone="ink"
+        step={2}
+        tokens={8}
+      />
+
+      <Boundary x={226} y={30} width={500} height={496} label="ALPHADOC ENGINE" tone="red" step={3} emphasized />
+      <Boundary x={246} y={66} width={460} height={112} label="INTENT + CONSTRAINT ASSEMBLY" tone="red" step={4} />
+      <PlateModule x={264} y={104} width={126} height={42} label="Intent Parsing" tone="red" step={5} center />
+      <PlateModule x={414} y={104} width={126} height={42} label="Constraint Mapping" tone="red" step={5} center />
+      <PlateModule x={564} y={104} width={126} height={42} label="Scope Definition" tone="red" step={5} center />
+      <TokenStrip x={426} y={158} count={9} tone="red" step={5} />
+
+      <Boundary x={246} y={198} width={460} height={210} label="CAPABILITY FABRIC" tone="ink" step={6} solid />
+      <PlateModule x={266} y={230} width={104} height={38} label={["Evidence", "Retrieval"]} tone="blue" step={7} center />
+      <PlateModule x={426} y={230} width={104} height={38} label={["Knowledge", "Grounding"]} tone="blue" step={7} center />
+      <PlateModule x={582} y={230} width={104} height={38} label={["Terminology", "Mapping"]} tone="blue" step={7} center />
+      <PlateModule x={266} y={286} width={104} height={38} label={["Logic", "Evaluation"]} tone="ink" step={8} center />
+      <PlateModule x={426} y={286} width={104} height={38} label={["Reasoning", "Synthesis"]} tone="red" step={8} center strong />
+      <PlateModule x={582} y={286} width={104} height={38} label={["Conflict", "Detection"]} tone="ink" step={8} center />
+      <PlateModule x={266} y={342} width={104} height={38} label={["Citation", "Binding"]} tone="ink" step={8} center />
+      <PlateModule x={426} y={342} width={104} height={38} label={["Explanation", "Assembly"]} tone="ink" step={8} center />
+      <PlateModule x={582} y={342} width={104} height={38} label={["Quality", "Check"]} tone="ink" step={8} center />
+      <Link d="M 318 268 V 286" id={id} tone="blue" step={9} />
+      <Link d="M 370 249 L 426 305" id={id} tone="blue" step={9} />
+      <Link d="M 452 268 L 370 286" id={id} tone="ink" step={9} />
+      <Link d="M 478 268 V 286" id={id} tone="red" step={9} />
+      <Link d="M 504 268 L 582 286" id={id} tone="ink" step={9} />
+      <Link d="M 582 249 L 530 305" id={id} tone="blue" step={9} />
+      <Link d="M 634 268 V 286" id={id} tone="blue" step={9} />
+      <Link d="M 318 324 V 342" id={id} tone="ink" step={9} />
+      <Link d="M 370 305 L 426 361" id={id} tone="ink" step={9} />
+      <Link d="M 452 324 L 370 342" id={id} tone="red" step={9} />
+      <Link d="M 478 324 V 342" id={id} tone="red" step={9} />
+      <Link d="M 504 324 L 582 342" id={id} tone="red" step={9} />
+      <Link d="M 582 305 L 530 361" id={id} tone="ink" step={9} />
+      <Link d="M 634 324 V 342" id={id} tone="ink" step={9} />
+      <Link d="M 370 361 C 430 326 522 326 582 361" id={id} tone="muted" step={9} dashed />
+
+      <Boundary x={246} y={430} width={460} height={72} label="EVALUATION GATES" tone="red" step={10} />
+      {["Source-bound", "Completeness", "Consistency", "Traceability", "Safety"].map((label, index) => (
+        <PlateModule
+          key={label}
+          x={258 + index * 88}
+          y={462}
+          width={78}
+          height={26}
+          label={label}
+          tone={index === 0 ? "blue" : index === 4 ? "red" : "ink"}
+          step={11}
+          center
+        />
+      ))}
+
+      <Boundary x={758} y={54} width={182} height={216} label="PROFESSIONAL REVIEW" tone="blue" step={10} />
+      <PlateModule x={776} y={96} width={146} height={34} label="REVIEW_REQUIRED" tone="blue" step={11} center strong />
+      <PlateModule x={776} y={142} width={146} height={34} label="CLINICIAN DECISION" tone="blue" step={11} center />
+      <PlateModule x={776} y={188} width={146} height={34} label="REVISION LOOP" tone="red" step={11} center />
+      <PlateModule x={776} y={234} width={146} height={24} label="DECISION TRACE" tone="muted" step={11} center />
+
+      <Boundary x={758} y={294} width={182} height={232} label="TYPED OUTPUTS" tone="red" step={12} />
+      <StackPanel
+        x={776}
+        y={334}
+        width={146}
+        height={168}
+        title="ARTIFACTS"
+        rows={["Answer Artifact", "Document Artifact", "Evidence Pack", "Release Identity"]}
+        tone="red"
+        step={13}
+        tokens={8}
+      />
+
+      <Link d="M 194 260 H 226" id={id} tone="red" step={3} />
+      <Link d="M 476 178 V 198" id={id} tone="red" step={6} />
+      <Link d="M 476 408 V 430" id={id} tone="ink" step={10} />
+      <Link d="M 706 466 H 734 V 162 H 758" id={id} tone="blue" step={11} />
+      <Link d="M 849 270 V 294" id={id} tone="red" step={12} />
+      <Link d="M 776 205 H 744 V 554 H 208 V 390 H 226" id={id} tone="ink" step={14} dashed />
+      <MicroLabel x={480} y={574} anchor="middle" tone="ink" step={14}>REVISE / RETRY LOOP</MicroLabel>
+      <TokenStrip x={424} y={548} count={9} tone="red" step={14} />
     </DiagramSvg>
+  );
+}
+
+function DocumentViewport({
+  x,
+  y,
+  width,
+  height,
+  step,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  step: number;
+}) {
+  return (
+    <g className="technology-svg-step" style={stepStyle(step)}>
+      <rect x={x + 7} y={y + 7} width={width} height={height} rx="4" className="diagram-document-shadow" />
+      <rect x={x} y={y} width={width} height={height} rx="4" className="diagram-document-page" />
+      <rect x={x + 15} y={y + 17} width={width * .58} height="7" className="diagram-document-heading" />
+      <rect x={x + 15} y={y + 36} width={width * .76} height="3" className="diagram-document-line" />
+      <rect x={x + 15} y={y + 45} width={width * .52} height="3" className="diagram-document-line" />
+      <rect x={x + 15} y={y + 65} width={width * .43} height={height * .22} className="diagram-document-figure" />
+      <path
+        d={`M ${x + 21} ${y + 65 + height * .16} L ${x + 34} ${y + 65 + height * .1} L ${x + 46} ${y + 65 + height * .14} L ${x + 62} ${y + 65 + height * .05} L ${x + 75} ${y + 65 + height * .1}`}
+        className="diagram-document-chart"
+      />
+      <rect x={x + width * .56} y={y + 65} width={width * .3} height="3" className="diagram-document-line" />
+      <rect x={x + width * .56} y={y + 76} width={width * .34} height="3" className="diagram-document-line" />
+      <rect x={x + width * .56} y={y + 87} width={width * .26} height="3" className="diagram-document-line" />
+      {Array.from({ length: 7 }, (_, index) => (
+        <rect
+          key={index}
+          x={x + 15}
+          y={y + height * .53 + index * 10}
+          width={width * (.72 - (index % 3) * .08)}
+          height="3"
+          className="diagram-document-line"
+        />
+      ))}
+    </g>
   );
 }
 
 function DocumentSvg({ language, mobile }: { language: Language; mobile: boolean }) {
   const id = `technology-document-${language}-${mobile ? "mobile" : "desktop"}`;
-  const ko = language === "ko";
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="document" language={language} mobile width={420} height={620}>
-        <Orbit cx={210} cy={310} rx={176} ry={222} step={1} />
-        <Curve d="M 140 262 C 110 220 88 184 74 148" id={id} tone="blue" step={2} />
-        <Curve d="M 280 262 C 310 220 332 184 346 148" id={id} tone="blue" step={2} />
-        <Curve d="M 125 316 C 84 316 64 330 52 360" id={id} tone="muted" step={3} />
-        <Curve d="M 295 316 C 336 316 356 330 368 360" id={id} tone="red" step={3} />
-        <Curve d="M 210 378 C 210 428 210 458 210 486" id={id} tone="ink" step={4} />
-        <Node x={120} y={255} width={180} height={124} eyebrow="DETERMINISTIC CORE" title={["Document", "Artifact"]} detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={5} center />
-        <Node x={18} y={72} width={154} height={90} eyebrow="DIGITAL DOCUMENTS" title={ko ? "다양한 문서 형식" : "Multiple formats"} detail="PDF · DOCX · HWP · CSV" tone="blue" step={6} />
-        <Node x={248} y={72} width={154} height={90} eyebrow="SOURCE ANCHORS" title={ko ? "원문 위치를 보존" : "Source locations"} detail={ko ? "문단 · 표 · 구조" : "blocks · tables · structure"} tone="blue" step={7} />
-        <Node x={16} y={360} width={154} height={90} eyebrow="REUSABLE INPUT" title="AlphaEvidence" detail={ko ? "근거 수집의 기반" : "evidence ingestion"} tone="muted" step={8} />
-        <Node x={250} y={360} width={154} height={90} eyebrow="REUSABLE INPUT" title="AlphaDoc Engine" detail={ko ? "문서 맥락의 기반" : "document context"} tone="red" step={9} />
-        <Node x={118} y={492} width={184} height={78} eyebrow="ONE SOURCE, MANY USES" title={ko ? "다시 쓰이는 문서 지식" : "Reusable document knowledge"} tone="ink" step={10} center />
+      <DiagramSvg id={id} kind="document" language={language} mobile width={420} height={980}>
+        <Boundary x={22} y={24} width={376} height={210} label="DIGITAL DOCUMENT INPUT" tone="ink" step={1} />
+        <DocumentViewport x={42} y={58} width={136} height={148} step={2} />
+        <MicroLabel x={282} y={78} anchor="middle" tone="ink" step={2}>PDF · DOCX · HWP · CSV</MicroLabel>
+        <PlateModule x={210} y={98} width={144} height={34} label="Original Structure" tone="blue" step={3} />
+        <PlateModule x={210} y={144} width={144} height={34} label="Source Locations" tone="blue" step={3} />
+        <TokenStrip x={223} y={194} count={9} tone="blue" step={3} />
+
+        <Boundary x={22} y={270} width={376} height={486} label="ALPHADOCUMENT" tone="blue" step={4} emphasized />
+        <Boundary x={40} y={306} width={340} height={136} label="STRUCTURAL DECOMPOSITION" tone="ink" step={5} />
+        <PlateModule x={54} y={344} width={92} height={44} label={["Block", "Tokens"]} tone="blue" step={6} center />
+        <PlateModule x={164} y={344} width={92} height={44} label={["Semantic", "Anchors"]} tone="blue" step={6} center />
+        <PlateModule x={274} y={344} width={92} height={44} label={["Schema", "Nodes"]} tone="blue" step={6} center />
+        <TokenStrip x={67} y={408} count={7} tone="blue" step={7} size={7} gap={3} />
+        <circle cx="210" cy="408" r="4" className="diagram-version-node diagram-version-node-blue" />
+        <circle cx="190" cy="422" r="3" className="diagram-version-node" />
+        <circle cx="230" cy="422" r="3" className="diagram-version-node" />
+        <Link d="M 207 411 L 193 420" id={id} tone="blue" step={7} arrow={false} />
+        <Link d="M 213 411 L 227 420" id={id} tone="blue" step={7} arrow={false} />
+        <TokenStrip x={286} y={408} count={7} tone="blue" step={7} size={7} gap={3} hollowEvery={4} />
+
+        <Boundary x={40} y={464} width={340} height={142} label="PROVENANCE + VALIDATION" tone="red" step={8} />
+        <PlateModule x={54} y={502} width={140} height={36} label="Provenance Links" tone="blue" step={9} />
+        <PlateModule x={226} y={502} width={140} height={36} label="Citation Binding" tone="blue" step={9} />
+        <PlateModule x={54} y={550} width={96} height={30} label="Structure" tone="ink" step={10} center />
+        <PlateModule x={162} y={550} width={96} height={30} label="Consistency" tone="ink" step={10} center />
+        <PlateModule x={270} y={550} width={96} height={30} label="Traceability" tone="red" step={10} center />
+
+        <Boundary x={40} y={628} width={340} height={102} label="RENDER + ASSEMBLY" tone="blue" step={11} solid />
+        <PlateModule x={58} y={668} width={142} height={36} label="Template Assembly" tone="blue" step={12} />
+        <PlateModule x={220} y={668} width={142} height={36} label="Artifact Identity" tone="red" step={12} />
+
+        <Link d="M 210 234 V 270" id={id} tone="blue" step={4} />
+        <Link d="M 146 366 H 164" id={id} tone="blue" step={7} />
+        <Link d="M 256 366 H 274" id={id} tone="blue" step={7} />
+        <Link d="M 210 442 V 464" id={id} tone="red" step={8} />
+        <Link d="M 210 606 V 628" id={id} tone="ink" step={11} />
+
+        <Boundary x={22} y={792} width={376} height={156} label="DERIVATIVE ARTIFACTS" tone="red" step={13} />
+        <PlateModule x={40} y={830} width={158} height={34} label="Structured Document" tone="red" step={14} />
+        <PlateModule x={222} y={830} width={158} height={34} label="Citation Map" tone="blue" step={14} />
+        <PlateModule x={40} y={878} width={158} height={34} label="Validation Report" tone="ink" step={15} />
+        <PlateModule x={222} y={878} width={158} height={34} label="Integrity Record" tone="red" step={15} />
+        <Link d="M 210 756 V 776 H 119 V 792" id={id} tone="red" step={13} />
+        <Link d="M 210 776 H 301 V 792" id={id} tone="blue" step={13} />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="document" language={language} mobile={false} width={820} height={480}>
-      <Orbit cx={410} cy={240} rx={325} ry={172} step={1} />
-      <Orbit cx={410} cy={240} rx={218} ry={112} step={1} />
-      <Curve d="M 330 195 C 274 138 226 118 186 124" id={id} tone="blue" step={2} />
-      <Curve d="M 490 195 C 546 138 594 118 634 124" id={id} tone="blue" step={2} />
-      <Curve d="M 315 260 C 252 272 218 302 188 326" id={id} tone="muted" step={3} />
-      <Curve d="M 505 260 C 568 272 602 302 632 326" id={id} tone="red" step={3} />
-      <Curve d="M 410 304 C 410 350 410 376 410 396" id={id} tone="ink" step={4} />
-      <Node x={310} y={184} width={200} height={122} eyebrow="DETERMINISTIC CORE" title="Document Artifact" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={5} center />
-      <Node x={36} y={72} width={220} height={96} eyebrow="DIGITAL DOCUMENTS" title={ko ? "다양한 문서 형식" : "Multiple formats"} detail="PDF · DOCX · HWP · CSV" tone="blue" step={6} />
-      <Node x={564} y={72} width={220} height={96} eyebrow="SOURCE ANCHORS" title={ko ? "원문 위치를 보존" : "Source locations"} detail={ko ? "문단 · 표 · 구조" : "blocks · tables · structure"} tone="blue" step={7} />
-      <Node x={34} y={292} width={220} height={96} eyebrow="REUSABLE INPUT" title="AlphaEvidence" detail={ko ? "근거 수집의 기반" : "evidence ingestion"} tone="muted" step={8} />
-      <Node x={566} y={292} width={220} height={96} eyebrow="REUSABLE INPUT" title="AlphaDoc Engine" detail={ko ? "문서 맥락의 기반" : "document context"} tone="red" step={9} />
-      <Node x={300} y={394} width={220} height={62} eyebrow="ONE SOURCE, MANY USES" title={ko ? "다시 쓰이는 문서 지식" : "Reusable document knowledge"} tone="ink" step={10} center />
+    <DiagramSvg id={id} kind="document" language={language} mobile={false} width={960} height={590}>
+      <Boundary x={22} y={82} width={188} height={390} label="DIGITAL DOCUMENTS" tone="ink" step={1} />
+      <DocumentViewport x={42} y={122} width={146} height={228} step={2} />
+      <MicroLabel x={115} y={382} anchor="middle" tone="ink" step={3}>PDF · DOCX · HWP · CSV</MicroLabel>
+      <TokenStrip x={65} y={416} count={8} tone="blue" step={3} />
+
+      <Boundary x={244} y={30} width={488} height={500} label="ALPHADOCUMENT" tone="blue" step={4} emphasized />
+      <Boundary x={264} y={68} width={448} height={158} label="STRUCTURAL DECOMPOSITION" tone="ink" step={5} />
+      <PlateModule x={284} y={108} width={122} height={48} label={["Block Tokens", "Structural Units"]} tone="blue" step={6} center />
+      <PlateModule x={427} y={108} width={122} height={48} label={["Semantic Anchors", "Meaning + Entities"]} tone="blue" step={6} center />
+      <PlateModule x={570} y={108} width={122} height={48} label={["Schema Nodes", "Typed Structure"]} tone="blue" step={6} center />
+      <TokenStrip x={308} y={180} count={7} tone="blue" step={7} size={7} gap={3} />
+      <circle cx="488" cy="180" r="5" className="diagram-version-node diagram-version-node-blue" />
+      <circle cx="468" cy="202" r="4" className="diagram-version-node" />
+      <circle cx="508" cy="202" r="4" className="diagram-version-node" />
+      <Link d="M 485 184 L 471 199" id={id} tone="blue" step={7} arrow={false} />
+      <Link d="M 491 184 L 505 199" id={id} tone="blue" step={7} arrow={false} />
+      <TokenStrip x={592} y={180} count={7} tone="blue" step={7} size={7} gap={3} hollowEvery={4} />
+      <Link d="M 406 132 H 427" id={id} tone="blue" step={7} />
+      <Link d="M 549 132 H 570" id={id} tone="blue" step={7} />
+
+      <Boundary x={264} y={248} width={448} height={142} label="PROVENANCE + VALIDATION" tone="red" step={8} />
+      <PlateModule x={282} y={286} width={128} height={38} label="Provenance Links" tone="blue" step={9} center />
+      <PlateModule x={426} y={286} width={128} height={38} label="Citation Binding" tone="blue" step={9} center />
+      <PlateModule x={570} y={286} width={124} height={38} label="Business Rules" tone="red" step={9} center />
+      {["Structure", "Consistency", "Traceability", "Integrity"].map((label, index) => (
+        <PlateModule
+          key={label}
+          x={282 + index * 103}
+          y={342}
+          width={92}
+          height={28}
+          label={label}
+          tone={index === 3 ? "red" : "ink"}
+          step={10}
+          center
+        />
+      ))}
+      <Link d="M 488 226 V 248" id={id} tone="red" step={8} />
+
+      <Boundary x={264} y={412} width={448} height={92} label="RENDER + ASSEMBLY" tone="blue" step={11} solid />
+      <PlateModule x={284} y={450} width={194} height={34} label="Template Assembly" tone="blue" step={12} center />
+      <PlateModule x={498} y={450} width={194} height={34} label="Artifact Identity" tone="red" step={12} center />
+      <Link d="M 488 390 V 412" id={id} tone="ink" step={11} />
+
+      <Link d="M 210 238 H 244" id={id} tone="blue" step={4} />
+      <Link d="M 210 312 H 228 V 320 H 244" id={id} tone="muted" step={8} dashed />
+
+      <Boundary x={766} y={82} width={172} height={390} label="DERIVATIVE ARTIFACTS" tone="red" step={12} />
+      <StackPanel
+        x={784}
+        y={122}
+        width={136}
+        height={320}
+        title="TYPED OUTPUTS"
+        rows={["Structured Document", "Citation Map", "Validation Report", "Integrity Record", "Review State"]}
+        tone="red"
+        step={13}
+        tokens={8}
+      />
+      <Link d="M 712 458 H 746 V 282 H 766" id={id} tone="red" step={13} />
+      <Link d="M 732 132 H 750 V 186 H 766" id={id} tone="blue" step={13} dashed />
+      <Link d="M 732 320 H 750 V 376 H 766" id={id} tone="ink" step={13} />
+
+      <MicroLabel x={24} y={552} tone="muted" step={14}>
+        STRUCTURE · SOURCE LOCATION · VALIDATION · ARTIFACT IDENTITY
+      </MicroLabel>
+      <TokenStrip x={778} y={540} count={12} tone="red" step={14} size={8} gap={4} hollowEvery={6} />
     </DiagramSvg>
   );
 }
 
 function LayerSvg({ language, mobile }: { language: Language; mobile: boolean }) {
   const id = `technology-layer-${language}-${mobile ? "mobile" : "desktop"}`;
-  const ko = language === "ko";
+  const requestRows = [
+    pick(language, "근거 질의", "Research Query"),
+    pick(language, "임상 요청", "Clinical Request"),
+    pick(language, "문서 생성", "Document Build"),
+    pick(language, "번역", "Translation"),
+  ];
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="layer" language={language} mobile width={420} height={650}>
-        <Orbit cx={210} cy={318} rx={176} ry={246} step={1} />
-        <Orbit cx={210} cy={318} rx={112} ry={156} step={1} />
-        <Curve d="M 126 318 C 94 300 72 270 62 230" id={id} tone="red" step={2} />
-        <Curve d="M 294 318 C 326 300 348 270 358 230" id={id} tone="red" step={2} />
-        <Curve d="M 168 262 C 128 214 102 176 86 142" id={id} tone="blue" step={3} />
-        <Curve d="M 252 262 C 292 214 318 176 334 142" id={id} tone="blue" step={3} />
-        <Curve d="M 168 374 C 128 428 102 466 86 500" id={id} tone="ink" step={4} />
-        <Curve d="M 252 374 C 292 428 318 466 334 500" id={id} tone="ink" step={4} />
-        <Node x={126} y={263} width={168} height={112} eyebrow="PROTECTED GATEWAY" title="AlphaLayer" detail={ko ? "외부 실행의 보호 경계" : "protected execution boundary"} tone="red" step={5} center />
-        <Node x={18} y={70} width={154} height={88} eyebrow="PURPOSE" title={ko ? "목적을 먼저 확인" : "Purpose first"} detail={ko ? "업무별 실행 경계" : "task-bound execution"} tone="blue" step={6} />
-        <Node x={248} y={70} width={154} height={88} eyebrow="MINIMIZATION" title={ko ? "필요한 정보만" : "Only what is needed"} detail={ko ? "맥락을 지키며 최소화" : "context-aware minimization"} tone="blue" step={7} />
-        <Node x={16} y={196} width={154} height={88} eyebrow="ENGINE SIDE" title="AlphaDoc Engine" detail={ko ? "승인된 실행 요청" : "approved invocation"} tone="red" step={8} />
-        <Node x={250} y={196} width={154} height={88} eyebrow="EXECUTION SIDE" title={ko ? "승인된 실행 환경" : "Approved execution"} detail={ko ? "교체 가능한 실행 기반" : "replaceable backend"} tone="red" step={9} />
-        <Node x={18} y={498} width={154} height={88} eyebrow="INTEGRITY" title={ko ? "응답 무결성" : "Response integrity"} detail={ko ? "요청과 응답을 연결" : "request-bound response"} tone="ink" step={10} />
-        <Node x={248} y={498} width={154} height={88} eyebrow="ASSURANCE" title={ko ? "실행의 증거" : "Execution evidence"} detail={ko ? "원문 없는 최소 기록" : "minimal payload-free record"} tone="ink" step={11} />
+      <DiagramSvg id={id} kind="layer" language={language} mobile width={420} height={1050}>
+        <Boundary x={22} y={24} width={376} height={166} label="REQUEST CLASSES" tone="ink" step={1} />
+        {requestRows.map((row, index) => (
+          <PlateModule
+            key={row}
+            x={38 + (index % 2) * 174}
+            y={60 + Math.floor(index / 2) * 48}
+            width={158}
+            height={34}
+            label={row}
+            tone={index % 2 === 0 ? "blue" : "ink"}
+            step={2 + index}
+          />
+        ))}
+        <TokenStrip x={149} y={169} count={9} tone="blue" step={5} />
+
+        <Boundary x={20} y={224} width={380} height={552} label="PURPOSE + POLICY BOUNDARY" tone="blue" step={6} emphasized />
+        <PlateModule x={40} y={264} width={102} height={34} label="Purpose Bind" tone="blue" step={7} center />
+        <PlateModule x={159} y={264} width={102} height={34} label="Policy Eval" tone="blue" step={7} center />
+        <PlateModule x={278} y={264} width={102} height={34} label="Access Control" tone="blue" step={7} center />
+        <TokenStrip x={155} y={315} count={8} tone="red" step={7} />
+
+        <Boundary x={40} y={342} width={340} height={180} label="MINIMIZATION BOUNDARY" tone="blue" step={8} />
+        <PlateModule x={56} y={380} width={92} height={38} label={["Data", "Minimization"]} tone="blue" step={9} center />
+        <PlateModule x={164} y={380} width={92} height={38} label={["Field", "Filtering"]} tone="blue" step={9} center />
+        <PlateModule x={272} y={380} width={92} height={38} label={["Scope", "Limitation"]} tone="blue" step={9} center />
+        <TokenStrip x={155} y={444} count={8} tone="red" step={10} />
+
+        <Boundary x={58} y={468} width={304} height={164} label="PROTECTED EXECUTION" tone="red" step={10} solid />
+        <PlateModule x={76} y={512} width={82} height={44} label={["Policy", "Engine"]} tone="red" step={11} center />
+        <PlateModule x={169} y={512} width={82} height={44} label={["Secure", "Processing"]} tone="red" step={11} center strong />
+        <PlateModule x={262} y={512} width={82} height={44} label={["Execution", "Guards"]} tone="red" step={11} center />
+        <TokenStrip x={155} y={590} count={8} tone="red" step={11} />
+
+        <Boundary x={40} y={650} width={164} height={100} label="RESPONSE INTEGRITY" tone="blue" step={12} />
+        <PlateModule x={56} y={688} width={132} height={34} label="Request Binding" tone="blue" step={13} />
+        <Boundary x={216} y={650} width={164} height={100} label="PAYLOAD-FREE ASSURANCE" tone="red" step={12} />
+        <PlateModule x={232} y={688} width={132} height={34} label="Integrity Record" tone="red" step={13} />
+
+        <Link d="M 210 190 V 224" id={id} tone="blue" step={6} />
+        <Link d="M 210 298 V 342" id={id} tone="red" step={8} />
+        <Link d="M 210 522 V 650" id={id} tone="red" step={12} />
+        <Link d="M 210 632 V 650" id={id} tone="blue" step={12} />
+
+        <Boundary x={22} y={812} width={376} height={206} label="BINDING LOOPS" tone="ink" step={14} />
+        <PlateModule x={42} y={852} width={154} height={34} label="Request Tokens" tone="blue" step={15} />
+        <PlateModule x={224} y={852} width={154} height={34} label="Response Tokens" tone="blue" step={15} />
+        <PlateModule x={42} y={912} width={102} height={32} label="Policy Bind" tone="red" step={16} center />
+        <PlateModule x={159} y={912} width={102} height={32} label="Execution Bind" tone="red" step={16} center />
+        <PlateModule x={276} y={912} width={102} height={32} label="Response Bind" tone="red" step={16} center />
+        <Link d="M 196 869 H 224" id={id} tone="red" step={16} dashed startArrow />
+        <Link d="M 93 886 V 912" id={id} tone="red" step={16} />
+        <Link d="M 301 886 V 912" id={id} tone="red" step={16} />
+        <Link d="M 144 928 H 159" id={id} tone="ink" step={16} />
+        <Link d="M 261 928 H 276" id={id} tone="ink" step={16} />
+        <TokenStrip x={155} y={976} count={8} tone="blue" step={17} />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="layer" language={language} mobile={false} width={820} height={520}>
-      <Orbit cx={410} cy={260} rx={330} ry={190} step={1} />
-      <Orbit cx={410} cy={260} rx={222} ry={126} step={1} />
-      <Curve d="M 315 260 C 262 248 224 226 194 204" id={id} tone="red" step={2} />
-      <Curve d="M 505 260 C 558 248 596 226 626 204" id={id} tone="red" step={2} />
-      <Curve d="M 348 207 C 294 150 246 126 196 128" id={id} tone="blue" step={3} />
-      <Curve d="M 472 207 C 526 150 574 126 624 128" id={id} tone="blue" step={3} />
-      <Curve d="M 348 313 C 294 370 246 394 196 392" id={id} tone="ink" step={4} />
-      <Curve d="M 472 313 C 526 370 574 394 624 392" id={id} tone="ink" step={4} />
-      <Node x={315} y={202} width={190} height={116} eyebrow="PROTECTED GATEWAY" title="AlphaLayer" detail={ko ? "외부 실행의 보호 경계" : "protected execution boundary"} tone="red" step={5} center />
-      <Node x={34} y={78} width={220} height={94} eyebrow="PURPOSE" title={ko ? "목적을 먼저 확인" : "Purpose first"} detail={ko ? "업무별 실행 경계" : "task-bound execution"} tone="blue" step={6} />
-      <Node x={566} y={78} width={220} height={94} eyebrow="MINIMIZATION" title={ko ? "필요한 정보만" : "Only what is needed"} detail={ko ? "맥락을 지키며 최소화" : "context-aware minimization"} tone="blue" step={7} />
-      <Node x={26} y={202} width={220} height={94} eyebrow="ENGINE SIDE" title="AlphaDoc Engine" detail={ko ? "승인된 실행 요청" : "approved invocation"} tone="red" step={8} />
-      <Node x={574} y={202} width={220} height={94} eyebrow="EXECUTION SIDE" title={ko ? "승인된 실행 환경" : "Approved execution"} detail={ko ? "교체 가능한 실행 기반" : "replaceable backend"} tone="red" step={9} />
-      <Node x={34} y={350} width={220} height={94} eyebrow="INTEGRITY" title={ko ? "응답 무결성" : "Response integrity"} detail={ko ? "요청과 응답을 정확히 연결" : "request-bound response"} tone="ink" step={10} />
-      <Node x={566} y={350} width={220} height={94} eyebrow="ASSURANCE" title={ko ? "실행의 증거" : "Execution evidence"} detail={ko ? "원문 없는 최소 기록" : "minimal payload-free record"} tone="ink" step={11} />
+    <DiagramSvg id={id} kind="layer" language={language} mobile={false} width={960} height={600}>
+      <Boundary x={20} y={94} width={170} height={356} label="REQUEST CLASSES" tone="ink" step={1} />
+      <StackPanel
+        x={36}
+        y={132}
+        width={138}
+        height={272}
+        title="INTENT"
+        rows={requestRows}
+        tone="ink"
+        step={2}
+        tokens={8}
+      />
+
+      <Boundary x={220} y={30} width={520} height={464} label="PURPOSE + POLICY BOUNDARY" tone="blue" step={3} emphasized />
+      <PlateModule x={244} y={72} width={108} height={34} label="Purpose Binding" tone="blue" step={4} center />
+      <PlateModule x={372} y={72} width={108} height={34} label="Policy Evaluation" tone="blue" step={4} center />
+      <PlateModule x={500} y={72} width={108} height={34} label="Access Control" tone="blue" step={4} center />
+      <PlateModule x={628} y={72} width={88} height={34} label="Use Scope" tone="blue" step={4} center />
+      <TokenStrip x={432} y={122} count={9} tone="red" step={5} />
+
+      <Boundary x={250} y={146} width={460} height={306} label="MINIMIZATION BOUNDARY" tone="blue" step={5} />
+      <PlateModule x={276} y={188} width={122} height={38} label="Data Minimization" tone="blue" step={6} center />
+      <PlateModule x={419} y={188} width={122} height={38} label="Field Filtering" tone="blue" step={6} center />
+      <PlateModule x={562} y={188} width={122} height={38} label="Scope Limitation" tone="blue" step={6} center />
+      <TokenStrip x={432} y={244} count={9} tone="red" step={7} />
+
+      <Boundary x={276} y={270} width={408} height={148} label="PROTECTED EXECUTION" tone="red" step={7} solid />
+      <PlateModule x={296} y={314} width={110} height={50} label={["Policy", "Engine"]} tone="red" step={8} center />
+      <PlateModule x={425} y={314} width={110} height={50} label={["Secure", "Processing"]} tone="red" step={8} center strong />
+      <PlateModule x={554} y={314} width={110} height={50} label={["Execution", "Guards"]} tone="red" step={8} center />
+      <TokenStrip x={428} y={390} count={9} tone="red" step={9} />
+
+      <Boundary x={770} y={94} width={170} height={170} label="RESPONSE INTEGRITY" tone="blue" step={9} />
+      <PlateModule x={788} y={136} width={134} height={34} label="Integrity Check" tone="blue" step={10} />
+      <PlateModule x={788} y={182} width={134} height={34} label="Request Binding" tone="blue" step={10} />
+      <TokenStrip x={817} y={238} count={7} tone="blue" step={10} />
+
+      <Boundary x={770} y={284} width={170} height={166} label="PAYLOAD-FREE ASSURANCE" tone="red" step={9} />
+      <PlateModule x={788} y={326} width={134} height={34} label="Integrity Record" tone="red" step={10} />
+      <PlateModule x={788} y={372} width={134} height={34} label="Policy Binding" tone="red" step={10} />
+      <TokenStrip x={817} y={424} count={7} tone="red" step={10} />
+
+      <Link d="M 190 270 H 220" id={id} tone="blue" step={3} />
+      <Link d="M 740 188 H 770" id={id} tone="blue" step={9} />
+      <Link d="M 684 344 H 728 V 367 H 770" id={id} tone="red" step={9} />
+      <Link d="M 480 106 V 146" id={id} tone="red" step={5} />
+      <Link d="M 480 226 V 270" id={id} tone="red" step={7} />
+      <Link d="M 250 302 H 220 V 506 H 480 V 494" id={id} tone="blue" step={11} dashed />
+      <Link d="M 710 302 H 744 V 506 H 480" id={id} tone="red" step={11} dashed />
+
+      <Boundary x={84} y={516} width={792} height={58} label="BINDING LOOPS" tone="ink" step={11} />
+      <PlateModule x={110} y={538} width={132} height={26} label="Request Tokens" tone="blue" step={12} center />
+      <PlateModule x={286} y={538} width={112} height={26} label="Policy Bind" tone="red" step={12} center />
+      <PlateModule x={424} y={538} width={112} height={26} label="Execution Bind" tone="red" step={12} center />
+      <PlateModule x={562} y={538} width={112} height={26} label="Response Bind" tone="red" step={12} center />
+      <PlateModule x={718} y={538} width={132} height={26} label="Response Tokens" tone="blue" step={12} center />
+      <Link d="M 242 551 H 286" id={id} tone="blue" step={13} />
+      <Link d="M 398 551 H 424" id={id} tone="ink" step={13} />
+      <Link d="M 536 551 H 562" id={id} tone="ink" step={13} />
+      <Link d="M 674 551 H 718" id={id} tone="red" step={13} />
     </DiagramSvg>
   );
 }
 
 function DiagramPair({ kind, language }: { kind: TechnologyMotionKind; language: Language }) {
-  if (kind === "overview") return <><OverviewSvg language={language} mobile={false} /><OverviewSvg language={language} mobile /></>;
-  if (kind === "evidence") return <><EvidenceSvg language={language} mobile={false} /><EvidenceSvg language={language} mobile /></>;
-  if (kind === "engine") return <><EngineSvg language={language} mobile={false} /><EngineSvg language={language} mobile /></>;
-  if (kind === "document") return <><DocumentSvg language={language} mobile={false} /><DocumentSvg language={language} mobile /></>;
+  if (kind === "overview") {
+    return <><OverviewSvg language={language} mobile={false} /><OverviewSvg language={language} mobile /></>;
+  }
+  if (kind === "evidence") {
+    return <><EvidenceSvg language={language} mobile={false} /><EvidenceSvg language={language} mobile /></>;
+  }
+  if (kind === "engine") {
+    return <><EngineSvg language={language} mobile={false} /><EngineSvg language={language} mobile /></>;
+  }
+  if (kind === "document") {
+    return <><DocumentSvg language={language} mobile={false} /><DocumentSvg language={language} mobile /></>;
+  }
   return <><LayerSvg language={language} mobile={false} /><LayerSvg language={language} mobile /></>;
 }
 

@@ -17,7 +17,9 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
   if (isLanguage(lang) && technologyAnchor) {
     return {
       title: "Technology — Viore",
-      description: "바이오레의 네 기술을 구현 상태와 한계까지 구분해 설명합니다.",
+      description: lang === "ko"
+        ? "현재 공개된 기술에서 시작해 새로 개발·검증·통합되는 바이오레의 기술과 연결 구조를 계속 소개합니다."
+        : "Viore's Technology Journal begins with its currently presented technologies and continues to document newly developed, validated, and integrated technologies.",
       alternates: { canonical: technologyRouteFor(lang, technologyAnchor) },
     };
   }

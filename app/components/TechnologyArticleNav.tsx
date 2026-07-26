@@ -48,7 +48,7 @@ export function TechnologyArticleNav({ language }: { language: Language }) {
       aria-label={language === "ko" ? "기술 저널 목차" : "Technology journal contents"}
     >
       <div className="technology-article-nav-inner">
-        <span>Technology</span>
+        <span>{language === "ko" ? "현재 기술" : "Current Tech"}</span>
         <ol>
           {articles.map((article, index) => (
             <li key={article.id}>

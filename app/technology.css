@@ -345,7 +345,7 @@
   letter-spacing: .08em;
 }
 
-/* Four independent articles inside one continuous journal. */
+/* Current independent articles inside one continuously expanding journal. */
 .technology-post {
   scroll-margin-top: calc(var(--header) + 24px);
   padding: 70px 0 82px;
@@ -1054,17 +1054,20 @@
     transform .7s cubic-bezier(.22, 1, .36, 1) calc(var(--flow-order, 0) * 64ms);
 }
 
-/* White-paper SVG system: simple boxes, direct labels, restrained source/execution color. */
+/* Viore research-system plates: one visual grammar, five distinct architectures. */
 .technology-raw-diagram {
   --diagram-paper: #f7f6f1;
-  --diagram-paper-raised: rgba(255, 255, 255, .54);
-  --diagram-ink: #22262a;
-  --diagram-muted: #74787c;
-  --diagram-line: #c7c6c0;
-  --diagram-blue: #3976ad;
-  --diagram-red: #d45d54;
-  border: 1px solid rgba(245, 245, 247, .2);
+  --diagram-paper-raised: #fcfbf7;
+  --diagram-ink: #20252a;
+  --diagram-muted: #747a80;
+  --diagram-line: #c5c8ca;
+  --diagram-line-light: #dde0e1;
+  --diagram-blue: #326fa8;
+  --diagram-red: #d85d50;
+  border: 1px solid rgba(245, 245, 247, .18);
+  border-radius: 12px;
   background: var(--diagram-paper);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, .22);
 }
 
 .technology-paper-svg {
@@ -1072,7 +1075,7 @@
   height: auto;
   display: block;
   overflow: visible;
-  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
   text-rendering: geometricPrecision;
 }
 
@@ -1084,101 +1087,152 @@
   fill: var(--diagram-paper);
 }
 
-.technology-paper-svg .diagram-paper-grain {
-  opacity: .42;
-  mix-blend-mode: multiply;
-  pointer-events: none;
-}
-
-.technology-paper-svg .diagram-box,
-.technology-paper-svg .diagram-link {
+.technology-paper-svg .diagram-boundary,
+.technology-paper-svg .diagram-module,
+.technology-paper-svg .diagram-panel,
+.technology-paper-svg .diagram-panel-rule,
+.technology-paper-svg .diagram-token,
+.technology-paper-svg .diagram-link,
+.technology-paper-svg .diagram-version-node,
+.technology-paper-svg .diagram-document-page,
+.technology-paper-svg .diagram-document-shadow,
+.technology-paper-svg .diagram-document-chart {
   vector-effect: non-scaling-stroke;
 }
 
-.technology-paper-svg .diagram-box {
+.technology-paper-svg .diagram-boundary {
+  fill: rgba(255, 255, 255, .12);
+  stroke: var(--diagram-line);
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.technology-paper-svg .diagram-boundary.is-solid {
+  stroke-dasharray: none;
+}
+
+.technology-paper-svg .diagram-boundary.is-emphasized {
+  fill: rgba(255, 255, 255, .24);
+  stroke-width: 1.15;
+}
+
+.technology-paper-svg .diagram-boundary-blue {
+  fill: color-mix(in srgb, var(--diagram-blue) 2.5%, transparent);
+  stroke: color-mix(in srgb, var(--diagram-blue) 56%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-boundary-red {
+  fill: color-mix(in srgb, var(--diagram-red) 2.5%, transparent);
+  stroke: color-mix(in srgb, var(--diagram-red) 58%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-boundary-muted {
+  stroke: var(--diagram-muted);
+}
+
+.technology-paper-svg .diagram-domain-label,
+.technology-paper-svg .diagram-panel-title,
+.technology-paper-svg .diagram-micro-label {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .055em;
+}
+
+.technology-paper-svg .diagram-domain-label {
+  fill: var(--diagram-ink);
+  font-size: 10px;
+  font-weight: 720;
+}
+
+.technology-paper-svg .diagram-module {
   fill: var(--diagram-paper-raised);
   stroke: var(--diagram-line);
   stroke-width: 1;
 }
 
-.technology-paper-svg .diagram-box-blue {
-  fill: color-mix(in srgb, var(--diagram-blue) 6%, var(--diagram-paper));
-  stroke: color-mix(in srgb, var(--diagram-blue) 62%, var(--diagram-line));
+.technology-paper-svg .diagram-module.is-dashed {
+  stroke-dasharray: 4 3;
 }
 
-.technology-paper-svg .diagram-box-red {
-  fill: color-mix(in srgb, var(--diagram-red) 6%, var(--diagram-paper));
-  stroke: color-mix(in srgb, var(--diagram-red) 62%, var(--diagram-line));
+.technology-paper-svg .diagram-module.is-strong {
+  stroke-width: 1.3;
 }
 
-.technology-paper-svg .diagram-box-muted {
+.technology-paper-svg .diagram-module-blue {
+  fill: color-mix(in srgb, var(--diagram-blue) 5%, var(--diagram-paper-raised));
+  stroke: color-mix(in srgb, var(--diagram-blue) 54%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-module-red {
+  fill: color-mix(in srgb, var(--diagram-red) 4.5%, var(--diagram-paper-raised));
+  stroke: color-mix(in srgb, var(--diagram-red) 58%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-module-muted {
   fill: transparent;
   stroke: var(--diagram-muted);
 }
 
-.technology-paper-svg .diagram-box.is-dashed,
-.technology-paper-svg .diagram-link.is-dashed {
-  stroke-dasharray: 5 5;
-}
-
-.technology-paper-svg .diagram-dot {
+.technology-paper-svg .diagram-module-label {
   fill: var(--diagram-ink);
+  font-size: 9.5px;
+  font-weight: 520;
+  letter-spacing: -.01em;
 }
 
-.technology-paper-svg .diagram-dot-blue {
-  fill: var(--diagram-blue);
+.technology-paper-svg .diagram-module-label.is-strong {
+  font-weight: 650;
 }
 
-.technology-paper-svg .diagram-dot-red {
-  fill: var(--diagram-red);
-}
-
-.technology-paper-svg .diagram-dot-muted {
-  fill: var(--diagram-muted);
-}
-
-.technology-paper-svg .diagram-dot.is-hollow {
-  fill: var(--diagram-paper);
-  stroke: currentColor;
+.technology-paper-svg .diagram-panel {
+  fill: rgba(255, 255, 255, .38);
+  stroke: var(--diagram-line);
   stroke-width: 1;
-  vector-effect: non-scaling-stroke;
 }
 
-.technology-paper-svg .diagram-dot-blue.is-hollow {
-  color: var(--diagram-blue);
+.technology-paper-svg .diagram-panel-blue {
+  fill: color-mix(in srgb, var(--diagram-blue) 4.5%, var(--diagram-paper-raised));
+  stroke: color-mix(in srgb, var(--diagram-blue) 54%, var(--diagram-line));
 }
 
-.technology-paper-svg .diagram-dot-red.is-hollow {
-  color: var(--diagram-red);
+.technology-paper-svg .diagram-panel-red {
+  fill: color-mix(in srgb, var(--diagram-red) 4%, var(--diagram-paper-raised));
+  stroke: color-mix(in srgb, var(--diagram-red) 56%, var(--diagram-line));
 }
 
-.technology-paper-svg .diagram-dot-muted.is-hollow {
-  color: var(--diagram-muted);
+.technology-paper-svg .diagram-panel-muted {
+  fill: transparent;
+  stroke: var(--diagram-muted);
 }
 
-.technology-paper-svg .diagram-eyebrow,
-.technology-paper-svg .diagram-lane-label {
-  fill: var(--diagram-muted);
-  font-size: 8px;
-  font-weight: 500;
-  letter-spacing: .7px;
-}
-
-.technology-paper-svg .diagram-title {
+.technology-paper-svg .diagram-panel-title {
   fill: var(--diagram-ink);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -.25px;
+  font-size: 8.5px;
+  font-weight: 720;
 }
 
-.technology-paper-svg .diagram-detail {
+.technology-paper-svg .diagram-panel-row {
+  fill: var(--diagram-ink);
+  font-size: 8.5px;
+  font-weight: 470;
+}
+
+.technology-paper-svg .diagram-panel-rule {
+  stroke: var(--diagram-line);
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-panel-rule.is-light {
+  stroke: var(--diagram-line-light);
+}
+
+.technology-paper-svg .diagram-micro-label {
   fill: var(--diagram-muted);
-  font-size: 8.5px;
-  font-weight: 400;
+  font-size: 7.5px;
+  font-weight: 650;
 }
 
-.technology-paper-svg .diagram-lane-label {
-  font-size: 8.5px;
+.technology-paper-svg .diagram-text-ink {
+  fill: var(--diagram-ink);
 }
 
 .technology-paper-svg .diagram-text-blue {
@@ -1197,14 +1251,12 @@
   fill: none;
   stroke: var(--diagram-ink);
   stroke-width: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.technology-paper-svg .diagram-orbit {
-  fill: none;
-  stroke: color-mix(in srgb, var(--diagram-blue) 22%, var(--diagram-line));
-  stroke-width: 1;
-  stroke-dasharray: 2 7;
-  vector-effect: non-scaling-stroke;
+.technology-paper-svg .diagram-link.is-dashed {
+  stroke-dasharray: 5 4;
 }
 
 .technology-paper-svg .diagram-link-blue {
@@ -1235,17 +1287,90 @@
   fill: var(--diagram-muted);
 }
 
+.technology-paper-svg .diagram-token {
+  fill: var(--diagram-ink);
+  stroke: var(--diagram-ink);
+  stroke-width: .75;
+}
+
+.technology-paper-svg .diagram-token-blue {
+  fill: color-mix(in srgb, var(--diagram-blue) 54%, white);
+  stroke: var(--diagram-blue);
+}
+
+.technology-paper-svg .diagram-token-red {
+  fill: color-mix(in srgb, var(--diagram-red) 46%, white);
+  stroke: var(--diagram-red);
+}
+
+.technology-paper-svg .diagram-token-muted {
+  fill: color-mix(in srgb, var(--diagram-muted) 28%, white);
+  stroke: var(--diagram-muted);
+}
+
+.technology-paper-svg .diagram-token.is-hollow {
+  fill: var(--diagram-paper-raised);
+}
+
+.technology-paper-svg .diagram-version-node {
+  fill: var(--diagram-paper-raised);
+  stroke: var(--diagram-ink);
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-version-node-blue {
+  fill: color-mix(in srgb, var(--diagram-blue) 46%, white);
+  stroke: var(--diagram-blue);
+}
+
+.technology-paper-svg .diagram-version-node-muted {
+  fill: color-mix(in srgb, var(--diagram-muted) 22%, white);
+  stroke: var(--diagram-muted);
+}
+
+.technology-paper-svg .diagram-document-shadow {
+  fill: color-mix(in srgb, var(--diagram-blue) 5%, var(--diagram-paper));
+  stroke: color-mix(in srgb, var(--diagram-blue) 36%, var(--diagram-line));
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-document-page {
+  fill: #fffefa;
+  stroke: var(--diagram-muted);
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-document-heading {
+  fill: color-mix(in srgb, var(--diagram-ink) 58%, white);
+}
+
+.technology-paper-svg .diagram-document-line {
+  fill: color-mix(in srgb, var(--diagram-muted) 48%, white);
+}
+
+.technology-paper-svg .diagram-document-figure {
+  fill: color-mix(in srgb, var(--diagram-blue) 5%, white);
+  stroke: color-mix(in srgb, var(--diagram-blue) 30%, var(--diagram-line));
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-document-chart {
+  fill: none;
+  stroke: var(--diagram-blue);
+  stroke-width: 1;
+}
+
 .technology-raw-diagram.is-enhanced .technology-svg-step {
   opacity: 0;
-  transform: translateY(7px);
+  transform: translateY(5px);
 }
 
 .technology-raw-diagram.is-enhanced.is-active .technology-svg-step {
   opacity: 1;
   transform: none;
   transition:
-    opacity .48s ease calc(var(--svg-step, 0) * 52ms),
-    transform .65s cubic-bezier(.22, 1, .36, 1) calc(var(--svg-step, 0) * 52ms);
+    opacity .42s ease calc(var(--svg-step, 0) * 38ms),
+    transform .58s cubic-bezier(.22, 1, .36, 1) calc(var(--svg-step, 0) * 38ms);
 }
 
 @media (max-width: 620px) {
@@ -1255,6 +1380,11 @@
 
   .technology-paper-svg-mobile {
     display: block;
+  }
+
+  .technology-raw-diagram {
+    border-radius: 10px;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, .2);
   }
 }
 
@@ -1718,11 +1848,6 @@
     -webkit-backdrop-filter: none;
   }
 
-  .technology-paper-svg .diagram-paper-grain {
-    display: none;
-    filter: none;
-  }
-
   .technology-raw-diagram.is-enhanced .technology-flow-unit,
   .technology-raw-diagram.is-enhanced.is-active .technology-flow-unit,
   .technology-raw-diagram.is-enhanced .technology-svg-step,
@@ -2060,7 +2185,9 @@
   .technology-article-nav,
   .technology-page-footer > div > a span,
   .technology-raw-diagram.is-enhanced .technology-flow-unit,
-  .technology-raw-diagram.is-enhanced.is-active .technology-flow-unit {
+  .technology-raw-diagram.is-enhanced.is-active .technology-flow-unit,
+  .technology-raw-diagram.is-enhanced .technology-svg-step,
+  .technology-raw-diagram.is-enhanced.is-active .technology-svg-step {
     opacity: 1;
     transform: none;
     transition: none;
