@@ -1,19 +1,29 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Language } from "@/app/site-content";
 
-const ARTICLES = [
-  { id: "technology-alphaevidence", label: "AlphaEvidence" },
-  { id: "technology-alphadoc-engine", label: "AlphaDoc Engine" },
-  { id: "technology-alphadocument", label: "AlphaDocument" },
-  { id: "technology-alphalayer", label: "AlphaLayer" },
-] as const;
+const ARTICLES = {
+  ko: [
+    { id: "technology-alphaevidence", label: "AlphaEvidence" },
+    { id: "technology-alphadoc-engine", label: "AlphaDoc Engine" },
+    { id: "technology-alphadocument", label: "AlphaDocument" },
+    { id: "technology-alphalayer", label: "AlphaLayer" },
+  ],
+  en: [
+    { id: "technology-alphaevidence", label: "AlphaEvidence" },
+    { id: "technology-alphadoc-engine", label: "AlphaDoc Engine" },
+    { id: "technology-alphadocument", label: "AlphaDocument" },
+    { id: "technology-alphalayer", label: "AlphaLayer" },
+  ],
+} as const;
 
-export function TechnologyArticleNav() {
+export function TechnologyArticleNav({ language }: { language: Language }) {
+  const articles = ARTICLES[language];
   const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
-    const sections = ARTICLES.map(({ id }) => document.getElementById(id)).filter(
+    const sections = articles.map(({ id }) => document.getElementById(id)).filter(
       (section): section is HTMLElement => Boolean(section),
     );
     if (!sections.length || !("IntersectionObserver" in window)) return;
@@ -30,17 +40,17 @@ export function TechnologyArticleNav() {
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [articles]);
 
   return (
     <nav
       className={`technology-article-nav${activeId ? " is-visible" : ""}`}
-      aria-label="Technology articles"
+      aria-label={language === "ko" ? "기술 저널 목차" : "Technology journal contents"}
     >
       <div className="technology-article-nav-inner">
         <span>Technology</span>
         <ol>
-          {ARTICLES.map((article, index) => (
+          {articles.map((article, index) => (
             <li key={article.id}>
               <a
                 className={activeId === article.id ? "is-active" : undefined}

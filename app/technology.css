@@ -154,6 +154,18 @@
   text-transform: uppercase;
 }
 
+.technology-hero-meta p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.technology-hero-meta small {
+  color: var(--technology-dim);
+  font: inherit;
+}
+
 .technology-hero h1 {
   max-width: 720px;
   margin: 44px 0 0;
@@ -440,6 +452,10 @@
 }
 
 .technology-status-controlled-workflows {
+  color: var(--technology-blue);
+}
+
+.technology-status-developed-and-integrated {
   color: var(--technology-blue);
 }
 
@@ -1181,6 +1197,14 @@
   fill: none;
   stroke: var(--diagram-ink);
   stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-orbit {
+  fill: none;
+  stroke: color-mix(in srgb, var(--diagram-blue) 22%, var(--diagram-line));
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+  vector-effect: non-scaling-stroke;
 }
 
 .technology-paper-svg .diagram-link-blue {
@@ -2007,6 +2031,12 @@
 @media (max-width: 480px) {
   .technology-hero-meta {
     font-size: 8px;
+  }
+
+  .technology-hero-meta p {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
   }
 
   .technology-status-list > div {

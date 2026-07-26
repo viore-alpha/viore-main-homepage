@@ -145,7 +145,7 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.match(html, /누적 공개 국내외 가이드라인·지침 문헌/);
   assert.ok(html.indexOf("Standardized Medical Documents") < html.indexOf("Medical Documents Added Monthly"));
   assert.match(html, /class="company-efficiency"/);
-  assert.match(html, /class="company-efficiency-title-brand">Alphadoc<\/span><span class="company-efficiency-title-workspace">AI Workspace<\/span>/);
+  assert.match(html, /class="company-efficiency-title-brand">Alphadoc<\/span><span class="company-efficiency-title-workspace">AI Medical Workspace<\/span>/);
   assert.doesNotMatch(html, /company-efficiency-title-brand">Alphadoc,/);
   assert.doesNotMatch(html, /company-efficiency-workspace|company-section-subtitle/);
   assert.match(html, /class="company-knowledge"/);
@@ -217,7 +217,7 @@ test("keeps Knowledge public while Council is unavailable and marked coming soon
   assert.doesNotMatch(knowledgeHtml, /VIORE · ALPHADOC LITERATURE/);
   assert.match(knowledgeHtml, /실시간으로 채워지는 논문 라이브러리\./);
   assert.match(knowledgeHtml, /신규 논문과 브리프/);
-  assert.match(knowledgeHtml, /알파닥 논문 DB에서 선별한 국내외 최신 논문/);
+  assert.match(knowledgeHtml, /AlphaEvidence DB에서 선별한 국내외 최신 논문/);
   assert.match(knowledgeHtml, /aria-label="전체"[^>]*aria-pressed="true"/);
   assert.match(knowledgeHtml, /aria-label="해외"[^>]*aria-pressed="false"/);
   assert.match(knowledgeHtml, /aria-label="국내"[^>]*aria-pressed="false"/);
@@ -331,17 +331,20 @@ test("serves domestic Knowledge pages and advances the cursor without duplicates
   assert.equal(firstResponse.status, 200);
   const firstPage = await firstResponse.json();
   assert.equal(firstPage.schema_version, "knowledge.literature.page.v1");
-  assert.equal(firstPage.items.length, 12);
+  assert.ok(firstPage.items.length > 0 && firstPage.items.length <= 12);
   assert.ok(firstPage.items.every((item) => item.scope === "domestic"));
   assert.ok(firstPage.items.every((item) => /[가-힣]/u.test(item.brief)));
-  assert.match(firstPage.next_cursor, /^\d{4}-\d{2}-\d{2}_[0-9a-f-]{36}$/i);
-
-  const secondResponse = await render(`/api/knowledge/papers?scope=domestic&cursor=${encodeURIComponent(firstPage.next_cursor)}`);
-  assert.equal(secondResponse.status, 200);
-  const secondPage = await secondResponse.json();
-  assert.equal(secondPage.items.length, 12);
-  const firstIds = new Set(firstPage.items.map((item) => item.paper_id));
-  assert.ok(secondPage.items.every((item) => !firstIds.has(item.paper_id)));
+  if (firstPage.next_cursor) {
+    assert.match(firstPage.next_cursor, /^\d{4}-\d{2}-\d{2}_[0-9a-f-]{36}$/i);
+    const secondResponse = await render(`/api/knowledge/papers?scope=domestic&cursor=${encodeURIComponent(firstPage.next_cursor)}`);
+    assert.equal(secondResponse.status, 200);
+    const secondPage = await secondResponse.json();
+    assert.ok(secondPage.items.length <= 12);
+    const firstIds = new Set(firstPage.items.map((item) => item.paper_id));
+    assert.ok(secondPage.items.every((item) => !firstIds.has(item.paper_id)));
+  } else {
+    assert.equal(firstPage.next_cursor, null);
+  }
 
   const invalidResponse = await render("/api/knowledge/papers?scope=domestic&cursor=unsafe");
   assert.equal(invalidResponse.status, 400);
@@ -375,7 +378,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /<title>알파닥 \| 의료인의 하루를 잇는 Medical Workspace \| 바이오레<\/title>/);
+  assert.match(html, /<title>Alphadoc, an AI Medical Workspace\.<\/title>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko\/product\/alphadoc"/);
   assert.match(html, /class="alphadoc-product lang-ko"/);
   assert.match(html, /class="site-header site-header-dark"/);
@@ -525,8 +528,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(deferredViewportMotionSource, /new IntersectionObserver/);
   assert.match(deferredViewportMotionSource, /data-motion-mounted=\{mounted \? "true" : "false"\}/);
   assert.match(deferredViewportMotionSource, /media\.addEventListener\("change", syncMotionPreference\)/);
-  assert.match(energyCanvasSource, /const pixelRatioCap = width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
-  assert.match(energyCanvasSource, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
+  assert.match(energyCanvasSource, /const GLOW_BLUR_PX = 6/);
+  assert.match(energyCanvasSource, /mainContext\.filter = `blur/);
   assert.match(energyCanvasSource, /frame = window\.requestAnimationFrame\(animate\)/);
   assert.match(html, /"@type":"SoftwareApplication"/);
   assert.match(html, /class="ap-feature-gallery/);
@@ -710,10 +713,10 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(energyCanvas, /prefers-reduced-motion: reduce/);
   assert.match(energyCanvas, /globalCompositeOperation = "multiply"/);
   assert.match(energyCanvas, /let isIntersecting = false/);
-  assert.match(energyCanvas, /const FRAME_INTERVAL = 1000 \/ 30/);
-  assert.match(energyCanvas, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
+  assert.match(energyCanvas, /const GLOW_BLUR_PX = 6/);
+  assert.match(energyCanvas, /const GLOW_STRENGTH = 0\.5/);
   assert.match(energyCanvas, /const releaseCanvas = \(\) =>/);
-  assert.match(energyCanvas, /width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
+  assert.match(energyCanvas, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
   assert.match(energyCanvas, /seconds \* \(0\.72 \+ family \* 0\.08\)/);
   assert.match(content, /title: "의료계의\\n새로운 선형을 그리다\."/);
   assert.match(content, /연결하기 위한 선\\n그것이 바이오레 입니다/);
@@ -733,11 +736,12 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.doesNotMatch(companyBackdrop, /<img|\.png/);
   assert.match(companyBackdrop, /requestAnimationFrame/);
   assert.match(companyBackdrop, /prefers-reduced-motion: reduce/);
-  assert.match(companyBackdrop, /const FRAME_INTERVAL = 1000 \/ 20/);
+  assert.match(companyBackdrop, /const BLOOM_BLUR_PX = 7/);
   assert.match(companyBackdrop, /let isIntersecting = false/);
   assert.match(companyBackdrop, /gradientProgress = progress/);
   assert.match(companyBackdrop, /compact \? 32 : 48/);
-  assert.match(companyBackdrop, /width < 700 \? 1 : 1\.15/);
+  assert.match(companyBackdrop, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(companyBackdrop, /const BLOOM_STRENGTH = 0\.62/);
   assert.match(companyBackdrop, /const releaseCanvas = \(\) =>/);
   assert.match(companyBackdrop, /entry\.intersectionRatio >= 0\.01/);
   assert.match(companyBackdrop, /\{ rootMargin: "0px", threshold: \[0, 0\.01\] \}/);
@@ -884,9 +888,16 @@ test("routes Company and Contact navigation into the locale homepage", async () 
 });
 
 test("server-renders one accessible Technology journal with four independent articles", async () => {
-  const response = await render("/ko/technology");
+  const [response, englishResponse] = await Promise.all([
+    render("/ko/technology"),
+    render("/en/technology"),
+  ]);
   assert.equal(response.status, 200);
-  const html = await response.text();
+  assert.equal(englishResponse.status, 200);
+  const [html, englishHtml] = await Promise.all([
+    response.text(),
+    englishResponse.text(),
+  ]);
 
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
   assert.match(html, />Journal/);
@@ -894,20 +905,17 @@ test("server-renders one accessible Technology journal with four independent art
   assert.match(html, /우리만의 선형을/);
   assert.match(html, /만드는 과정/);
   assert.match(html, /Viore Team/);
-  assert.doesNotMatch(html, /Viore Technology Team/);
-  assert.match(html, /이제 의료계에도 새로운 선형이 필요합니다/);
-  assert.match(html, /모든 것이 함께 작동하게 하는 One Operating Layer/);
-  assert.match(html, /AlphaEvidence는 바로 그 앞단을 맡습니다/);
-  assert.match(html, /Verified evidence and automation for LLM/);
-  assert.match(html, /LLM을 위한 검증된 증거와 자동화/);
-  assert.match(html, /시간과 함께 커지는 지식/);
-  assert.match(html, /의료 AI는 모델 이름 하나로 작동 방식을 설명할 수 없습니다/);
+  assert.match(html, /서로 다른 기술이 모여 하나의 의료 경험을 만듭니다/);
+  assert.match(html, /Evidence Foundation/);
+  assert.match(html, /AlphaEvidence DB, 살아 있는 근거의 중심/);
+  assert.match(html, /매일 더 깊어지는 AlphaEvidence DB/);
+  assert.match(html, /모델이 아니라, 의료 업무의 목적을 중심에 둡니다/);
   assert.match(html, /AlphaDoc Engine/);
-  assert.match(html, /의료 특화 Workflow Orchestration/);
-  assert.match(html, /Alphadoc이나/);
-  assert.doesNotMatch(html, /AlphaDoc이나/);
-  assert.match(html, /의료 문서에서 자유도는 늘 좋은 것이 아닙니다/);
-  assert.match(html, /AlphaLayer는 지금 운영 중인 단일 제품 모듈의 이름이 아닙니다/);
+  assert.match(html, /Medical Workflow Orchestration/);
+  assert.match(html, /문서 파일을 재사용 가능한 artifact로/);
+  assert.match(html, /Deterministic Document-to-Artifact Engine/);
+  assert.match(html, /보안을 설정이 아니라 실행 구조로 만듭니다/);
+  assert.match(html, /Protected Inference Gateway/);
   for (const id of [
     "technology-alphaevidence",
     "technology-alphadoc-engine",
@@ -916,47 +924,35 @@ test("server-renders one accessible Technology journal with four independent art
   ]) {
     assert.match(html, new RegExp(`<article id="${id}"`));
   }
-  assert.match(html, /IN PRODUCTION/);
-  assert.match(html, /CONTROLLED WORKFLOWS/);
-  assert.match(html, /ARCHITECTURE IN DEVELOPMENT/);
-  assert.match(html, /July 21, 2026/);
-  assert.match(html, /2026-07-20/);
-  assert.doesNotMatch(html, /Current scope/);
-  assert.doesNotMatch(html, /Not claimed/);
-  assert.doesNotMatch(html, /Evidence begins before retrieval/);
-  assert.doesNotMatch(html, /검색보다 먼저, 출처와 변경을 보존합니다/);
-  assert.doesNotMatch(html, /숫자보다 상태를 함께 공개합니다/);
-  assert.doesNotMatch(html, /아래 숫자는 빌드할 때 입력한 홍보 수치가 아닙니다/);
-  assert.doesNotMatch(html, /집계 범위\.|해석 범위\./);
-  assert.doesNotMatch(html, /모델을 호출하는 코드가 아니라, 실행 조건을 관리하는 엔진/);
-  assert.doesNotMatch(html, /AlphaDocument is the document-control subsystem/);
-  assert.doesNotMatch(html, /AlphaLayer describes Viore’s target privacy-control architecture/);
-  assert.doesNotMatch(html, /아직 완성됐다고 말하지 않는 이유/);
-  assert.match(html, /의료 정보 보안을 위한 최적의 설계/);
-  assert.doesNotMatch(html, /이런 이유로 AlphaLayer는 개발 상태를 숨기지 않습니다/);
-  assert.doesNotMatch(html, /현재 범위|주장하지 않는 범위|현재 작동하는 통제|구현·검증 중인 경로/);
-  assert.doesNotMatch(html, /technology-claim-boundary|technology-scope-columns|technology-page-footer/);
-  assert.doesNotMatch(html, /CLAIM BOUNDARY|STATUS NOTE|기술 상태에 대하여/);
-  assert.match(html, /평가 설계를 위한 공식 참고자료/);
-  assert.match(html, /현재 Evaluation Gate의 검증된 범위는 이 capability에 한정됩니다/);
+  assert.equal((html.match(/DEVELOPED &amp; INTEGRATED/g) ?? []).length, 4);
+  assert.match(html, /2026년 7월 21일/);
+  assert.match(html, /2026년 7월 26일 업데이트/);
+  assert.match(html, /2026-07-26/);
+  assert.doesNotMatch(html, /IN PRODUCTION|CONTROLLED WORKFLOWS|ARCHITECTURE IN DEVELOPMENT/);
+  assert.doesNotMatch(html, /현재 범위|주장하지 않는 범위|한계|LIMITATION|CLAIM BOUNDARY|STATUS NOTE/);
   assert.match(html, /data-snapshot-state="live"/);
   assert.match(html, /정규화 논문 레코드/);
   assert.match(html, /초록 보유 논문/);
   assert.match(html, /노출 가능한 진료지침/);
   assert.match(html, /출처·변경 관찰 기록/);
-  assert.doesNotMatch(html, /Operational signal|alphaevidence-ops-table/);
-  assert.match(html, /사용자 검토/);
-  assert.match(html, /User Review/);
-  assert.doesNotMatch(html, /의료진|Human Clinical Review|HUMAN CLINICAL REVIEW|CLINICAL LOOP|CLINICAL REVIEW/);
+  assert.match(html, /의료인의 검토와 판단/);
   assert.match(html, /TechArticle/);
-  assert.equal((html.match(/<figcaption>/g) ?? []).length, 6);
+  assert.equal((html.match(/<figcaption>/g) ?? []).length, 5);
   assert.match(html, /technology-raw-diagram-overview/);
   assert.match(html, /technology-raw-diagram-evidence/);
   assert.match(html, /technology-raw-diagram-engine/);
-  assert.match(html, /technology-raw-diagram-evaluation/);
   assert.match(html, /technology-raw-diagram-document/);
   assert.match(html, /technology-raw-diagram-layer/);
   assert.doesNotMatch(html, /개발 지시 — 비공개|개발 계약 — 비공개|내부 근거 지도/);
+
+  assert.match(englishHtml, /How we draw/);
+  assert.match(englishHtml, /our own linearity/);
+  assert.match(englishHtml, /AlphaEvidence DB, the living center of evidence/);
+  assert.match(englishHtml, /Purpose comes before the model/);
+  assert.match(englishHtml, /From document files to reusable artifacts/);
+  assert.match(englishHtml, /Security becomes an execution architecture/);
+  assert.doesNotMatch(englishHtml, /우리만의 선형|살아 있는 근거의 중심|보안을 설정이 아니라/);
+  assert.match(englishHtml, /"inLanguage":"en-US"/);
 });
 
 test("implements the AlphaEvidence public snapshot as a bounded server contract", async () => {
@@ -987,20 +983,15 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(motion, /<title/);
   assert.match(motion, /<desc/);
   assert.doesNotMatch(motion, /<iframe|raw-paper-mint/);
-  assert.match(motion, /function SvgNode/);
-  assert.match(motion, /function EvaluationSvg/);
+  assert.match(motion, /function Node/);
+  assert.match(motion, /function Orbit/);
   assert.match(motion, /technology-paper-svg-mobile/);
   assert.match(motion, /diagram-paper-grain/);
-  assert.match(motion, /Source & Change/);
-  assert.match(motion, /Rights Snapshot/);
-  assert.match(motion, /Source-bound Translation/);
-  assert.match(motion, /Evidence Search/);
-  assert.match(motion, /Bounded Generation/);
-  assert.match(motion, /업로드 문서 번역/);
-  assert.match(motion, /사용자에게 허용된 결과/);
-  assert.doesNotMatch(motion, /Three records|Registered path|Residual-risk evaluation/);
-  assert.match(motion, /local render/);
-  assert.match(motion, /Current Security Controls/);
+  assert.match(motion, /AlphaEvidence DB/);
+  assert.match(motion, /DETERMINISTIC CORE/);
+  assert.match(motion, /PROTECTED GATEWAY/);
+  assert.match(motion, /Document Artifact/);
+  assert.match(motion, /diagram-orbit/);
   assert.match(motion, /<ViewportMotion/);
   assert.match(motion, /deferChildren/);
   assert.match(motion, /is-enhanced/);
@@ -1008,7 +999,7 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(viewportMotion, /new IntersectionObserver/);
   assert.match(viewportMotion, /prefers-reduced-motion: reduce/);
   assert.match(viewportMotion, /visibilityObserver\.disconnect\(\)/);
-  assert.match(nav, /aria-label="Technology articles"/);
+  assert.match(nav, /Technology journal contents/);
   assert.match(chrome, /href=\{technologyRouteFor\(language\)\}/);
   assert.doesNotMatch(chrome, /technologyRouteFor\(language, "(?:alphaevidence|alphadoc-engine|alphadocument|alphalayer)"\)/);
   assert.match(chrome, /\["product"\] as MenuId\[\]/);

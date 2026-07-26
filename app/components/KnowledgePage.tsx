@@ -37,7 +37,7 @@ export function KnowledgePage({
           <p className="knowledge-lead">
             {ko ? "실시간으로 채워지는 논문 라이브러리." : "A living library of newly published medical literature."}
           </p>
-          <div className="knowledge-live-line" aria-label={ko ? "알파닥 논문 데이터 연결 상태" : "Alphadoc literature data status"}>
+          <div className="knowledge-live-line" aria-label={ko ? "AlphaEvidence DB 연결 상태" : "AlphaEvidence DB connection status"}>
             <i aria-hidden="true" />
             <span>{stateLabel}</span>
             {updatedAt && <time dateTime={updatedAt}>{formatUpdatedAt(updatedAt, language)} KST</time>}
@@ -52,11 +52,11 @@ export function KnowledgePage({
             <p>
               {result.page.items.length > 0
                 ? ko
-                  ? "알파닥 논문 DB에서 선별한 국내외 최신 논문"
-                  : "Recent global and Korean papers selected from the Alphadoc literature database"
+                  ? "AlphaEvidence DB에서 선별한 국내외 최신 논문"
+                  : "Recent global and Korean papers selected from AlphaEvidence DB"
                 : ko
-                  ? "알파닥 논문 DB와 연결하고 있습니다."
-                  : "Connecting to the Alphadoc literature database."}
+                  ? "AlphaEvidence DB와 연결하고 있습니다."
+                  : "Connecting to AlphaEvidence DB."}
             </p>
           </header>
 

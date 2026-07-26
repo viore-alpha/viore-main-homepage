@@ -11,6 +11,7 @@ import type {
   AlphaEvidencePublicSnapshotV1,
   AlphaEvidenceSnapshotResult,
 } from "@/app/alphaevidence-snapshot";
+import type { Language } from "@/app/site-content";
 
 const integerFormatter = new Intl.NumberFormat("ko-KR");
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
@@ -121,7 +122,7 @@ function CountMetric({
       <td className="alphaevidence-count-index">{String(index + 1).padStart(2, "0")}</td>
       <th scope="row">
         <span>{label}</span>
-        <small>{english}</small>
+        {label !== english && <small>{english}</small>}
       </th>
       <td className="alphaevidence-count-value" aria-label={`${label} ${integerFormatter.format(value)}건`}>
         <strong aria-hidden="true">{integerFormatter.format(displayValue)}</strong>
@@ -134,23 +135,26 @@ function SnapshotContent({
   snapshot,
   state,
   rootRef,
+  language,
 }: {
   snapshot: AlphaEvidencePublicSnapshotV1;
   state: "live" | "stale";
   rootRef: RefObject<HTMLDivElement | null>;
+  language: Language;
 }) {
   const { started, reduceMotion } = useCountUpReady(rootRef, true);
+  const ko = language === "ko";
 
   return (
     <>
       <div className="alphaevidence-snapshot-meta">
         <div>
           <span className={`snapshot-state snapshot-state-${state}`}>
-            {state === "stale" ? "STALE · 갱신 지연" : "LIVE SNAPSHOT"}
+            {state === "stale" ? (ko ? "STALE · 갱신 지연" : "STALE · UPDATE DELAYED") : "LIVE SNAPSHOT"}
           </span>
-          <p>데이터 기준 {formatDateTime(snapshot.data_as_of)} KST</p>
+          <p>{ko ? "데이터 기준" : "Data as of"} {formatDateTime(snapshot.data_as_of)} KST</p>
         </div>
-        <p>생성 {formatDateTime(snapshot.generated_at)} KST · 10분 cache</p>
+        <p>{ko ? "생성" : "Generated"} {formatDateTime(snapshot.generated_at)} KST · 10 min cache</p>
       </div>
 
       <div className="alphaevidence-table-wrap">
@@ -167,7 +171,7 @@ function SnapshotContent({
               <CountMetric
                 key={key}
                 value={snapshot.counts[key]}
-                label={label}
+                label={ko ? label : english}
                 english={english}
                 index={index}
                 started={started}
@@ -184,8 +188,10 @@ function SnapshotContent({
 
 export function AlphaEvidenceSnapshot({
   initialResult,
+  language,
 }: {
   initialResult: AlphaEvidenceSnapshotResult;
+  language: Language;
 }) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [result, setResult] = useState(initialResult);
@@ -230,14 +236,14 @@ export function AlphaEvidenceSnapshot({
       aria-live="polite"
     >
       {result.snapshot ? (
-        <SnapshotContent snapshot={result.snapshot} state={result.state} rootRef={rootRef} />
+        <SnapshotContent snapshot={result.snapshot} state={result.state} rootRef={rootRef} language={language} />
       ) : (
         <div className="alphaevidence-snapshot-unavailable">
           <span>PUBLIC SNAPSHOT</span>
-          <h4>집계 갱신 중</h4>
+          <h4>{language === "ko" ? "집계 갱신 중" : "Refreshing the snapshot"}</h4>
           <p>
-            확인되지 않은 숫자를 대신 표시하지 않습니다.
-            {result.lastSuccessAt && <> 마지막 성공 {formatDateTime(result.lastSuccessAt)} KST.</>}
+            {language === "ko" ? "AlphaEvidence DB의 최신 집계를 불러오고 있습니다." : "Loading the latest AlphaEvidence DB snapshot."}
+            {result.lastSuccessAt && <> {language === "ko" ? "마지막 성공" : "Last success"} {formatDateTime(result.lastSuccessAt)} KST.</>}
           </p>
         </div>
       )}

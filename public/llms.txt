@@ -25,9 +25,9 @@
 
 ## What Viore builds
 
-Viore connects medical questions, evidence, documents, and tools into a continuous workflow for healthcare professionals. Its public technology pages distinguish current implementation, controlled workflows, and architecture in development.
+Viore connects medical questions, evidence, documents, and tools into a continuous workflow for healthcare professionals. Its developed and integrated technology constellation brings together an Evidence Foundation, medical workflow orchestration, deterministic document artifacts, and protected AI execution.
 
-Alphadoc is Viore's medical AI workspace for healthcare professionals. AlphaDoc Engine connects clinical questions to contextual evidence and next actions. AlphaEvidence preserves source and change context for reviewable medical evidence. AlphaDocument defines controlled document workflows.
+Alphadoc is Viore's AI Medical Workspace for healthcare professionals. AlphaDoc Engine connects clinical questions to contextual evidence and next actions. AlphaEvidence is Viore's Evidence Foundation, and AlphaEvidence DB is its living literature and evidence database. AlphaDocument turns source documents into provenance-carrying artifacts. AlphaLayer is Viore's Protected Inference Gateway.
 
 ## Naming guidance
 
