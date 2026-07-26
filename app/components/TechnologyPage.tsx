@@ -1,35 +1,273 @@
 import type { AlphaEvidenceSnapshotResult } from "@/app/alphaevidence-snapshot";
 import { AlphaEvidenceSnapshot } from "@/app/components/AlphaEvidenceSnapshot";
 import { TechnologyArticleNav } from "@/app/components/TechnologyArticleNav";
-import { TechnologyMotion } from "@/app/components/TechnologyMotion";
+import { TechnologyMotion, type TechnologyMotionKind } from "@/app/components/TechnologyMotion";
+import type { Language } from "@/app/site-content";
 
-type TechnologyStatus = "IN PRODUCTION" | "CONTROLLED WORKFLOWS" | "ARCHITECTURE IN DEVELOPMENT";
-type TechnologyDiagramKind = "overview" | "evidence" | "engine" | "evaluation" | "document" | "layer";
+type TechnologyStatus = "DEVELOPED & INTEGRATED";
 
-const VERIFIED_DATE = "2026-07-20";
-const MFDS_GUIDANCE_URL = "https://www.mfds.go.kr/brd/m_1060/view.do?Data_stts_gubun=C1004&company_cd=&company_nm=&itm_seq_1=0&itm_seq_2=0&multi_itm_seq=0&page=3&seq=15879&srchFr=&srchTo=&srchTp=0&srchWord=";
+const VERIFIED_DATE = "2026-07-26";
+
+const sharedCopy = {
+  ko: {
+    journal: "Journal",
+    published: "2026년 7월 21일",
+    updated: "2026년 7월 26일 업데이트",
+    hero: <>우리만의 선형을<br />만드는 과정</>,
+    author: "Viore Team",
+    status: "상태",
+    verified: "최근 검증",
+    figure: "그림",
+    intro: [
+      "의료 AI는 하나의 거대한 모델만으로 완성되지 않습니다. 좋은 근거가 어디에서 왔는지 기억하는 기반, 문서를 다시 쓸 수 있는 지식으로 바꾸는 기술, 업무의 목적에 따라 실행을 조율하는 지능, 그리고 외부 실행을 보호하는 경계가 함께 움직여야 합니다.",
+      "바이오레의 기술은 앞에서 뒤로 한 번 흘러가는 파이프라인이 아닙니다. AlphaEvidence, AlphaDocument, AlphaLayer는 각자의 책임을 지키면서 AlphaDoc Engine과 계속 정보를 주고받습니다. Alphadoc은 이 기술들이 의료인의 실제 업무 안에서 만나는 공간입니다.",
+      "각 기술은 독립적으로 발전할 수 있고, 함께 작동할 때 더 큰 가치를 만듭니다. 새로운 근거가 들어오면 지식의 맥락이 넓어지고, 새로운 문서가 들어오면 다시 활용할 수 있는 artifact가 생기며, 새로운 AI가 등장해도 실행 경계는 유지됩니다.",
+    ],
+    quote: {
+      first: "하나의 기술에 모든 것을 가두는 대신,",
+      second: "서로 다른 기술이 모여 하나의 의료 경험을 만듭니다.",
+    },
+    introClose: "이것이 바이오레가 의료의 새로운 선형을 만드는 방식입니다.",
+  },
+  en: {
+    journal: "Journal",
+    published: "July 21, 2026",
+    updated: "Updated July 26, 2026",
+    hero: <>How we draw<br />our own linearity</>,
+    author: "Viore Team",
+    status: "Status",
+    verified: "Last verified",
+    figure: "Figure",
+    intro: [
+      "Medical AI is not completed by one large model. It needs a foundation that remembers where evidence came from, technology that turns documents into reusable knowledge, intelligence that orchestrates execution around purpose, and a boundary that protects external execution.",
+      "Viore's technologies do not form a one-way pipeline. AlphaEvidence, AlphaDocument, and AlphaLayer keep their own responsibilities while continuously interacting with AlphaDoc Engine. Alphadoc is where these technologies meet the real work of medical professionals.",
+      "Each technology can advance independently and create greater value together. New evidence expands the context of knowledge. New documents become reusable artifacts. New AI can emerge while the execution boundary remains consistent.",
+    ],
+    quote: {
+      first: "Instead of placing everything inside one technology,",
+      second: "we let distinct technologies create one medical experience.",
+    },
+    introClose: "This is how Viore draws a new linearity in medicine.",
+  },
+} as const;
+
+const articleCopy = {
+  ko: {
+    evidence: {
+      name: "AlphaEvidence",
+      englishTitle: "Evidence Foundation",
+      lead: "근거를 검색하기 전에, 근거가 믿을 수 있는 구조부터 만듭니다.",
+      sections: [
+        {
+          title: "모으는 데이터베이스를 넘어, 근거가 자라는 기반",
+          paragraphs: [
+            "의학 문헌은 숫자로만 쌓인다고 지식이 되지 않습니다. 같은 논문이라도 어느 출처에서 들어왔는지, 언제 확인했는지, 이후 무엇이 달라졌는지가 함께 남아야 다음 판단에 다시 쓸 수 있습니다.",
+            "AlphaEvidence는 문헌과 진료지침을 출처를 잃은 덩어리로 만들지 않습니다. 자료를 식별하는 정보와 출처, 변화의 이력을 연결해 근거를 들여올 때부터 다시 꺼내 쓸 때까지 하나의 계보를 만듭니다.",
+          ],
+        },
+        {
+          title: "AlphaEvidence DB, 살아 있는 근거의 중심",
+          paragraphs: [
+            "AlphaEvidence DB는 논문 목록이 아니라 Evidence Foundation의 살아 있는 데이터 계층입니다. 정규화된 문헌, 출처와 변화의 기록, 이용 맥락, 품질과 최신성 신호가 서로 연결됩니다.",
+            "AlphaDoc Engine은 이 구조에서 필요한 근거를 받습니다. 질문과 근거 사이에는 출처가 남고, 새로운 자료가 들어오면 기존 지식과의 관계도 함께 확장됩니다. 근거 검색을 기능 하나가 아니라 시간이 지날수록 강해지는 기반으로 만든 이유입니다.",
+          ],
+        },
+      ],
+      figureTitle: "The AlphaEvidence evidence constellation",
+      figureCaption: "AlphaEvidence DB를 중심으로 출처, 변화, 이용 맥락과 품질이 연결됩니다. 각 요소는 따로 저장되는 표가 아니라, 검토 가능한 근거를 만드는 하나의 Evidence Foundation으로 작동합니다.",
+      snapshotTitle: "매일 더 깊어지는 AlphaEvidence DB",
+    },
+    engine: {
+      name: "AlphaDoc Engine",
+      englishTitle: "Medical Workflow Orchestration",
+      lead: "질문을 답변으로 끝내지 않고, 다음 의료 업무까지 이어지는 실행 구조를 만듭니다.",
+      sections: [
+        {
+          title: "모델이 아니라, 의료 업무의 목적을 중심에 둡니다",
+          paragraphs: [
+            "같은 AI를 사용해도 무엇을 위해 실행하는지에 따라 필요한 근거와 문서, 도구와 결과의 형태는 달라집니다. AlphaDoc Engine은 모델 이름보다 먼저 업무의 목적과 맥락을 이해합니다.",
+            "임상 질문, 근거 탐색, 문서 업무, 번역과 의료 도구는 단순히 이름만 다른 prompt가 아닙니다. 각 업무가 필요한 입력과 근거, 실행 방식, 다음 행동을 하나의 capability로 연결합니다.",
+          ],
+        },
+        {
+          title: "서로 다른 기술을 하나의 경험으로 오케스트레이션합니다",
+          paragraphs: [
+            "AlphaEvidence에서 출처가 살아 있는 근거를 받고, AlphaDocument의 artifact에서 문서 맥락을 읽으며, 외부 AI 실행이 필요할 때는 AlphaLayer의 보호 경계를 사용합니다. 그 결과는 다시 Alphadoc의 앱과 도구, 문서와 검토 흐름으로 이어집니다.",
+            "실행 조건과 동작을 나눠 기록하는 Release Identity, 여러 층으로 구성된 평가 구조도 함께 작동합니다. 무엇이 실행됐는지 추적하면서 근거의 충실도와 결과의 쓸모를 평균 점수 하나로 뭉개지 않습니다.",
+          ],
+        },
+      ],
+      figureTitle: "Purpose-defined orchestration",
+      figureCaption: "AlphaDoc Engine은 질문, 근거, 문서, 보호된 AI 실행과 의료인의 검토를 목적별로 조율합니다. 어느 하나가 일렬로 종속되는 대신, 업무에 필요한 기술이 중심에서 선택되고 다시 연결됩니다.",
+    },
+    document: {
+      name: "AlphaDocument",
+      englishTitle: "Deterministic Document-to-Artifact Engine",
+      lead: "문서를 읽는 순간부터, 다시 쓸 수 있는 지식으로 바꿉니다.",
+      sections: [
+        {
+          title: "문서 파일을 재사용 가능한 artifact로",
+          paragraphs: [
+            "PDF, DOCX, HWP, CSV처럼 형식이 다른 문서는 내용이 같아 보여도 구조와 위치 정보가 제각각입니다. 한 번 읽고 버리는 텍스트로 바꾸면 표와 문단, 원문의 위치와 처리 이력이 쉽게 사라집니다.",
+            "AlphaDocument는 디지털 문서를 결정론적인 Document Artifact로 변환합니다. 정규화된 내용과 구조, 원문 위치, 처리 기준과 무결성 정보가 하나의 artifact에 함께 담깁니다. 같은 문서와 같은 설정에서는 같은 결과를 만들 수 있어, 문서 지식을 반복해서 사용할 수 있습니다.",
+          ],
+        },
+        {
+          title: "한 번 만든 문서 지식이 여러 기술에서 다시 쓰입니다",
+          paragraphs: [
+            "Document Artifact는 특정 화면이나 기능에 묶이지 않습니다. AlphaDoc Engine은 문서 맥락이 필요한 업무에 artifact를 활용하고, AlphaEvidence는 디지털 문서에서 들어온 근거의 출처와 구조를 이어받을 수 있습니다.",
+            "문서 해석을 매번 처음부터 반복하지 않고, 출처가 보존된 하나의 artifact를 여러 업무가 공유합니다. AlphaDocument가 단순한 parser가 아니라 바이오레의 문서 지식 기반인 이유입니다.",
+          ],
+        },
+      ],
+      figureTitle: "One document, many reusable contexts",
+      figureCaption: "서로 다른 디지털 문서는 AlphaDocument에서 구조와 출처가 보존된 artifact가 됩니다. 생성된 artifact는 AlphaDoc Engine과 AlphaEvidence가 각자의 목적에 맞게 다시 활용합니다.",
+    },
+    layer: {
+      name: "AlphaLayer",
+      englishTitle: "Protected Inference Gateway",
+      lead: "AI를 실행하는 순간에도 의료 정보의 맥락과 통제를 놓치지 않습니다.",
+      sections: [
+        {
+          title: "보안을 설정이 아니라 실행 구조로 만듭니다",
+          paragraphs: [
+            "의료 AI의 보호는 입력창에서 몇 개의 문자열을 가리는 것으로 끝나지 않습니다. 어떤 업무를 위해 어떤 정보가 필요한지 확인하고, 외부 실행 전후의 경계를 하나의 구조로 통제해야 합니다.",
+            "AlphaLayer는 AlphaDoc Engine과 승인된 외부 실행 환경 사이에서 작동하는 Protected Inference Gateway입니다. 업무 목적을 확인하고 필요한 정보만 남기며, 보호된 요청만 외부로 전달합니다. 외부 AI는 교체될 수 있지만 바이오레가 정의한 보호 경계는 그대로 유지됩니다.",
+          ],
+        },
+        {
+          title: "요청과 응답, 실행의 증거까지 하나의 경계 안에서",
+          paragraphs: [
+            "AlphaLayer는 외부로 나가는 요청만 보지 않습니다. 돌아오는 응답이 요청과 정확히 연결되는지 확인하고, 어떤 보호 정책 아래 실행됐는지도 함께 남깁니다.",
+            "이 실행 기록에는 원문 대신 필요한 최소 정보만 담깁니다. AlphaLayer는 개인정보 보호 기능 하나를 덧붙인 모듈이 아니라, 바이오레의 AI 기능들이 같은 보호 원칙 안에서 확장될 수 있게 하는 공통 실행 기반입니다.",
+          ],
+        },
+      ],
+      figureTitle: "Protection around every execution",
+      figureCaption: "AlphaLayer를 중심으로 목적 확인, 정보 최소화, 승인된 외부 실행, 응답 무결성과 실행 기록이 동시에 작동합니다. 보호는 앞에서 뒤로 한 번 거치는 단계가 아니라 실행 전체를 둘러싼 구조입니다.",
+    },
+  },
+  en: {
+    evidence: {
+      name: "AlphaEvidence",
+      englishTitle: "Evidence Foundation",
+      lead: "Before searching evidence, we build a structure that makes evidence trustworthy.",
+      sections: [
+        {
+          title: "Beyond a database that only collects",
+          paragraphs: [
+            "Medical literature does not become knowledge by volume alone. Where a paper came from, when it was observed, and what later changed must stay connected before that evidence can support the next judgment.",
+            "AlphaEvidence does not flatten literature and guidelines into a source-less collection. It connects identity, provenance, and change into one lineage from ingestion to reuse.",
+          ],
+        },
+        {
+          title: "AlphaEvidence DB, the living center of evidence",
+          paragraphs: [
+            "AlphaEvidence DB is the living data layer of the Evidence Foundation. Normalized literature, source and change records, rights context, quality, and freshness signals remain connected.",
+            "AlphaDoc Engine receives evidence through this structure. Sources remain attached to questions, and new material expands its relationship with existing knowledge. Evidence becomes a foundation that grows stronger over time.",
+          ],
+        },
+      ],
+      figureTitle: "The AlphaEvidence evidence constellation",
+      figureCaption: "Source, change, rights context, and quality connect around AlphaEvidence DB. Together they form one Evidence Foundation for reviewable medical evidence.",
+      snapshotTitle: "AlphaEvidence DB, growing deeper every day",
+    },
+    engine: {
+      name: "AlphaDoc Engine",
+      englishTitle: "Medical Workflow Orchestration",
+      lead: "We connect a question not only to an answer, but to the next medical task.",
+      sections: [
+        {
+          title: "Purpose comes before the model",
+          paragraphs: [
+            "The evidence, documents, tools, and result needed from AI change with the purpose of the work. AlphaDoc Engine understands that purpose and context before it considers a model.",
+            "Clinical questions, evidence discovery, document work, translation, and medical tools are not prompts with different names. Each becomes a capability that connects its inputs, evidence, execution, and next action.",
+          ],
+        },
+        {
+          title: "Distinct technologies become one experience",
+          paragraphs: [
+            "AlphaDoc Engine receives source-bound evidence from AlphaEvidence, reads document context from AlphaDocument artifacts, and uses AlphaLayer when protected external execution is needed. The result returns to apps, tools, documents, and review inside Alphadoc.",
+            "Release Identity and a layered evaluation structure preserve the conditions of execution and keep evidence fidelity, usefulness, and professional review distinct.",
+          ],
+        },
+      ],
+      figureTitle: "Purpose-defined orchestration",
+      figureCaption: "AlphaDoc Engine orchestrates questions, evidence, documents, protected AI execution, and professional review around purpose. Technologies are selected and reconnected rather than chained in one line.",
+    },
+    document: {
+      name: "AlphaDocument",
+      englishTitle: "Deterministic Document-to-Artifact Engine",
+      lead: "From the moment a document is read, we turn it into reusable knowledge.",
+      sections: [
+        {
+          title: "From document files to reusable artifacts",
+          paragraphs: [
+            "PDF, DOCX, HWP, and CSV files carry structure and source locations in different ways. Turning them into disposable text loses tables, blocks, anchors, and processing history.",
+            "AlphaDocument transforms digital documents into deterministic Document Artifacts. Normalized content, structure, source locations, processing identity, and integrity travel together. The same document under the same configuration can produce the same result.",
+          ],
+        },
+        {
+          title: "Document knowledge that works across technologies",
+          paragraphs: [
+            "A Document Artifact is not tied to one screen or feature. AlphaDoc Engine can use it for document-aware work, while AlphaEvidence can preserve the source and structure of evidence arriving through digital documents.",
+            "Instead of interpreting the same document from scratch every time, Viore technologies share one provenance-carrying artifact. That is why AlphaDocument is more than a parser.",
+          ],
+        },
+      ],
+      figureTitle: "One document, many reusable contexts",
+      figureCaption: "Different digital documents become provenance-carrying artifacts in AlphaDocument. AlphaDoc Engine and AlphaEvidence can reuse those artifacts for their own purposes.",
+    },
+    layer: {
+      name: "AlphaLayer",
+      englishTitle: "Protected Inference Gateway",
+      lead: "Medical context and control remain intact at the moment AI executes.",
+      sections: [
+        {
+          title: "Security becomes an execution architecture",
+          paragraphs: [
+            "Protecting medical AI does not end with masking a few strings. The system must understand why information is needed and control the boundary before and after external execution.",
+            "AlphaLayer is a Protected Inference Gateway between AlphaDoc Engine and approved external execution environments. It confirms purpose, minimizes information in context, and allows only protected requests to leave. External AI can change while Viore's protection boundary remains consistent.",
+          ],
+        },
+        {
+          title: "Request, response, and execution evidence in one boundary",
+          paragraphs: [
+            "AlphaLayer does more than inspect outbound requests. It keeps responses bound to their requests and records the protection policy under which execution occurred.",
+            "Those execution records retain only the minimum information needed. AlphaLayer is the shared execution foundation that lets Viore's AI capabilities expand under the same protection principles.",
+          ],
+        },
+      ],
+      figureTitle: "Protection around every execution",
+      figureCaption: "Purpose, minimization, approved external execution, response integrity, and execution evidence work around AlphaLayer. Protection surrounds execution rather than appearing as one step in a line.",
+    },
+  },
+} as const;
 
 function TechnologySectionHeader({
+  language,
   index,
   name,
   englishTitle,
   lead,
   status,
 }: {
+  language: Language;
   index: string;
   name: string;
-  englishTitle?: string;
+  englishTitle: string;
   lead: string;
   status: TechnologyStatus;
 }) {
-  const statusClass = status.toLowerCase().replaceAll(" ", "-");
+  const labels = sharedCopy[language];
+  const statusClass = status.toLowerCase().replaceAll(" ", "-").replaceAll("&", "and");
 
   return (
     <header className="technology-section-header">
       <div className="technology-post-heading">
         <span className="technology-post-number">POST {index}</span>
         <div>
-          {englishTitle && <p className="technology-section-english">{englishTitle}</p>}
+          <p className="technology-section-english">{englishTitle}</p>
           <h2>{name}</h2>
           <p className="technology-section-lead">{lead}</p>
         </div>
@@ -37,11 +275,11 @@ function TechnologySectionHeader({
 
       <dl className="technology-status-list">
         <div>
-          <dt>Status</dt>
+          <dt>{labels.status}</dt>
           <dd><span className={`technology-status technology-status-${statusClass}`}>{status}</span></dd>
         </div>
         <div>
-          <dt>Last verified</dt>
+          <dt>{labels.verified}</dt>
           <dd><time dateTime={VERIFIED_DATE}>{VERIFIED_DATE}</time></dd>
         </div>
       </dl>
@@ -50,13 +288,15 @@ function TechnologySectionHeader({
 }
 
 function TechnologyFigure({
+  language,
   number,
   kind,
   title,
   caption,
 }: {
+  language: Language;
   number: string;
-  kind: TechnologyDiagramKind;
+  kind: TechnologyMotionKind;
   title: string;
   caption: string;
 }) {
@@ -66,213 +306,163 @@ function TechnologyFigure({
         <span>FIG. {number}</span>
         <p>{title}</p>
       </div>
-      <TechnologyMotion kind={kind} />
-      <figcaption><strong>Figure {number}</strong><span>{caption}</span></figcaption>
+      <TechnologyMotion kind={kind} language={language} />
+      <figcaption>
+        <strong>{sharedCopy[language].figure} {number}</strong>
+        <span>{caption}</span>
+      </figcaption>
     </figure>
   );
 }
 
-export function TechnologyPage({
-  snapshotResult,
+function ProseSections({
+  sections,
 }: {
-  snapshotResult: AlphaEvidenceSnapshotResult;
+  sections: ReadonlyArray<{
+    title: string;
+    paragraphs: readonly string[];
+  }>;
 }) {
   return (
-    <div className="technology-journal" lang="ko">
+    <>
+      {sections.map((section) => (
+        <section key={section.title}>
+          <h3>{section.title}</h3>
+          {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </section>
+      ))}
+    </>
+  );
+}
+
+export function TechnologyPage({
+  language,
+  snapshotResult,
+}: {
+  language: Language;
+  snapshotResult: AlphaEvidenceSnapshotResult;
+}) {
+  const page = sharedCopy[language];
+  const articles = articleCopy[language];
+
+  return (
+    <div className="technology-journal" lang={language}>
       <header className="technology-hero" id="technology-overview">
         <div className="technology-hero-meta">
-          <span>Journal</span>
-          <time dateTime="2026-07-21">July 21, 2026</time>
+          <span>{page.journal}</span>
+          <p><time dateTime="2026-07-21">{page.published}</time><small>{page.updated}</small></p>
         </div>
 
-        <h1>우리만의 선형을<br />만드는 과정</h1>
-        <p className="technology-hero-author">Viore Team</p>
+        <h1>{page.hero}</h1>
+        <p className="technology-hero-author">{page.author}</p>
 
         <div className="technology-intro-copy">
-          <p>모든 산업에는 변화 이전과 이후를 가르는 순간이 있습니다. 그러나 그 변화는 새로운 기술 하나가 기존의 모든 것을 지우며 시작되지 않습니다.</p>
-          <p>오랜 시간 축적된 기술과 전문성이 하나의 더 큰 구조 안에서 연결될 때, 흩어진 점들은 선이 되고 이전에는 없던 새로운 형태가 만들어집니다. 바이오레는 그것을 새로운 선형이라 부릅니다.</p>
-          <p>아이폰은 전화와 음악, 인터넷을 하나의 인터페이스로 연결했습니다. 테슬라는 자동차와 소프트웨어를 하나의 지속적인 생애주기로 연결했습니다. SpaceX는 발사와 회수, 재사용을 하나의 반복 가능한 시스템으로 연결했습니다.</p>
-          <p>그들이 바꾼 것은 개별 기술이 아니었습니다. 기술들이 함께 작동하는 방식이었습니다.</p>
-          <p className="technology-intro-emphasis">이제 의료계에도 새로운 선형이 필요합니다.</p>
-          <p>바이오레는 의료인의 전문성을 바꾸려 하지 않습니다. 그 전문성을 둘러싼 디지털 환경을 바꾸려 합니다.</p>
-          <p>기존 시스템의 가치를 유지하면서도 지식과 도구, 문서와 데이터, 사람과 조직이 하나의 경험 안에서 작동하도록 연결하는 것. 새로운 AI와 애플리케이션이 그 위에서 계속 확장될 수 있는 의료의 상위 운영 계층을 만드는 것.</p>
+          {page.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           <blockquote>
-            <span>모든 것을 하나에 가두는 All-in-One이 아니라,</span>
-            <strong>모든 것이 함께 작동하게 하는 One Operating Layer.</strong>
+            <span>{page.quote.first}</span>
+            <strong>{page.quote.second}</strong>
           </blockquote>
-          <p>그것이 바이오레가 만들고 있는 Medical OS, 그리고 우리가 의료계에 그리고자 하는 새로운 선형입니다.</p>
+          <p className="technology-intro-emphasis">{page.introClose}</p>
         </div>
 
         <TechnologyFigure
+          language={language}
           number="01"
           kind="overview"
-          title="Viore technology at a glance"
-          caption="의학 문헌과 진료지침, 질문과 업무 의도가 각자의 경계를 지나 AlphaDoc Engine에서 만납니다. 실선은 현재 흐름을, 점선과 빈 원은 통제 또는 개발 중인 확장 관계를 뜻합니다."
+          title={language === "ko" ? "Viore technology constellation" : "Viore technology constellation"}
+          caption={language === "ko"
+            ? "AlphaDoc Engine을 중심으로 AlphaEvidence, AlphaDocument, AlphaLayer와 Alphadoc이 각자의 책임을 유지한 채 상호작용합니다. 일렬로 종속된 파이프라인이 아니라, 필요한 기술이 업무의 목적에 따라 연결되는 생태계입니다."
+            : "AlphaEvidence, AlphaDocument, AlphaLayer, and Alphadoc interact around AlphaDoc Engine while retaining distinct responsibilities. The system behaves as a constellation, not a one-way pipeline."}
         />
       </header>
 
-      <TechnologyArticleNav />
+      <TechnologyArticleNav language={language} />
 
       <main className="technology-article-stream">
-        <article id="technology-alphaevidence" className="technology-post" data-tech-status="in-production">
+        <article id="technology-alphaevidence" className="technology-post" data-tech-status="developed-integrated">
           <TechnologySectionHeader
+            language={language}
             index="01"
-            name="AlphaEvidence"
-            englishTitle="Verified evidence and automation for LLM"
-            lead="LLM을 위한 검증된 증거와 자동화"
-            status="IN PRODUCTION"
+            name={articles.evidence.name}
+            englishTitle={articles.evidence.englishTitle}
+            lead={articles.evidence.lead}
+            status="DEVELOPED & INTEGRATED"
           />
-
           <div className="technology-prose">
-            <section>
-              <h3>검색은 이미 늦은 단계입니다</h3>
-              <p>의료 AI를 설명할 때는 흔히 검색 정확도부터 꺼냅니다. 하지만 검색은 저장된 것만 고릅니다. 출처가 어디였는지, 원문이 언제 바뀌었는지, 어떤 이용 조건으로 들어왔는지가 사라지고 나면 더 좋은 모델을 붙여도 지난 이력을 되살리기 어렵습니다.</p>
-              <p>AlphaEvidence는 바로 그 앞단을 맡습니다. 허용된 출처만 정해진 범위에서 수집하고, 같은 논문은 안정된 레코드로 맞춥니다. 수집 당시의 원본 hash, 정규화 결과, parser version, 이용 정책 판단도 함께 남습니다. 같은 자료를 다시 만났다고 그대로 넘기지 않습니다. 단순 중복인지, 출처가 수정됐는지, 처리 규칙이 바뀌었는지를 가립니다.</p>
-              <p>여기서 문헌은 검색 결과 한 줄로 끝나지 않습니다. 출처와 변환 과정, 지금 다시 확인할 수 있는지까지 하나의 기록으로 이어집니다. AlphaDoc Engine은 이 계약에 따라 근거를 받습니다. 답변 모델이 출처 이력을 임의로 만들어내지 못하게 막는 경계이기도 합니다.</p>
-            </section>
-
-            <section>
-              <h3>권리를 추정하지 않고, 판단 시점을 남깁니다</h3>
-              <p>AlphaEvidence의 rights snapshot은 저작권 문제가 모두 해결됐다는 표시가 아닙니다. 각 레코드를 들여오던 시점에 확인한 이용 정책, 허용 범위, 저장·노출 수준을 남긴 운영 기록입니다. 원문이나 파생 데이터는 명시적으로 허용된 범위 안에서만 다룹니다. 조건이 불명확하거나 제한된 자료라면 메타데이터와 원문 링크를 중심으로 남깁니다.</p>
-              <p>정책이 바뀌어도 과거 판단을 덮어쓰지 않습니다. 나중에 재검토하거나 삭제 요청을 처리하려면 언제, 어떤 근거로 다뤘는지가 남아 있어야 합니다.</p>
-            </section>
-
+            <ProseSections sections={articles.evidence.sections} />
             <TechnologyFigure
+              language={language}
               number="02"
               kind="evidence"
-              title="AlphaEvidence ingestion and provenance"
-              caption="목적이 다른 출처는 독립 stream과 cursor로 움직입니다. 모든 쓰기는 하나의 ingestion gateway를 지나 canonical record, 출처·변경 관찰, rights snapshot으로 나뉘며, 이 기록을 지우지 않은 versioned contract가 AlphaDoc Engine으로 전달됩니다."
+              title={articles.evidence.figureTitle}
+              caption={articles.evidence.figureCaption}
             />
-
             <section className="technology-data-section">
-              <h3>시간과 함께 커지는 지식</h3>
-              <AlphaEvidenceSnapshot initialResult={snapshotResult} />
+              <h3>{articles.evidence.snapshotTitle}</h3>
+              <AlphaEvidenceSnapshot initialResult={snapshotResult} language={language} />
             </section>
           </div>
         </article>
 
-        <article id="technology-alphadoc-engine" className="technology-post" data-tech-status="in-production">
+        <article id="technology-alphadoc-engine" className="technology-post" data-tech-status="developed-integrated">
           <TechnologySectionHeader
+            language={language}
             index="02"
-            name="AlphaDoc Engine"
-            lead="의료 특화 Workflow Orchestration"
-            status="IN PRODUCTION"
+            name={articles.engine.name}
+            englishTitle={articles.engine.englishTitle}
+            lead={articles.engine.lead}
+            status="DEVELOPED & INTEGRATED"
           />
-
           <div className="technology-prose">
-            <section>
-              <h3>같은 모델도 같은 시스템은 아닙니다</h3>
-              <p>의료 AI는 모델 이름 하나로 작동 방식을 설명할 수 없습니다. 같은 모델을 써도 검색 정책, prompt pipeline, 추론 설정, 문서 처리 규칙, guardrail에 따라 결과가 나온 조건이 달라집니다. 무엇을 실행하려 했는지조차 분명하지 않다면 변경 전후를 비교하기 어렵습니다. 문제가 생긴 뒤 당시 조건을 재구성하기도 힘듭니다.</p>
-              <p>AlphaDoc Engine은 기능을 provider 호출 목록으로 세지 않습니다. 각 능력에는 고유한 capability ID가 있습니다. 목적, 실행 방식, 허용 입력, 근거 정책, model 필요 여부는 하나의 계약으로 묶입니다. 공식 문서 작성, 원문 종속 번역, 일반 생성, SOAP, 근거 검색은 이름만 바꾼 prompt가 아닙니다. 저마다 실행 경계가 다릅니다.</p>
-              <p>새 provider 호출을 넣으려면 먼저 어느 capability에 속하는지 선언해야 합니다. 등록되지 않은 경로는 범용 생성으로 조용히 빠질 수 없습니다. 기능이 늘어날수록 이 작은 registry의 역할도 커집니다. 모델을 몇 개 더 붙이기에 앞서, 각 모델이 무엇을 해도 되는지 코드로 남깁니다.</p>
-            </section>
-
+            <ProseSections sections={articles.engine.sections} />
             <TechnologyFigure
+              language={language}
               number="03"
               kind="engine"
-              title="Capability contract and execution path"
-              caption="업무 의도는 Capability Registry에서 등록된 계약을 찾습니다. contract가 확인된 뒤에만 실행 방식이 갈라지고, Release Identity는 답변 입력이 아니라 실행 조건을 추적하는 sidecar 기록으로 남습니다."
+              title={articles.engine.figureTitle}
+              caption={articles.engine.figureCaption}
             />
-
-            <section>
-              <h3>Release Identity는 실행의 지문입니다</h3>
-              <p>AlphaDoc Engine은 실행 조건을 Code Identity, Behavior Identity, Runtime Identity로 나눕니다. 배포된 코드, capability와 prompt·설정·guardrail의 fingerprint, 실제 runtime이 보고한 deployment와 model 정보를 서로 섞지 않고 기록합니다. 민감한 질문이나 문서 원문, 생성 결과는 이 식별 기록에 넣지 않습니다.</p>
-              <p>이 기록으로 특정 결과가 어떤 코드와 동작 설정에서 나왔는지 조사할 수 있습니다. 설정 모델과 runtime이 실제로 보고한 모델도 따로 봅니다. 정보가 없으면 추정하지 않고 확인이 필요하다고 남깁니다.</p>
-              <blockquote className="technology-inline-quote">Release Identity supports reconstruction of execution conditions. It does not by itself prove that an output was clinically correct.</blockquote>
-              <p>Release Identity는 실행 조건을 다시 찾기 위한 기반입니다. 답변이 의학적으로 옳았다는 증명서는 아닙니다. 임상적 타당성은 별도의 평가 설계와 사용자 검토로 판단해야 합니다.</p>
-            </section>
-
-            <section>
-              <h3>평가는 한 점수로 닫지 않습니다</h3>
-              <p>Evaluation Gate는 서로 성격이 다른 실패를 AI 점수 하나에 섞지 않습니다. 코드로 확정할 수 있는 실패, 반복 관찰을 돕는 보조 평가, 의료적 맥락을 판단하는 검토를 세 층으로 나눕니다.</p>
-              <dl className="technology-evaluation-explainer">
-                <div>
-                  <dt>Deterministic checks</dt>
-                  <dd>identity 일치, citation integrity, 빈 응답, canary 노출, 금지된 단정처럼 코드로 판정할 수 있는 실패를 찾습니다. hard failure는 평균 점수가 높아도 상쇄되지 않습니다.</dd>
-                </div>
-                <div>
-                  <dt>Model-assisted checks</dt>
-                  <dd>관련성, 충실도, 환각 가능성을 반복해서 살피는 보조 수단입니다. 사람이 볼 대상을 좁히는 데 쓰되 단독 승인 근거로 삼지 않습니다.</dd>
-                </div>
-                <div>
-                  <dt>User review</dt>
-                  <dd>근거 충실도, 임상적 타당성, 실제 업무에서의 쓸모를 봅니다. 자동 평가가 확신하기 어려운 항목은 <code>human_review_required</code>로 남깁니다.</dd>
-                </div>
-              </dl>
-            </section>
-
-            <TechnologyFigure
-              number="04"
-              kind="evaluation"
-              title="AlphaDoc Engine Evaluation Gate"
-              caption="Deterministic failure는 즉시 차단되고, model-assisted check는 점선으로 표시한 보조 관찰에 머뭅니다. 의료적 판단이 필요한 평가는 User Review에 남으며, 세 층은 하나의 평균 점수로 합쳐지지 않습니다."
-            />
-
-            <aside className="technology-scope-note" aria-labelledby="engine-current-scope-title">
-              <span>CURRENT VALIDATED SCOPE</span>
-              <h3 id="engine-current-scope-title"><code>chat.evidence-search</code></h3>
-              <p>현재 Evaluation Gate의 검증된 범위는 이 capability에 한정됩니다. 다른 capability까지 자동으로 평가됐다고 주장하지 않으며, 임상적 groundedness와 faithfulness를 기계적으로 확정할 수 없는 경우 사용자 검토 대상으로 남깁니다.</p>
-            </aside>
-
-            <aside className="technology-regulatory-reference" aria-labelledby="mfds-reference-title">
-              <span>REGULATORY REFERENCE</span>
-              <h3 id="mfds-reference-title">평가 설계를 위한 공식 참고자료</h3>
-              <p>식품의약품안전처는 2026년 6월 30일 「거대언어모델(LLM) 기반 디지털의료기기 허가·심사 가이드라인(민원인 안내서)」을 공개했습니다. 바이오레는 이 안내서를 평가 체계를 설계할 때 검토하는 공식 참고자료 중 하나로 사용합니다.</p>
-              <p>이 참고는 Alphadoc이나 해당 기능이 의료기기로 허가·인증됐거나 임상적으로 검증됐다는 뜻이 아닙니다.</p>
-              <a href={MFDS_GUIDANCE_URL}>식품의약품안전처 원문 보기 <span aria-hidden="true">↗</span></a>
-            </aside>
           </div>
         </article>
 
-        <article id="technology-alphadocument" className="technology-post" data-tech-status="controlled-workflows">
+        <article id="technology-alphadocument" className="technology-post" data-tech-status="developed-integrated">
           <TechnologySectionHeader
+            language={language}
             index="03"
-            name="AlphaDocument"
-            lead="생성보다 먼저, 문서의 경계를 정의합니다."
-            status="CONTROLLED WORKFLOWS"
+            name={articles.document.name}
+            englishTitle={articles.document.englishTitle}
+            lead={articles.document.lead}
+            status="DEVELOPED & INTEGRATED"
           />
-
           <div className="technology-prose">
-            <section>
-              <h3>의료 문서에서 자유도는 늘 좋은 것이 아닙니다</h3>
-              <p>문장을 잘 만든다고 문서 시스템까지 좋아지는 것은 아닙니다. 의료 문서에서는 오히려 반대 상황이 자주 생깁니다. 빠진 필드를 자연스러운 문장으로 메우고, 번역하면서 설명을 보태고, 작성 기능을 일반 대화로 우회하면 읽기는 쉽지만 틀린 문서가 나올 수 있습니다.</p>
-              <p>AlphaDocument는 문서의 경계부터 고정합니다. workflow와 필수 필드, 값을 입력한 주체, 원문을 보존할 범위를 정합니다. 그다음에야 문서를 처리합니다.</p>
-              <p>공식 문서 작성은 등록된 template과 필드 schema를 따릅니다. 필수 값이 하나라도 비어 있으면 생성을 멈춥니다. 한국어 공식 문서는 사용자가 입력한 값을 AI가 다시 쓰지 않습니다. 정해진 template에 로컬로 배치합니다. 다른 언어가 필요할 때만 별도의 원문 종속 번역 capability를 거칩니다. 원문에 없는 진단, 치료, 예후, 위험, 권고는 이 경로에서 추가할 수 없습니다.</p>
-              <p>업로드 문서의 전체 번역과 요약 번역도 서로 다른 capability로 나뉩니다. 사용자가 고른 범위를 바꾸지 않고, 일반 생성으로 조용히 fallback하지도 않습니다. 파일은 곧바로 읽지 않습니다. 인증, 소유권, 안전한 저장 경로, quarantine 상태, 승인된 파일의 SHA-256 일치부터 확인합니다.</p>
-              <blockquote className="technology-inline-quote">가장 발전된 문서 AI는 언제 생성하지 말아야 하는지 압니다.</blockquote>
-              <p>이 문장이 AlphaDocument가 모든 의료 문서를 대신 쓴다는 뜻은 아닙니다. 현재 구현 범위는 사전에 정의된 공식 문서 작성 workflow와 원문 종속형 문서 번역입니다. 결과는 사용자가 검토하며, 실제 사용에 대한 책임도 사람에게 남습니다.</p>
-            </section>
-
+            <ProseSections sections={articles.document.sections} />
             <TechnologyFigure
-              number="05"
+              language={language}
+              number="04"
               kind="document"
-              title="AlphaDocument control flow"
-              caption="문서 의도와 schema를 먼저 고정하고 필수 입력을 확인합니다. 한국어 공식 문서는 model rewrite 없이 렌더링되고, 번역은 원문 종속 경계를 따릅니다. 입력이 부족하면 멈추며 모든 결과는 사용자 검토로 이어집니다."
+              title={articles.document.figureTitle}
+              caption={articles.document.figureCaption}
             />
           </div>
         </article>
 
-        <article id="technology-alphalayer" className="technology-post" data-tech-status="architecture-in-development">
+        <article id="technology-alphalayer" className="technology-post" data-tech-status="developed-integrated">
           <TechnologySectionHeader
+            language={language}
             index="04"
-            name="AlphaLayer"
-            lead="개인정보 보호를 기능 하나가 아니라 통제 경로로 설계합니다."
-            status="ARCHITECTURE IN DEVELOPMENT"
+            name={articles.layer.name}
+            englishTitle={articles.layer.englishTitle}
+            lead={articles.layer.lead}
+            status="DEVELOPED & INTEGRATED"
           />
-
           <div className="technology-prose">
-            <section>
-              <h3>의료 정보 보안을 위한 최적의 설계</h3>
-              <p>AlphaLayer는 지금 운영 중인 단일 제품 모듈의 이름이 아닙니다. 의료 맥락의 민감정보를 다루기 위해 바이오레가 만들고 있는 목표 privacy-control architecture입니다. 출발점은 인증과 파일 소유권 확인 같은 현재 통제입니다. 필요한 정보만 외부 처리 경계로 보내고, 허가된 상황에서만 되돌리는 전체 경로를 설계합니다.</p>
-              <p>정규식 몇 개만으로도 개인정보를 가린 듯한 화면은 만들 수 있습니다. 그러나 의료 맥락은 그렇게 단순하지 않습니다. 똑같은 단어가 환자 식별자일 때도 있고, 임상적으로 꼭 필요한 정보일 때도 있습니다. 지울 항목만 정해서 끝낼 수 없는 이유입니다. 어떤 목적으로 어느 정보가 필요한지 판단하고 그 결정까지 기록해야 합니다.</p>
-              <p>reversible tokenization 역시 문자열 치환만으로는 부족합니다. 원문과 token의 대응표는 처리 경로 밖에 분리합니다. 응답에 token이 빠졌는지, 새로 생겼는지, 형태가 달라졌는지도 확인해야 합니다. rehydration은 권한이 확인된 사용자와 목적에만 허용합니다. 이때 생기는 처리 지연과 남은 재식별 위험까지 함께 측정합니다.</p>
-            </section>
-
+            <ProseSections sections={articles.layer.sections} />
             <TechnologyFigure
-              number="06"
+              language={language}
+              number="05"
               kind="layer"
-              title="AlphaLayer privacy-control path"
-              caption="실선과 채운 원은 현재 적용된 인증·소유권·quarantine·무결성 통제를 뜻합니다. 점선과 빈 원은 분류, 목적별 최소화, reversible tokenization, 격리된 Token Vault, 응답 무결성, 권한 있는 rehydration으로 확장할 목표 경로입니다."
+              title={articles.layer.figureTitle}
+              caption={articles.layer.figureCaption}
             />
           </div>
         </article>

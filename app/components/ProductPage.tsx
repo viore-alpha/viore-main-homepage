@@ -111,12 +111,12 @@ export function ProductPage({ language }: { language: Language }) {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     name: "Alphadoc",
-    applicationCategory: "Medical workspace software",
+    applicationCategory: "AI Medical Workspace",
     operatingSystem: "Web",
     url: "https://www.alphadoc.ai",
     description: language === "ko"
-      ? "질문과 근거 탐색, 임상 도구, 진료노트와 문서를 한곳에서 이어주는 Medical Workspace"
-      : "A Medical Workspace connecting questions, evidence, clinical tools, notes, and documents in one place",
+      ? "질문과 근거 탐색, 임상 도구, 진료노트와 문서를 한곳에서 이어주는 AI Medical Workspace"
+      : "An AI Medical Workspace connecting questions, evidence, clinical tools, notes, and documents in one place",
     inLanguage: language,
   };
 

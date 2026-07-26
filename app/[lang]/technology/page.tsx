@@ -13,11 +13,11 @@ export const revalidate = 600;
 const metadataCopy = {
   ko: {
     title: "Technology — Viore",
-    description: "근거의 출처와 변경, AI 실행 조건, 문서 통제, 개인정보 보호 목표 구조를 구현 상태와 한계까지 구분해 설명합니다.",
+    description: "AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaLayer가 의료 근거와 문서, AI 실행을 하나의 기술 생태계로 연결하는 방식을 소개합니다.",
   },
   en: {
     title: "Technology — Viore",
-    description: "Explore Viore's evidence provenance, AI execution controls, document boundaries, and privacy architecture with implementation status and limitations clearly distinguished.",
+    description: "Explore how AlphaEvidence, AlphaDoc Engine, AlphaDocument, and AlphaLayer connect medical evidence, documents, and AI execution into one technology constellation.",
   },
 } as const;
 
@@ -34,50 +34,80 @@ export async function generateMetadata({ params }: { params: TechnologyRoutePara
   });
 }
 
-const techArticles = [
-  {
-    id: "technology-alphaevidence",
-    headline: "AlphaEvidence — LLM을 위한 검증된 증거와 자동화",
-    description: "허용된 의학 문헌과 진료지침의 provenance, 변경 관찰, rights snapshot과 versioned retrieval contract를 설명합니다.",
-    about: ["medical evidence provenance", "source health", "versioned retrieval"],
-  },
-  {
-    id: "technology-alphadoc-engine",
-    headline: "AlphaDoc Engine — 의료 특화 Workflow Orchestration",
-    description: "Capability Registry, capability boundary, Release Identity와 세 층의 Evaluation Gate를 설명합니다.",
-    about: ["capability registry", "release identity", "AI evaluation"],
-  },
-  {
-    id: "technology-alphadocument",
-    headline: "AlphaDocument — 생성보다 먼저, 문서의 경계를 정의합니다.",
-    description: "등록된 의료 문서 workflow, deterministic rendering, source-bound translation과 human review 경계를 설명합니다.",
-    about: ["medical document control", "source-bound translation", "human review"],
-  },
-  {
-    id: "technology-alphalayer",
-    headline: "AlphaLayer — 개인정보 보호를 통제 경로로 설계합니다.",
-    description: "현재 운영 중인 보안 통제와 개발 중인 privacy-control architecture를 명확히 구분합니다.",
-    about: ["privacy control architecture", "data minimization", "tokenization"],
-  },
-] as const;
+const techArticles = {
+  ko: [
+    {
+      id: "technology-alphaevidence",
+      headline: "AlphaEvidence — Evidence Foundation",
+      description: "AlphaEvidence DB를 중심으로 출처, 변화, 이용 맥락과 품질이 함께 연결되는 Evidence Foundation을 소개합니다.",
+      about: ["Evidence Foundation", "AlphaEvidence DB", "medical evidence provenance"],
+    },
+    {
+      id: "technology-alphadoc-engine",
+      headline: "AlphaDoc Engine — Medical Workflow Orchestration",
+      description: "의료 업무의 목적을 중심으로 질문, 근거, 문서, 도구와 검토를 연결하는 실행 오케스트레이션을 소개합니다.",
+      about: ["medical workflow orchestration", "purpose-defined capability", "AI execution"],
+    },
+    {
+      id: "technology-alphadocument",
+      headline: "AlphaDocument — Deterministic Document-to-Artifact Engine",
+      description: "다양한 디지털 문서를 구조와 출처가 보존된 재사용 가능한 Document Artifact로 변환하는 기술을 소개합니다.",
+      about: ["Document Artifact", "document provenance", "deterministic extraction"],
+    },
+    {
+      id: "technology-alphalayer",
+      headline: "AlphaLayer — Protected Inference Gateway",
+      description: "업무 목적, 정보 최소화, 외부 실행, 응답 무결성과 실행 기록을 하나의 보호 경계로 연결하는 기술을 소개합니다.",
+      about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
+    },
+  ],
+  en: [
+    {
+      id: "technology-alphaevidence",
+      headline: "AlphaEvidence — Evidence Foundation",
+      description: "Explore the Evidence Foundation connecting source, change, rights context, and quality around AlphaEvidence DB.",
+      about: ["Evidence Foundation", "AlphaEvidence DB", "medical evidence provenance"],
+    },
+    {
+      id: "technology-alphadoc-engine",
+      headline: "AlphaDoc Engine — Medical Workflow Orchestration",
+      description: "Explore purpose-defined orchestration connecting questions, evidence, documents, tools, and professional review.",
+      about: ["medical workflow orchestration", "purpose-defined capability", "AI execution"],
+    },
+    {
+      id: "technology-alphadocument",
+      headline: "AlphaDocument — Deterministic Document-to-Artifact Engine",
+      description: "Explore how digital documents become reusable Document Artifacts with structure and provenance intact.",
+      about: ["Document Artifact", "document provenance", "deterministic extraction"],
+    },
+    {
+      id: "technology-alphalayer",
+      headline: "AlphaLayer — Protected Inference Gateway",
+      description: "Explore the protected boundary connecting purpose, minimization, external execution, response integrity, and execution evidence.",
+      about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
+    },
+  ],
+} as const;
 
 export default async function TechnologyRoute({ params }: { params: TechnologyRouteParams }) {
   const { lang } = await params;
   if (!isLanguage(lang)) notFound();
   const snapshotResult = await getAlphaEvidencePublicSnapshot();
   const pageUrl = `https://vioreai.com/${lang}/technology`;
+  const articles = techArticles[lang];
   const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": techArticles.map((article) => ({
+    "@graph": articles.map((article) => ({
       "@type": "TechArticle",
       "@id": `${pageUrl}#${article.id}`,
       headline: article.headline,
       description: article.description,
-      dateModified: "2026-07-20",
+      datePublished: "2026-07-21",
+      dateModified: "2026-07-26",
       about: article.about,
       isPartOf: { "@type": "CollectionPage", "@id": pageUrl, name: "Viore Technology" },
       author: { "@type": "Organization", name: "Viore Inc.", url: "https://vioreai.com" },
-      inLanguage: "ko-KR",
+      inLanguage: lang === "ko" ? "ko-KR" : "en-US",
     })),
   };
 
@@ -87,7 +117,7 @@ export default async function TechnologyRoute({ params }: { params: TechnologyRo
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replaceAll("<", "\\u003c") }}
       />
-      <TechnologyPage snapshotResult={snapshotResult} />
+      <TechnologyPage language={lang} snapshotResult={snapshotResult} />
     </>
   );
 }

@@ -1,41 +1,62 @@
 import type { CSSProperties, ReactNode } from "react";
 import { ViewportMotion } from "@/app/components/ViewportMotion";
+import type { Language } from "@/app/site-content";
 
-export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "evaluation" | "document" | "layer";
+export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "layer";
 type SvgTone = "ink" | "blue" | "red" | "muted";
 
-const diagramCopy: Record<TechnologyMotionKind, { title: string; description: string }> = {
-  overview: {
-    title: "바이오레 기술의 전체 흐름",
-    description: "의학 근거와 업무 의도가 각각의 경계를 지나 AlphaDoc Engine에서 만나고, 문서 통제와 사용자 검토로 이어지는 구조입니다.",
+const diagramCopy = {
+  ko: {
+    overview: {
+      title: "바이오레 기술 생태계",
+      description: "AlphaDoc Engine을 중심으로 AlphaEvidence, AlphaDocument, AlphaLayer와 Alphadoc이 서로 다른 역할로 연결되는 비직렬 기술 구조입니다.",
+    },
+    evidence: {
+      title: "AlphaEvidence 근거 생태계",
+      description: "AlphaEvidence DB를 중심으로 출처, 변화, 권리 맥락, 품질과 검색 계약이 함께 연결되는 Evidence Foundation 구조입니다.",
+    },
+    engine: {
+      title: "AlphaDoc Engine 실행 오케스트레이션",
+      description: "AlphaDoc Engine을 중심으로 질문, 근거, 문서, 도구와 검토가 목적별 capability로 연결되는 구조입니다.",
+    },
+    document: {
+      title: "AlphaDocument artifact 구조",
+      description: "다양한 디지털 문서가 AlphaDocument에서 출처와 구조가 보존된 하나의 artifact로 수렴하고 여러 기술에서 다시 활용되는 구조입니다.",
+    },
+    layer: {
+      title: "AlphaLayer 보호 실행 구조",
+      description: "AlphaLayer를 중심으로 목적 확인, 정보 최소화, 외부 실행 통제, 응답 무결성과 실행 기록이 동시에 작동하는 구조입니다.",
+    },
   },
-  evidence: {
-    title: "AlphaEvidence 수집과 출처 이력",
-    description: "허용된 출처가 독립 stream과 하나의 ingestion gateway를 지나 세 가지 기록으로 보존된 뒤 버전이 있는 검색 계약으로 전달됩니다.",
+  en: {
+    overview: {
+      title: "The Viore technology constellation",
+      description: "A non-linear system where AlphaEvidence, AlphaDocument, AlphaLayer, and Alphadoc connect around AlphaDoc Engine through distinct responsibilities.",
+    },
+    evidence: {
+      title: "The AlphaEvidence evidence constellation",
+      description: "An Evidence Foundation where source, change, rights context, quality, and retrieval contracts connect around AlphaEvidence DB.",
+    },
+    engine: {
+      title: "AlphaDoc Engine orchestration",
+      description: "Questions, evidence, documents, tools, and review connect around AlphaDoc Engine through purpose-defined capabilities.",
+    },
+    document: {
+      title: "The AlphaDocument artifact system",
+      description: "Digital documents converge into one provenance-carrying artifact and become reusable across Viore technologies.",
+    },
+    layer: {
+      title: "The AlphaLayer protected execution system",
+      description: "Purpose, minimization, external execution control, response integrity, and execution records operate around AlphaLayer.",
+    },
   },
-  engine: {
-    title: "AlphaDoc Engine capability 실행 구조",
-    description: "업무 의도가 등록된 capability contract를 거쳐 실행되고 Release Identity가 sidecar 기록으로 남는 구조입니다.",
-  },
-  evaluation: {
-    title: "AlphaDoc Engine 평가 게이트",
-    description: "코드로 판정하는 실패, 모델 보조 평가, 사용자 검토를 한 점수로 섞지 않고 각각의 게이트로 다루는 구조입니다.",
-  },
-  document: {
-    title: "AlphaDocument 문서 통제 구조",
-    description: "문서 경계와 필수 입력을 먼저 확인하고 허용된 workflow만 실행한 뒤 모든 결과를 사용자 검토로 보내는 구조입니다.",
-  },
-  layer: {
-    title: "AlphaLayer 개인정보 통제 경로",
-    description: "현재 작동하는 인증과 파일 통제는 실선으로, 분류와 tokenization, rehydration 목표 경로는 점선으로 구분한 구조입니다.",
-  },
-};
+} as const;
 
 function stepStyle(step: number): CSSProperties {
   return { "--svg-step": step } as CSSProperties;
 }
 
-function textLines(value: string | readonly string[]): readonly string[] {
+function textLines(value: string | readonly string[]) {
   return typeof value === "string" ? [value] : value;
 }
 
@@ -65,16 +86,7 @@ function SvgDefs({ id }: { id: string }) {
   );
 }
 
-function Paper({ filterId, width, height }: { filterId: string; width: number; height: number }) {
-  return (
-    <g aria-hidden="true">
-      <rect width={width} height={height} className="diagram-paper" />
-      <rect width={width} height={height} className="diagram-paper-grain" filter={`url(#${filterId}-paper-grain)`} />
-    </g>
-  );
-}
-
-function SvgNode({
+function Node({
   x,
   y,
   width,
@@ -83,7 +95,6 @@ function SvgNode({
   title,
   detail,
   tone = "ink",
-  dashed = false,
   step,
   center = false,
 }: {
@@ -95,62 +106,30 @@ function SvgNode({
   title: string | readonly string[];
   detail?: string | readonly string[];
   tone?: SvgTone;
-  dashed?: boolean;
   step: number;
   center?: boolean;
 }) {
-  const titleLines = textLines(title);
-  const detailLines = detail ? textLines(detail) : [];
+  const titles = textLines(title);
+  const details = detail ? textLines(detail) : [];
   const textX = center ? x + width / 2 : x + 14;
   const anchor = center ? "middle" : "start";
-  const tightLayout = height <= 64 && (titleLines.length > 1 || detailLines.length > 0);
-  const eyebrowY = y + (tightLayout ? 15 : 20);
-  const titleY = y + (tightLayout ? 33 : 43);
-  const titleLineHeight = tightLayout ? 14 : 17;
-  const detailLineHeight = tightLayout ? 10 : 12;
-  const titleLastBaseline = titleY + ((titleLines.length - 1) * titleLineHeight);
-  const detailStart = Math.max(
-    titleLastBaseline + (tightLayout ? 10 : 15),
-    y + height - (tightLayout ? 9 : 13) - ((detailLines.length - 1) * detailLineHeight),
-  );
-  const eyebrowWidth = Array.from(eyebrow).reduce((sum, character) => {
-    if (/\s/.test(character)) return sum + 3;
-    if (/[A-Z0-9]/.test(character)) return sum + 5.1;
-    if (/[a-z]/.test(character)) return sum + 4.2;
-    return sum + 7.5;
-  }, 0) + Math.max(0, eyebrow.length - 1) * .7;
-  const eyebrowTextLength = eyebrowWidth > width - 28 ? width - 28 : undefined;
+  const titleY = y + (height <= 62 ? 35 : 44);
+  const detailY = y + height - 13 - Math.max(0, details.length - 1) * 11;
 
   return (
     <g className="technology-svg-step" style={stepStyle(step)}>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        rx="5"
-        className={`diagram-box diagram-box-${tone}${dashed ? " is-dashed" : ""}`}
-      />
-      <circle cx={x + 8} cy={y + 8} r="3.2" className={`diagram-dot diagram-dot-${tone}${dashed ? " is-hollow" : ""}`} />
-      <text
-        x={textX}
-        y={eyebrowY}
-        textAnchor={anchor}
-        className={`diagram-eyebrow${tightLayout ? " is-tight" : ""}`}
-        textLength={eyebrowTextLength}
-        lengthAdjust={eyebrowTextLength ? "spacingAndGlyphs" : undefined}
-      >
-        {eyebrow}
-      </text>
-      <text x={textX} y={titleY} textAnchor={anchor} className={`diagram-title${tightLayout ? " is-tight" : ""}`}>
-        {titleLines.map((line, index) => (
-          <tspan x={textX} dy={index === 0 ? 0 : titleLineHeight} key={line}>{line}</tspan>
+      <rect x={x} y={y} width={width} height={height} rx="7" className={`diagram-box diagram-box-${tone}`} />
+      <circle cx={x + 9} cy={y + 9} r="3.3" className={`diagram-dot diagram-dot-${tone}`} />
+      <text x={textX} y={y + 20} textAnchor={anchor} className="diagram-eyebrow">{eyebrow}</text>
+      <text x={textX} y={titleY} textAnchor={anchor} className="diagram-title">
+        {titles.map((line, index) => (
+          <tspan x={textX} dy={index === 0 ? 0 : 17} key={line}>{line}</tspan>
         ))}
       </text>
-      {detailLines.length > 0 && (
-        <text x={textX} y={detailStart} textAnchor={anchor} className={`diagram-detail${tightLayout ? " is-tight" : ""}`}>
-          {detailLines.map((line, index) => (
-            <tspan x={textX} dy={index === 0 ? 0 : detailLineHeight} key={line}>{line}</tspan>
+      {details.length > 0 && (
+        <text x={textX} y={detailY} textAnchor={anchor} className="diagram-detail">
+          {details.map((line, index) => (
+            <tspan x={textX} dy={index === 0 ? 0 : 11} key={line}>{line}</tspan>
           ))}
         </text>
       )}
@@ -158,38 +137,46 @@ function SvgNode({
   );
 }
 
-function SvgConnector({
+function Curve({
   d,
   id,
   tone = "ink",
-  dashed = false,
-  arrow = true,
   step,
+  arrow = false,
 }: {
   d: string;
   id: string;
   tone?: SvgTone;
-  dashed?: boolean;
-  arrow?: boolean;
   step: number;
+  arrow?: boolean;
 }) {
   return (
     <path
       d={d}
-      className={`diagram-link diagram-link-${tone} technology-svg-step${dashed ? " is-dashed" : ""}`}
+      className={`diagram-link diagram-link-${tone} technology-svg-step`}
       markerEnd={arrow ? `url(#${id}-arrow-${tone})` : undefined}
       style={stepStyle(step)}
     />
   );
 }
 
-function SvgLaneLabel({ x, y, children, tone = "ink" }: { x: number; y: number; children: ReactNode; tone?: SvgTone }) {
-  return <text x={x} y={y} className={`diagram-lane-label diagram-text-${tone}`}>{children}</text>;
+function Orbit({ cx, cy, rx, ry, step }: { cx: number; cy: number; rx: number; ry: number; step: number }) {
+  return (
+    <ellipse
+      cx={cx}
+      cy={cy}
+      rx={rx}
+      ry={ry}
+      className="diagram-orbit technology-svg-step"
+      style={stepStyle(step)}
+    />
+  );
 }
 
 function DiagramSvg({
   id,
   kind,
+  language,
   mobile,
   width,
   height,
@@ -197,6 +184,7 @@ function DiagramSvg({
 }: {
   id: string;
   kind: TechnologyMotionKind;
+  language: Language;
   mobile: boolean;
   width: number;
   height: number;
@@ -204,6 +192,8 @@ function DiagramSvg({
 }) {
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
+  const copy = diagramCopy[language][kind];
+
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
@@ -211,469 +201,233 @@ function DiagramSvg({
       role="img"
       aria-labelledby={`${titleId} ${descriptionId}`}
     >
-      <title id={titleId}>{diagramCopy[kind].title}</title>
-      <desc id={descriptionId}>{diagramCopy[kind].description}</desc>
+      <title id={titleId}>{copy.title}</title>
+      <desc id={descriptionId}>{copy.description}</desc>
       <SvgDefs id={id} />
-      <Paper filterId={id} width={width} height={height} />
+      <rect width={width} height={height} className="diagram-paper" />
+      <rect width={width} height={height} className="diagram-paper-grain" filter={`url(#${id}-paper-grain)`} />
       {children}
     </svg>
   );
 }
 
-function OverviewSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-overview-${mobile ? "mobile" : "desktop"}`;
+function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-overview-${language}-${mobile ? "mobile" : "desktop"}`;
+  const ko = language === "ko";
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="overview" mobile width={360} height={930}>
-        <SvgLaneLabel x={18} y={32}>INPUT</SvgLaneLabel>
-        <SvgNode x={18} y={48} width={146} height={94} eyebrow="EVIDENCE INPUT" title={["의학 문헌", "진료지침"]} tone="blue" step={1} />
-        <SvgNode x={196} y={48} width={146} height={94} eyebrow="WORK INPUT" title={["질문 · 파일", "업무 의도"]} tone="red" step={2} />
-        <SvgConnector d="M 91 142 V 182" id={id} tone="blue" step={3} />
-        <SvgConnector d="M 269 142 V 182" id={id} tone="red" step={3} />
-
-        <SvgLaneLabel x={18} y={170}>FOUNDATION</SvgLaneLabel>
-        <SvgNode x={18} y={186} width={146} height={96} eyebrow="IN PRODUCTION" title="AlphaEvidence" detail="source · change" tone="blue" step={4} />
-        <SvgNode x={196} y={186} width={146} height={96} eyebrow="IN PRODUCTION" title={["Capability", "Registry"]} detail="boundary · contract" tone="red" step={5} />
-        <SvgConnector d="M 91 282 V 306 H 180 V 334" id={id} tone="blue" step={6} />
-        <SvgConnector d="M 269 282 V 306 H 180 V 334" id={id} tone="red" step={6} />
-
-        <SvgLaneLabel x={42} y={322} tone="red">EXECUTION</SvgLaneLabel>
-        <SvgNode x={42} y={338} width={276} height={90} eyebrow="IN PRODUCTION" title="AlphaDoc Engine" detail="registered execution" tone="red" step={7} />
-        <SvgConnector d="M 180 428 V 470" id={id} tone="red" step={8} />
-
-        <SvgLaneLabel x={28} y={458}>CONTROLLED OUTPUT</SvgLaneLabel>
-        <SvgNode x={28} y={474} width={304} height={80} eyebrow="CONTROLLED WORKFLOWS" title="AlphaDocument" detail="render · translate · stop" tone="blue" step={9} />
-        <SvgConnector d="M 180 554 V 582" id={id} tone="ink" step={10} />
-        <SvgNode x={28} y={598} width={304} height={78} eyebrow="USER REVIEW" title="사용자 검토" detail="approve · revise · hold" tone="ink" step={11} />
-
-        <SvgLaneLabel x={28} y={724} tone="blue">CONTROL &amp; TARGET</SvgLaneLabel>
-        <SvgNode x={28} y={740} width={304} height={72} eyebrow="CURRENT SECURITY CONTROLS" title="인증 · 소유권 · 파일 무결성" detail="Engine · Document에 적용" tone="blue" dashed step={12} />
-        <SvgConnector d="M 180 812 V 836" id={id} tone="muted" dashed step={13} />
-        <SvgNode x={28} y={852} width={304} height={54} eyebrow="ARCHITECTURE IN DEVELOPMENT" title="AlphaLayer" tone="muted" dashed step={14} />
+      <DiagramSvg id={id} kind="overview" language={language} mobile width={420} height={590}>
+        <Orbit cx={210} cy={292} rx={170} ry={208} step={1} />
+        <Orbit cx={210} cy={292} rx={112} ry={142} step={1} />
+        <Curve d="M 210 195 C 140 170 100 160 74 143" id={id} tone="blue" step={2} />
+        <Curve d="M 210 195 C 280 170 320 160 346 143" id={id} tone="red" step={2} />
+        <Curve d="M 145 300 C 90 300 74 310 60 332" id={id} tone="blue" step={3} />
+        <Curve d="M 275 300 C 330 300 346 310 360 332" id={id} tone="red" step={3} />
+        <Curve d="M 210 387 C 210 430 210 448 210 470" id={id} tone="ink" step={4} />
+        <Node x={135} y={238} width={150} height={108} eyebrow="ORCHESTRATION" title={["AlphaDoc", "Engine"]} detail={ko ? "목적 · 맥락 · 실행" : "purpose · context · action"} tone="red" step={5} center />
+        <Node x={20} y={72} width={150} height={86} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence" detail={ko ? "출처 · 변화 · 근거" : "source · change · evidence"} tone="blue" step={6} />
+        <Node x={250} y={72} width={150} height={86} eyebrow="DOCUMENT ARTIFACTS" title="AlphaDocument" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={7} />
+        <Node x={18} y={332} width={150} height={88} eyebrow="PROTECTED EXECUTION" title="AlphaLayer" detail={ko ? "보호 · 통제 · 증거" : "protect · control · assure"} tone="red" step={8} />
+        <Node x={252} y={332} width={150} height={88} eyebrow="AI MEDICAL WORKSPACE" title="Alphadoc" detail={ko ? "질문 · 문서 · 도구" : "questions · documents · tools"} tone="ink" step={9} />
+        <Node x={126} y={474} width={168} height={76} eyebrow="HUMAN IN THE LOOP" title={ko ? "의료인의 검토" : "Professional review"} tone="ink" step={10} center />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="overview" mobile={false} width={720} height={430}>
-      <SvgLaneLabel x={20} y={32}>INPUT</SvgLaneLabel>
-      <SvgLaneLabel x={198} y={32}>FOUNDATION</SvgLaneLabel>
-      <SvgLaneLabel x={384} y={32} tone="red">EXECUTION</SvgLaneLabel>
-      <SvgLaneLabel x={546} y={32}>CONTROLLED OUTPUT</SvgLaneLabel>
-      <SvgNode x={20} y={50} width={140} height={86} eyebrow="EVIDENCE INPUT" title={["의학 문헌", "진료지침"]} tone="blue" step={1} />
-      <SvgNode x={20} y={160} width={140} height={86} eyebrow="WORK INPUT" title={["질문 · 파일", "업무 의도"]} tone="red" step={2} />
-      <SvgNode x={198} y={50} width={140} height={86} eyebrow="IN PRODUCTION" title="AlphaEvidence" detail="source · change" tone="blue" step={3} />
-      <SvgNode x={198} y={160} width={140} height={86} eyebrow="IN PRODUCTION" title={["Capability", "Registry"]} detail="boundary · contract" tone="red" step={4} />
-      <SvgNode x={384} y={105} width={140} height={106} eyebrow="IN PRODUCTION" title={["AlphaDoc", "Engine"]} detail="registered execution" tone="red" step={6} />
-      <SvgNode x={546} y={50} width={154} height={86} eyebrow="CONTROLLED" title="AlphaDocument" detail="render · translate" tone="blue" step={8} />
-      <SvgNode x={546} y={160} width={154} height={86} eyebrow="USER REVIEW" title="사용자 검토" detail="approve · revise" tone="ink" step={9} />
-      <SvgConnector d="M 160 93 H 194" id={id} tone="blue" step={3} />
-      <SvgConnector d="M 160 203 H 194" id={id} tone="red" step={4} />
-      <SvgConnector d="M 338 93 H 360 Q 372 93 384 142" id={id} tone="blue" step={5} />
-      <SvgConnector d="M 338 203 H 360 Q 372 203 384 174" id={id} tone="red" step={5} />
-      <SvgConnector d="M 524 158 H 534 V 93 H 542" id={id} tone="red" step={7} />
-      <SvgConnector d="M 623 136 V 156" id={id} tone="ink" step={9} />
-
-      <SvgLaneLabel x={198} y={300} tone="blue">CONTROL &amp; TARGET</SvgLaneLabel>
-      <SvgNode x={198} y={318} width={238} height={76} eyebrow="CURRENT SECURITY CONTROLS" title="인증 · 소유권 · 파일 무결성" detail="Engine · Document에 적용" tone="blue" dashed step={10} />
-      <SvgConnector d="M 436 356 H 474" id={id} tone="muted" dashed step={11} />
-      <SvgNode x={478} y={318} width={222} height={76} eyebrow="ARCHITECTURE IN DEVELOPMENT" title="AlphaLayer" detail="현재 통제의 목표 확장" tone="muted" dashed step={12} />
+    <DiagramSvg id={id} kind="overview" language={language} mobile={false} width={820} height={510}>
+      <Orbit cx={410} cy={255} rx={322} ry={184} step={1} />
+      <Orbit cx={410} cy={255} rx={218} ry={128} step={1} />
+      <Curve d="M 340 218 C 276 150 220 132 178 136" id={id} tone="blue" step={2} />
+      <Curve d="M 480 218 C 544 150 600 132 642 136" id={id} tone="blue" step={2} />
+      <Curve d="M 340 290 C 274 350 222 368 178 366" id={id} tone="red" step={3} />
+      <Curve d="M 480 290 C 546 350 598 368 642 366" id={id} tone="ink" step={3} />
+      <Curve d="M 410 311 C 410 370 410 402 410 428" id={id} tone="ink" step={4} />
+      <Node x={315} y={198} width={190} height={114} eyebrow="ORCHESTRATION" title="AlphaDoc Engine" detail={ko ? "목적 · 맥락 · 근거 · 실행" : "purpose · context · evidence · action"} tone="red" step={5} center />
+      <Node x={35} y={86} width={206} height={96} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence" detail={ko ? "출처 · 변화 · 근거의 계보" : "source · change · evidence lineage"} tone="blue" step={6} />
+      <Node x={579} y={86} width={206} height={96} eyebrow="DOCUMENT ARTIFACTS" title="AlphaDocument" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={7} />
+      <Node x={35} y={322} width={206} height={96} eyebrow="PROTECTED EXECUTION" title="AlphaLayer" detail={ko ? "보호 · 통제 · 실행 증거" : "protection · control · assurance"} tone="red" step={8} />
+      <Node x={579} y={322} width={206} height={96} eyebrow="AI MEDICAL WORKSPACE" title="Alphadoc" detail={ko ? "질문 · 문서 · 도구 · 커뮤니티" : "questions · documents · tools · community"} tone="ink" step={9} />
+      <Node x={316} y={420} width={188} height={64} eyebrow="HUMAN IN THE LOOP" title={ko ? "의료인의 검토와 판단" : "Professional review"} tone="ink" step={10} center />
     </DiagramSvg>
   );
 }
 
-function EvidenceSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-evidence-${mobile ? "mobile" : "desktop"}`;
+function EvidenceSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-evidence-${language}-${mobile ? "mobile" : "desktop"}`;
+  const ko = language === "ko";
+  const width = mobile ? 420 : 820;
+  const height = mobile ? 610 : 470;
+  const cx = width / 2;
+  const cy = mobile ? 305 : 235;
+  const hubX = mobile ? 125 : 300;
+  const hubY = mobile ? 248 : 178;
+  const hubW = mobile ? 170 : 220;
+
+  return (
+    <DiagramSvg id={id} kind="evidence" language={language} mobile={mobile} width={width} height={height}>
+      <Orbit cx={cx} cy={cy} rx={mobile ? 174 : 314} ry={mobile ? 230 : 164} step={1} />
+      <Orbit cx={cx} cy={cy} rx={mobile ? 116 : 206} ry={mobile ? 150 : 108} step={1} />
+      <Curve d={mobile ? "M 160 248 C 118 195 90 160 78 130" : "M 330 178 C 280 130 236 105 204 108"} id={id} tone="blue" step={2} />
+      <Curve d={mobile ? "M 260 248 C 302 195 330 160 342 130" : "M 490 178 C 540 130 584 105 616 108"} id={id} tone="blue" step={2} />
+      <Curve d={mobile ? "M 125 305 C 88 310 70 340 66 375" : "M 300 235 C 240 235 204 260 182 300"} id={id} tone="red" step={3} />
+      <Curve d={mobile ? "M 295 305 C 332 310 350 340 354 375" : "M 520 235 C 580 235 616 260 638 300"} id={id} tone="red" step={3} />
+      <Curve d={mobile ? "M 210 362 C 210 420 210 456 210 486" : "M 410 292 C 410 344 410 372 410 392"} id={id} tone="ink" step={4} />
+      <Node x={hubX} y={hubY} width={hubW} height={114} eyebrow="EVIDENCE FOUNDATION" title="AlphaEvidence DB" detail={ko ? "살아 있는 근거의 중심" : "a living center of evidence"} tone="blue" step={5} center />
+      <Node x={mobile ? 18 : 38} y={mobile ? 64 : 60} width={mobile ? 154 : 210} height={90} eyebrow="SOURCE IDENTITY" title={ko ? "출처를 잃지 않는 근거" : "Evidence with identity"} detail={ko ? "source · provenance" : "source · provenance"} tone="blue" step={6} />
+      <Node x={mobile ? 248 : 572} y={mobile ? 64 : 60} width={mobile ? 154 : 210} height={90} eyebrow="LIVING HISTORY" title={ko ? "변화를 기억하는 지식" : "Knowledge that remembers"} detail={ko ? "version · observation" : "version · observation"} tone="blue" step={7} />
+      <Node x={mobile ? 16 : 36} y={mobile ? 365 : 286} width={mobile ? 154 : 210} height={94} eyebrow="RIGHTS CONTEXT" title={ko ? "이용 맥락까지 함께" : "Rights in context"} detail={ko ? "policy · scope" : "policy · scope"} tone="red" step={8} />
+      <Node x={mobile ? 250 : 574} y={mobile ? 365 : 286} width={mobile ? 154 : 210} height={94} eyebrow="SOURCE HEALTH" title={ko ? "계속 확인되는 품질" : "Continuously observed"} detail={ko ? "freshness · quality" : "freshness · quality"} tone="red" step={9} />
+      <Node x={mobile ? 126 : 306} y={mobile ? 490 : 386} width={mobile ? 168 : 208} height={76} eyebrow="RETRIEVAL CONTRACT" title="AlphaDoc Engine" detail={ko ? "검토 가능한 근거로 전달" : "reviewable evidence delivery"} tone="ink" step={10} center />
+    </DiagramSvg>
+  );
+}
+
+function EngineSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-engine-${language}-${mobile ? "mobile" : "desktop"}`;
+  const ko = language === "ko";
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="evidence" mobile width={360} height={1105}>
-        <SvgLaneLabel x={28} y={32}>01 · ALLOW</SvgLaneLabel>
-        <SvgNode x={28} y={48} width={304} height={70} eyebrow="BOUNDED SOURCE" title="허용된 의학 문헌 · 진료지침" tone="blue" step={1} />
-        <SvgConnector d="M 180 118 V 130" id={id} tone="blue" step={2} />
-        <SvgNode x={28} y={146} width={304} height={70} eyebrow="SOURCE REGISTRY" title="source · policy · scope" tone="blue" step={2} />
-        <SvgConnector d="M 180 216 V 258" id={id} tone="blue" step={3} />
-
-        <SvgLaneLabel x={28} y={246}>02 · INGEST</SvgLaneLabel>
-        <SvgNode x={28} y={262} width={304} height={70} eyebrow="BOUNDED STREAMS" title="독립 stream · cursor · rate · retry" tone="red" step={3} />
-        <SvgConnector d="M 180 332 V 344" id={id} tone="red" step={4} />
-        <SvgNode x={28} y={360} width={304} height={76} eyebrow="SINGLE WRITE PATH" title="Single Ingestion Gateway" tone="red" step={4} />
-
-        <SvgLaneLabel x={46} y={484}>03 · PRESERVE</SvgLaneLabel>
-        <SvgConnector d="M 180 436 V 466 H 20 V 696" id={id} tone="blue" arrow={false} step={5} />
-        <SvgNode x={46} y={500} width={286} height={62} eyebrow="IDENTITY" title="Canonical Evidence" detail="stable identity" tone="blue" step={5} />
-        <SvgNode x={46} y={584} width={286} height={62} eyebrow="OBSERVATION" title="Source &amp; Change Observations" detail="immutable history" tone="blue" step={5} />
-        <SvgNode x={46} y={668} width={286} height={62} eyebrow="RIGHTS" title="Rights Snapshot" detail="record-level decision" tone="blue" step={5} />
-        <SvgConnector d="M 20 531 H 42" id={id} tone="blue" step={5} />
-        <SvgConnector d="M 20 615 H 42" id={id} tone="blue" step={5} />
-        <SvgConnector d="M 20 699 H 42" id={id} tone="blue" step={5} />
-        <SvgConnector d="M 332 531 H 340 V 754" id={id} tone="blue" arrow={false} step={6} />
-        <SvgConnector d="M 332 615 H 340" id={id} tone="blue" arrow={false} step={6} />
-        <SvgConnector d="M 332 699 H 340" id={id} tone="blue" arrow={false} step={6} />
-
-        <SvgLaneLabel x={46} y={782}>04 · QUALIFY</SvgLaneLabel>
-        <SvgConnector d="M 340 754 H 180 V 786" id={id} tone="red" step={6} />
-        <SvgNode x={46} y={802} width={286} height={82} eyebrow="QUALITY &amp; SOURCE HEALTH" title="availability · conflict · ingestion lag" tone="red" step={7} />
-        <SvgConnector d="M 180 884 V 926" id={id} tone="red" step={8} />
-
-        <SvgLaneLabel x={46} y={914}>05 · SERVE</SvgLaneLabel>
-        <SvgNode x={46} y={930} width={286} height={72} eyebrow="VERSIONED CONTRACT" title="Versioned Retrieval Contract" tone="blue" step={9} />
-        <SvgConnector d="M 180 1002 V 1018" id={id} tone="ink" step={10} />
-        <SvgNode x={46} y={1034} width={286} height={48} eyebrow="DOWNSTREAM" title="AlphaDoc Engine" tone="ink" step={10} />
+      <DiagramSvg id={id} kind="engine" language={language} mobile width={420} height={650}>
+        <Orbit cx={210} cy={318} rx={176} ry={248} step={1} />
+        <Curve d="M 170 270 C 124 210 92 170 76 140" id={id} tone="red" step={2} />
+        <Curve d="M 250 270 C 296 210 328 170 344 140" id={id} tone="blue" step={2} />
+        <Curve d="M 130 318 C 88 318 70 340 60 376" id={id} tone="blue" step={3} />
+        <Curve d="M 290 318 C 332 318 350 340 360 376" id={id} tone="red" step={3} />
+        <Curve d="M 170 372 C 130 430 106 466 90 494" id={id} tone="ink" step={4} />
+        <Curve d="M 250 372 C 290 430 314 466 330 494" id={id} tone="ink" step={4} />
+        <Node x={126} y={265} width={168} height={112} eyebrow="PURPOSE-DEFINED" title={["AlphaDoc", "Engine"]} detail={ko ? "업무 의도를 실행으로" : "intent into action"} tone="red" step={5} center />
+        <Node x={18} y={74} width={154} height={88} eyebrow="QUESTION" title={ko ? "임상 질문" : "Clinical question"} detail={ko ? "맥락을 이해" : "context understood"} tone="red" step={6} />
+        <Node x={248} y={74} width={154} height={88} eyebrow="EVIDENCE" title="AlphaEvidence" detail={ko ? "근거를 결합" : "evidence connected"} tone="blue" step={7} />
+        <Node x={16} y={372} width={154} height={88} eyebrow="DOCUMENT" title="AlphaDocument" detail={ko ? "artifact를 활용" : "artifacts in context"} tone="blue" step={8} />
+        <Node x={250} y={372} width={154} height={88} eyebrow="PROTECTED AI" title="AlphaLayer" detail={ko ? "보호된 실행" : "protected execution"} tone="red" step={9} />
+        <Node x={28} y={502} width={164} height={80} eyebrow="TOOLS & WORKFLOWS" title={ko ? "다음 업무" : "Next actions"} tone="ink" step={10} />
+        <Node x={228} y={502} width={164} height={80} eyebrow="REVIEW" title={ko ? "의료인의 판단" : "Professional judgment"} tone="ink" step={11} />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="evidence" mobile={false} width={800} height={300}>
-      <SvgLaneLabel x={18} y={28}>01 · ALLOW</SvgLaneLabel>
-      <SvgLaneLabel x={168} y={28}>02 · INGEST</SvgLaneLabel>
-      <SvgLaneLabel x={326} y={28}>03 · PRESERVE</SvgLaneLabel>
-      <SvgLaneLabel x={514} y={28}>04 · QUALIFY</SvgLaneLabel>
-      <SvgLaneLabel x={662} y={28}>05 · SERVE</SvgLaneLabel>
-
-      <SvgNode x={18} y={46} width={130} height={70} eyebrow="BOUNDED SOURCE" title={["의학 문헌", "진료지침"]} tone="blue" step={1} />
-      <SvgNode x={18} y={136} width={130} height={70} eyebrow="SOURCE REGISTRY" title={["source · policy", "· scope"]} tone="blue" step={1} />
-      <SvgConnector d="M 83 116 V 132" id={id} tone="blue" step={2} />
-
-      <SvgNode x={168} y={46} width={135} height={70} eyebrow="BOUNDED STREAMS" title="독립 stream" detail="cursor · rate · retry" tone="red" step={3} />
-      <SvgNode x={168} y={136} width={135} height={76} eyebrow="SINGLE WRITE PATH" title={["Ingestion", "Gateway"]} tone="red" step={3} />
-      <SvgConnector d="M 148 171 H 158 V 81 H 164" id={id} tone="blue" step={3} />
-      <SvgConnector d="M 235 116 V 132" id={id} tone="red" step={4} />
-
-      <SvgNode x={326} y={38} width={170} height={62} eyebrow="IDENTITY" title="Canonical Evidence" detail="stable identity" tone="blue" step={5} />
-      <SvgNode x={326} y={118} width={170} height={62} eyebrow="OBSERVATION" title={["Source & Change", "Observations"]} detail="immutable history" tone="blue" step={5} />
-      <SvgNode x={326} y={198} width={170} height={62} eyebrow="RIGHTS" title="Rights Snapshot" detail="record-level decision" tone="blue" step={5} />
-      <SvgConnector d="M 303 174 H 314 V 69 H 322" id={id} tone="blue" step={5} />
-      <SvgConnector d="M 303 174 H 322" id={id} tone="blue" step={5} />
-      <SvgConnector d="M 303 174 H 314 V 229 H 322" id={id} tone="blue" step={5} />
-
-      <SvgNode x={514} y={103} width={130} height={88} eyebrow="QUALITY &amp; HEALTH" title={["Source health", "& quality"]} detail="lag · conflict" tone="red" step={7} />
-      <SvgConnector d="M 496 69 H 504 V 147 H 510" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 496 149 H 510" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 496 229 H 504 V 147 H 510" id={id} tone="blue" step={6} />
-
-      <SvgNode x={662} y={62} width={120} height={76} eyebrow="VERSIONED CONTRACT" title={["Retrieval", "Contract"]} tone="blue" step={9} />
-      <SvgNode x={662} y={162} width={120} height={62} eyebrow="DOWNSTREAM" title={["AlphaDoc", "Engine"]} tone="ink" step={10} />
-      <SvgConnector d="M 644 147 H 652 V 100 H 658" id={id} tone="red" step={8} />
-      <SvgConnector d="M 722 138 V 158" id={id} tone="ink" step={10} />
+    <DiagramSvg id={id} kind="engine" language={language} mobile={false} width={820} height={510}>
+      <Orbit cx={410} cy={255} rx={330} ry={188} step={1} />
+      <Orbit cx={410} cy={255} rx={218} ry={125} step={1} />
+      <Curve d="M 340 210 C 286 148 236 126 190 128" id={id} tone="red" step={2} />
+      <Curve d="M 480 210 C 534 148 584 126 630 128" id={id} tone="blue" step={2} />
+      <Curve d="M 315 255 C 252 255 210 264 172 292" id={id} tone="blue" step={3} />
+      <Curve d="M 505 255 C 568 255 610 264 648 292" id={id} tone="red" step={3} />
+      <Curve d="M 348 308 C 296 366 256 386 208 390" id={id} tone="ink" step={4} />
+      <Curve d="M 472 308 C 524 366 564 386 612 390" id={id} tone="ink" step={4} />
+      <Node x={315} y={196} width={190} height={118} eyebrow="PURPOSE-DEFINED" title="AlphaDoc Engine" detail={ko ? "업무 의도를 실행 가능한 흐름으로" : "medical intent into executable flow"} tone="red" step={5} center />
+      <Node x={34} y={82} width={210} height={94} eyebrow="QUESTION" title={ko ? "임상 질문과 맥락" : "Clinical question"} detail={ko ? "질문의 목적을 이해" : "intent in context"} tone="red" step={6} />
+      <Node x={576} y={82} width={210} height={94} eyebrow="EVIDENCE" title="AlphaEvidence" detail={ko ? "출처가 살아 있는 근거" : "source-bound evidence"} tone="blue" step={7} />
+      <Node x={28} y={270} width={210} height={94} eyebrow="DOCUMENT" title="AlphaDocument" detail={ko ? "문서 artifact를 활용" : "artifacts in context"} tone="blue" step={8} />
+      <Node x={582} y={270} width={210} height={94} eyebrow="PROTECTED AI" title="AlphaLayer" detail={ko ? "보호된 외부 실행" : "protected external execution"} tone="red" step={9} />
+      <Node x={82} y={382} width={220} height={80} eyebrow="TOOLS & WORKFLOWS" title={ko ? "답변 다음의 업무" : "Actions beyond answers"} tone="ink" step={10} />
+      <Node x={518} y={382} width={220} height={80} eyebrow="REVIEW" title={ko ? "의료인의 검토와 판단" : "Professional judgment"} tone="ink" step={11} />
     </DiagramSvg>
   );
 }
 
-function EngineSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-engine-${mobile ? "mobile" : "desktop"}`;
+function DocumentSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-document-${language}-${mobile ? "mobile" : "desktop"}`;
+  const ko = language === "ko";
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="engine" mobile width={360} height={1220}>
-        <SvgLaneLabel x={28} y={32}>01 · BOUNDARY</SvgLaneLabel>
-        <SvgNode x={28} y={48} width={304} height={72} eyebrow="INPUT" title="질문 · 파일 · 업무 의도" tone="red" step={1} />
-        <SvgConnector d="M 180 120 V 132" id={id} tone="red" step={2} />
-        <SvgNode x={28} y={148} width={304} height={72} eyebrow="INPUT BOUNDARY" title="요청의 목적과 입력 경계 확인" tone="red" step={2} />
-        <SvgConnector d="M 180 220 V 262" id={id} tone="red" step={3} />
-
-        <SvgLaneLabel x={28} y={250}>02 · CONTRACT</SvgLaneLabel>
-        <SvgNode x={28} y={266} width={304} height={72} eyebrow="CAPABILITY REGISTRY" title="등록된 capability 확인" tone="red" step={3} />
-        <SvgConnector d="M 180 338 V 350" id={id} tone="red" step={4} />
-        <SvgNode x={28} y={366} width={304} height={86} eyebrow="CAPABILITY CONTRACT" title="purpose · nature · source policy" detail="허용 입력 · 실행 방식 · 출력 경계" tone="red" step={4} />
-        <SvgNode x={60} y={476} width={240} height={72} eyebrow="EVIDENCE CONTRACT" title="AlphaEvidence" detail="source-bound evidence" tone="blue" step={5} />
-        <SvgConnector d="M 180 476 V 456" id={id} tone="blue" step={5} />
-
-        <SvgLaneLabel x={48} y={584}>03 · EXECUTION NATURE</SvgLaneLabel>
-        <SvgConnector d="M 28 409 H 20 V 844" id={id} tone="red" arrow={false} step={6} />
-        <SvgNode x={48} y={600} width={284} height={56} eyebrow="PATH 01" title="Deterministic" tone="blue" step={6} />
-        <SvgNode x={48} y={672} width={284} height={56} eyebrow="PATH 02" title="Source-bound Translation" tone="blue" step={6} />
-        <SvgNode x={48} y={744} width={284} height={56} eyebrow="PATH 03" title="Evidence Search" tone="blue" step={6} />
-        <SvgNode x={48} y={816} width={284} height={56} eyebrow="PATH 04" title="Bounded Generation" tone="red" step={6} />
-        <SvgConnector d="M 20 628 H 44" id={id} tone="blue" step={6} />
-        <SvgConnector d="M 20 700 H 44" id={id} tone="blue" step={6} />
-        <SvgConnector d="M 20 772 H 44" id={id} tone="blue" step={6} />
-        <SvgConnector d="M 20 844 H 44" id={id} tone="red" step={6} />
-        <SvgConnector d="M 332 628 H 340 V 894" id={id} tone="ink" arrow={false} step={7} />
-        <SvgConnector d="M 332 700 H 340" id={id} tone="ink" arrow={false} step={7} />
-        <SvgConnector d="M 332 772 H 340" id={id} tone="ink" arrow={false} step={7} />
-        <SvgConnector d="M 332 844 H 340" id={id} tone="ink" arrow={false} step={7} />
-
-        <SvgLaneLabel x={28} y={918}>04 · OUTPUT</SvgLaneLabel>
-        <SvgConnector d="M 340 894 H 180 V 934" id={id} tone="red" step={7} />
-        <SvgNode x={28} y={938} width={304} height={78} eyebrow="GUARDRAILS &amp; OUTPUT CONTRACT" title="허용된 결과 경계" tone="red" step={8} />
-        <SvgConnector d="M 180 1016 V 1028" id={id} tone="ink" step={9} />
-        <SvgNode x={28} y={1044} width={304} height={64} eyebrow="RESULT" title="사용자 결과" tone="ink" step={9} />
-
-        <SvgConnector d="M 332 409 H 348 V 1110 H 180 V 1122" id={id} tone="blue" dashed step={10} />
-        <SvgNode x={48} y={1126} width={284} height={72} eyebrow="SIDECAR · RELEASE IDENTITY" title="Code · Behavior · Runtime" detail="실행 조건만 별도로 기록" tone="blue" dashed step={10} />
+      <DiagramSvg id={id} kind="document" language={language} mobile width={420} height={620}>
+        <Orbit cx={210} cy={310} rx={176} ry={222} step={1} />
+        <Curve d="M 140 262 C 110 220 88 184 74 148" id={id} tone="blue" step={2} />
+        <Curve d="M 280 262 C 310 220 332 184 346 148" id={id} tone="blue" step={2} />
+        <Curve d="M 125 316 C 84 316 64 330 52 360" id={id} tone="muted" step={3} />
+        <Curve d="M 295 316 C 336 316 356 330 368 360" id={id} tone="red" step={3} />
+        <Curve d="M 210 378 C 210 428 210 458 210 486" id={id} tone="ink" step={4} />
+        <Node x={120} y={255} width={180} height={124} eyebrow="DETERMINISTIC CORE" title={["Document", "Artifact"]} detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={5} center />
+        <Node x={18} y={72} width={154} height={90} eyebrow="DIGITAL DOCUMENTS" title={ko ? "다양한 문서 형식" : "Multiple formats"} detail="PDF · DOCX · HWP · CSV" tone="blue" step={6} />
+        <Node x={248} y={72} width={154} height={90} eyebrow="SOURCE ANCHORS" title={ko ? "원문 위치를 보존" : "Source locations"} detail={ko ? "문단 · 표 · 구조" : "blocks · tables · structure"} tone="blue" step={7} />
+        <Node x={16} y={360} width={154} height={90} eyebrow="REUSABLE INPUT" title="AlphaEvidence" detail={ko ? "근거 수집의 기반" : "evidence ingestion"} tone="muted" step={8} />
+        <Node x={250} y={360} width={154} height={90} eyebrow="REUSABLE INPUT" title="AlphaDoc Engine" detail={ko ? "문서 맥락의 기반" : "document context"} tone="red" step={9} />
+        <Node x={118} y={492} width={184} height={78} eyebrow="ONE SOURCE, MANY USES" title={ko ? "다시 쓰이는 문서 지식" : "Reusable document knowledge"} tone="ink" step={10} center />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="engine" mobile={false} width={800} height={470}>
-      <SvgLaneLabel x={18} y={28}>01 · BOUNDARY</SvgLaneLabel>
-      <SvgLaneLabel x={190} y={28}>02 · CONTRACT</SvgLaneLabel>
-      <SvgLaneLabel x={394} y={28}>03 · EXECUTION NATURE</SvgLaneLabel>
-      <SvgLaneLabel x={632} y={28}>04 · OUTPUT</SvgLaneLabel>
-
-      <SvgNode x={18} y={48} width={144} height={72} eyebrow="INPUT" title={["질문 · 파일", "업무 의도"]} tone="red" step={1} />
-      <SvgNode x={18} y={138} width={144} height={72} eyebrow="INPUT BOUNDARY" title={["목적 · 입력", "경계 확인"]} tone="red" step={2} />
-      <SvgConnector d="M 90 120 V 134" id={id} tone="red" step={2} />
-
-      <SvgNode x={190} y={48} width={160} height={72} eyebrow="CAPABILITY REGISTRY" title="등록 capability" tone="red" step={3} />
-      <SvgNode x={190} y={138} width={160} height={88} eyebrow="CAPABILITY CONTRACT" title={["purpose · nature", "source policy"]} detail="input · execution · output" tone="red" step={4} />
-      <SvgNode x={190} y={248} width={160} height={72} eyebrow="EVIDENCE CONTRACT" title="AlphaEvidence" detail="source-bound evidence" tone="blue" step={5} />
-      <SvgConnector d="M 162 174 H 176 V 84 H 186" id={id} tone="red" step={3} />
-      <SvgConnector d="M 270 120 V 134" id={id} tone="red" step={4} />
-      <SvgConnector d="M 270 248 V 230" id={id} tone="blue" step={5} />
-
-      <SvgNode x={394} y={40} width={210} height={52} eyebrow="PATH 01" title="Deterministic" tone="blue" step={6} />
-      <SvgNode x={394} y={106} width={210} height={52} eyebrow="PATH 02" title="Source-bound Translation" tone="blue" step={6} />
-      <SvgNode x={394} y={172} width={210} height={52} eyebrow="PATH 03" title="Evidence Search" tone="blue" step={6} />
-      <SvgNode x={394} y={238} width={210} height={52} eyebrow="PATH 04" title="Bounded Generation" tone="red" step={6} />
-      <SvgConnector d="M 350 182 H 374 V 66 H 390" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 350 182 H 374 V 132 H 390" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 350 182 H 374 V 198 H 390" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 350 182 H 374 V 264 H 390" id={id} tone="red" step={6} />
-
-      <SvgNode x={632} y={96} width={150} height={88} eyebrow="GUARDRAILS &amp; OUTPUT" title={["Output", "Contract"]} detail="bounded result" tone="red" step={8} />
-      <SvgNode x={632} y={210} width={150} height={70} eyebrow="RESULT" title="사용자 결과" tone="ink" step={9} />
-      <SvgConnector d="M 604 66 H 620 V 140 H 628" id={id} tone="blue" step={7} />
-      <SvgConnector d="M 604 132 H 628" id={id} tone="blue" step={7} />
-      <SvgConnector d="M 604 198 H 620 V 140 H 628" id={id} tone="blue" step={7} />
-      <SvgConnector d="M 604 264 H 620 V 140 H 628" id={id} tone="red" step={7} />
-      <SvgConnector d="M 707 184 V 206" id={id} tone="ink" step={9} />
-
-      <SvgNode x={190} y={372} width={330} height={70} eyebrow="SIDECAR · RELEASE IDENTITY" title="Code · Behavior · Runtime" detail="Capability Contract의 실행 조건을 별도로 기록" tone="blue" dashed step={10} />
-      <SvgConnector d="M 350 182 H 374 V 350 H 355 V 368" id={id} tone="blue" dashed step={10} />
+    <DiagramSvg id={id} kind="document" language={language} mobile={false} width={820} height={480}>
+      <Orbit cx={410} cy={240} rx={325} ry={172} step={1} />
+      <Orbit cx={410} cy={240} rx={218} ry={112} step={1} />
+      <Curve d="M 330 195 C 274 138 226 118 186 124" id={id} tone="blue" step={2} />
+      <Curve d="M 490 195 C 546 138 594 118 634 124" id={id} tone="blue" step={2} />
+      <Curve d="M 315 260 C 252 272 218 302 188 326" id={id} tone="muted" step={3} />
+      <Curve d="M 505 260 C 568 272 602 302 632 326" id={id} tone="red" step={3} />
+      <Curve d="M 410 304 C 410 350 410 376 410 396" id={id} tone="ink" step={4} />
+      <Node x={310} y={184} width={200} height={122} eyebrow="DETERMINISTIC CORE" title="Document Artifact" detail={ko ? "구조 · 출처 · 무결성" : "structure · provenance · integrity"} tone="blue" step={5} center />
+      <Node x={36} y={72} width={220} height={96} eyebrow="DIGITAL DOCUMENTS" title={ko ? "다양한 문서 형식" : "Multiple formats"} detail="PDF · DOCX · HWP · CSV" tone="blue" step={6} />
+      <Node x={564} y={72} width={220} height={96} eyebrow="SOURCE ANCHORS" title={ko ? "원문 위치를 보존" : "Source locations"} detail={ko ? "문단 · 표 · 구조" : "blocks · tables · structure"} tone="blue" step={7} />
+      <Node x={34} y={292} width={220} height={96} eyebrow="REUSABLE INPUT" title="AlphaEvidence" detail={ko ? "근거 수집의 기반" : "evidence ingestion"} tone="muted" step={8} />
+      <Node x={566} y={292} width={220} height={96} eyebrow="REUSABLE INPUT" title="AlphaDoc Engine" detail={ko ? "문서 맥락의 기반" : "document context"} tone="red" step={9} />
+      <Node x={300} y={394} width={220} height={62} eyebrow="ONE SOURCE, MANY USES" title={ko ? "다시 쓰이는 문서 지식" : "Reusable document knowledge"} tone="ink" step={10} center />
     </DiagramSvg>
   );
 }
 
-function EvaluationSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-evaluation-${mobile ? "mobile" : "desktop"}`;
+function LayerSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-layer-${language}-${mobile ? "mobile" : "desktop"}`;
+  const ko = language === "ko";
 
   if (mobile) {
     return (
-      <DiagramSvg id={id} kind="evaluation" mobile width={360} height={920}>
-        <SvgNode x={48} y={30} width={264} height={72} eyebrow="CANDIDATE" title="Candidate Behavior Identity" detail="capability · corpus · scoring version" tone="red" step={1} />
-        <SvgConnector d="M 180 102 V 132 H 20 V 550" id={id} tone="ink" arrow={false} step={2} />
-
-        <SvgNode x={48} y={160} width={264} height={112} eyebrow="DETERMINISTIC · HARD GATE" title="Deterministic Checks" detail={["identity · citation · empty · canary", "hard failure는 평균으로 상쇄하지 않음"]} tone="red" step={3} />
-        <SvgNode x={48} y={316} width={264} height={112} eyebrow="MODEL-ASSISTED · SUPPORT" title="Model-assisted Checks" detail={["supplementary evaluation", "단독 승인 근거로 사용하지 않음"]} tone="blue" dashed step={4} />
-        <SvgNode x={48} y={472} width={264} height={112} eyebrow="USER REVIEW" title="User Review" detail={["groundedness · validity · usefulness", "의학적 판단은 사용자가 검토"]} tone="ink" step={5} />
-        <SvgConnector d="M 20 216 H 44" id={id} tone="red" step={3} />
-        <SvgConnector d="M 20 372 H 44" id={id} tone="blue" dashed step={4} />
-        <SvgConnector d="M 20 528 H 44" id={id} tone="ink" step={5} />
-        <SvgConnector d="M 312 216 H 340 V 610" id={id} tone="red" arrow={false} step={6} />
-        <SvgConnector d="M 312 372 H 340" id={id} tone="blue" dashed arrow={false} step={6} />
-        <SvgConnector d="M 312 528 H 340" id={id} tone="ink" arrow={false} step={6} />
-        <SvgConnector d="M 340 610 H 180 V 636" id={id} tone="ink" step={6} />
-
-        <SvgNode x={48} y={652} width={264} height={66} eyebrow="DECISION" title="Evaluation Decision" tone="ink" step={7} />
-        <SvgConnector d="M 180 718 V 748 H 92 V 764" id={id} tone="blue" step={8} />
-        <SvgConnector d="M 180 718 V 748 H 268 V 764" id={id} tone="red" step={8} />
-        <SvgNode x={20} y={780} width={144} height={94} eyebrow="PASS" title={["Release", "Candidate"]} tone="blue" step={9} />
-        <SvgNode x={196} y={780} width={144} height={94} eyebrow="FAIL / REVIEW" title={["Hold · investigate", "revise"]} tone="red" step={10} />
+      <DiagramSvg id={id} kind="layer" language={language} mobile width={420} height={650}>
+        <Orbit cx={210} cy={318} rx={176} ry={246} step={1} />
+        <Orbit cx={210} cy={318} rx={112} ry={156} step={1} />
+        <Curve d="M 126 318 C 94 300 72 270 62 230" id={id} tone="red" step={2} />
+        <Curve d="M 294 318 C 326 300 348 270 358 230" id={id} tone="red" step={2} />
+        <Curve d="M 168 262 C 128 214 102 176 86 142" id={id} tone="blue" step={3} />
+        <Curve d="M 252 262 C 292 214 318 176 334 142" id={id} tone="blue" step={3} />
+        <Curve d="M 168 374 C 128 428 102 466 86 500" id={id} tone="ink" step={4} />
+        <Curve d="M 252 374 C 292 428 318 466 334 500" id={id} tone="ink" step={4} />
+        <Node x={126} y={263} width={168} height={112} eyebrow="PROTECTED GATEWAY" title="AlphaLayer" detail={ko ? "외부 실행의 보호 경계" : "protected execution boundary"} tone="red" step={5} center />
+        <Node x={18} y={70} width={154} height={88} eyebrow="PURPOSE" title={ko ? "목적을 먼저 확인" : "Purpose first"} detail={ko ? "업무별 실행 경계" : "task-bound execution"} tone="blue" step={6} />
+        <Node x={248} y={70} width={154} height={88} eyebrow="MINIMIZATION" title={ko ? "필요한 정보만" : "Only what is needed"} detail={ko ? "맥락을 지키며 최소화" : "context-aware minimization"} tone="blue" step={7} />
+        <Node x={16} y={196} width={154} height={88} eyebrow="ENGINE SIDE" title="AlphaDoc Engine" detail={ko ? "승인된 실행 요청" : "approved invocation"} tone="red" step={8} />
+        <Node x={250} y={196} width={154} height={88} eyebrow="EXECUTION SIDE" title={ko ? "승인된 실행 환경" : "Approved execution"} detail={ko ? "교체 가능한 실행 기반" : "replaceable backend"} tone="red" step={9} />
+        <Node x={18} y={498} width={154} height={88} eyebrow="INTEGRITY" title={ko ? "응답 무결성" : "Response integrity"} detail={ko ? "요청과 응답을 연결" : "request-bound response"} tone="ink" step={10} />
+        <Node x={248} y={498} width={154} height={88} eyebrow="ASSURANCE" title={ko ? "실행의 증거" : "Execution evidence"} detail={ko ? "원문 없는 최소 기록" : "minimal payload-free record"} tone="ink" step={11} />
       </DiagramSvg>
     );
   }
 
   return (
-    <DiagramSvg id={id} kind="evaluation" mobile={false} width={720} height={470}>
-      <SvgNode x={250} y={26} width={220} height={72} eyebrow="CANDIDATE" title="Candidate Behavior Identity" detail="capability · corpus · scoring version" tone="red" step={1} />
-      <SvgConnector d="M 360 98 V 126" id={id} tone="ink" step={2} />
-      <SvgNode x={20} y={142} width={210} height={142} eyebrow="DETERMINISTIC · HARD GATE" title="Deterministic Checks" detail={["identity · citation · empty", "canary · prohibited claims"]} tone="red" step={3} />
-      <SvgNode x={255} y={142} width={210} height={142} eyebrow="MODEL-ASSISTED · SUPPORT" title="Model-assisted Checks" detail={["supplementary evaluation", "단독 승인 근거 아님"]} tone="blue" dashed step={4} />
-      <SvgNode x={490} y={142} width={210} height={142} eyebrow="USER REVIEW" title="User Review" detail={["groundedness · validity", "workflow usefulness"]} tone="ink" step={5} />
-      <SvgConnector d="M 360 126 H 125 V 138" id={id} tone="red" step={3} />
-      <SvgConnector d="M 360 126 V 138" id={id} tone="blue" dashed step={4} />
-      <SvgConnector d="M 360 126 H 595 V 138" id={id} tone="ink" step={5} />
-      <SvgConnector d="M 125 284 V 316 H 360" id={id} tone="red" step={6} />
-      <SvgConnector d="M 360 284 V 316" id={id} tone="blue" dashed step={6} />
-      <SvgConnector d="M 595 284 V 316 H 360" id={id} tone="ink" step={6} />
-      <SvgNode x={250} y={326} width={220} height={66} eyebrow="DECISION" title="Evaluation Decision" tone="ink" step={7} />
-      <SvgConnector d="M 360 392 V 396 H 160 V 400" id={id} tone="blue" step={8} />
-      <SvgConnector d="M 360 392 V 396 H 560 V 400" id={id} tone="red" step={8} />
-      <SvgNode x={72} y={404} width={176} height={60} eyebrow="PASS" title={["Release", "Candidate"]} tone="blue" step={9} />
-      <SvgNode x={472} y={404} width={176} height={60} eyebrow="FAIL / REVIEW" title={["Hold · investigate", "revise"]} tone="red" step={10} />
+    <DiagramSvg id={id} kind="layer" language={language} mobile={false} width={820} height={520}>
+      <Orbit cx={410} cy={260} rx={330} ry={190} step={1} />
+      <Orbit cx={410} cy={260} rx={222} ry={126} step={1} />
+      <Curve d="M 315 260 C 262 248 224 226 194 204" id={id} tone="red" step={2} />
+      <Curve d="M 505 260 C 558 248 596 226 626 204" id={id} tone="red" step={2} />
+      <Curve d="M 348 207 C 294 150 246 126 196 128" id={id} tone="blue" step={3} />
+      <Curve d="M 472 207 C 526 150 574 126 624 128" id={id} tone="blue" step={3} />
+      <Curve d="M 348 313 C 294 370 246 394 196 392" id={id} tone="ink" step={4} />
+      <Curve d="M 472 313 C 526 370 574 394 624 392" id={id} tone="ink" step={4} />
+      <Node x={315} y={202} width={190} height={116} eyebrow="PROTECTED GATEWAY" title="AlphaLayer" detail={ko ? "외부 실행의 보호 경계" : "protected execution boundary"} tone="red" step={5} center />
+      <Node x={34} y={78} width={220} height={94} eyebrow="PURPOSE" title={ko ? "목적을 먼저 확인" : "Purpose first"} detail={ko ? "업무별 실행 경계" : "task-bound execution"} tone="blue" step={6} />
+      <Node x={566} y={78} width={220} height={94} eyebrow="MINIMIZATION" title={ko ? "필요한 정보만" : "Only what is needed"} detail={ko ? "맥락을 지키며 최소화" : "context-aware minimization"} tone="blue" step={7} />
+      <Node x={26} y={202} width={220} height={94} eyebrow="ENGINE SIDE" title="AlphaDoc Engine" detail={ko ? "승인된 실행 요청" : "approved invocation"} tone="red" step={8} />
+      <Node x={574} y={202} width={220} height={94} eyebrow="EXECUTION SIDE" title={ko ? "승인된 실행 환경" : "Approved execution"} detail={ko ? "교체 가능한 실행 기반" : "replaceable backend"} tone="red" step={9} />
+      <Node x={34} y={350} width={220} height={94} eyebrow="INTEGRITY" title={ko ? "응답 무결성" : "Response integrity"} detail={ko ? "요청과 응답을 정확히 연결" : "request-bound response"} tone="ink" step={10} />
+      <Node x={566} y={350} width={220} height={94} eyebrow="ASSURANCE" title={ko ? "실행의 증거" : "Execution evidence"} detail={ko ? "원문 없는 최소 기록" : "minimal payload-free record"} tone="ink" step={11} />
     </DiagramSvg>
   );
 }
 
-function DocumentSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-document-${mobile ? "mobile" : "desktop"}`;
-
-  if (mobile) {
-    return (
-      <DiagramSvg id={id} kind="document" mobile width={360} height={1205}>
-        <SvgLaneLabel x={28} y={32}>01 · DEFINE</SvgLaneLabel>
-        <SvgNode x={28} y={48} width={304} height={70} eyebrow="DOCUMENT INTENT" title="문서 업무 의도" tone="red" step={1} />
-        <SvgConnector d="M 180 118 V 130" id={id} tone="red" step={2} />
-        <SvgNode x={28} y={146} width={304} height={70} eyebrow="REGISTERED WORKFLOW" title="등록된 문서 처리 경로" tone="red" step={2} />
-        <SvgConnector d="M 180 216 V 258" id={id} tone="red" step={3} />
-
-        <SvgLaneLabel x={28} y={246}>02 · VALIDATE</SvgLaneLabel>
-        <SvgNode x={28} y={262} width={304} height={78} eyebrow="DOCUMENT CONTRACT" title="Template · Field Schema · Source Policy" tone="blue" step={3} />
-        <SvgConnector d="M 180 340 V 352" id={id} tone="red" step={4} />
-        <SvgNode x={28} y={368} width={304} height={78} eyebrow="REQUIRED-FIELD VALIDATION" title="필수 입력이 없으면 STOP" tone="red" step={4} />
-
-        <SvgLaneLabel x={48} y={484}>03 · SELECTED WORKFLOW</SvgLaneLabel>
-        <SvgConnector d="M 180 446 V 468 H 22 V 704" id={id} tone="ink" arrow={false} step={5} />
-        <SvgNode x={48} y={500} width={284} height={64} eyebrow="PATH 01" title="한국어 공식 문서" detail="deterministic local render · no rewrite" tone="blue" step={5} />
-        <SvgNode x={48} y={584} width={284} height={64} eyebrow="PATH 02" title="공식 문서 번역" detail="source-bound full translation" tone="blue" step={5} />
-        <SvgNode x={48} y={668} width={284} height={64} eyebrow="PATH 03" title="업로드 문서 번역" detail="full or summary · explicit selection" tone="red" step={5} />
-        <SvgConnector d="M 22 532 H 44" id={id} tone="blue" step={5} />
-        <SvgConnector d="M 22 616 H 44" id={id} tone="blue" step={5} />
-        <SvgConnector d="M 22 700 H 44" id={id} tone="red" step={5} />
-        <SvgConnector d="M 332 532 H 340 V 752" id={id} tone="blue" arrow={false} step={6} />
-        <SvgConnector d="M 332 616 H 340" id={id} tone="blue" arrow={false} step={6} />
-        <SvgConnector d="M 332 700 H 340" id={id} tone="red" arrow={false} step={6} />
-
-        <SvgLaneLabel x={28} y={782}>04 · BIND</SvgLaneLabel>
-        <SvgConnector d="M 340 752 H 180 V 786" id={id} tone="blue" step={6} />
-        <SvgNode x={28} y={802} width={304} height={72} eyebrow="SOURCE-BOUND TRANSFORMATION" title="원문 경계를 유지한 변환" tone="blue" step={7} />
-        <SvgConnector d="M 180 874 V 886" id={id} tone="red" step={8} />
-        <SvgNode x={28} y={902} width={304} height={72} eyebrow="OUTPUT CONTRACT" title="추론 보완 · fail-open 차단" tone="red" step={8} />
-        <SvgConnector d="M 180 974 V 1016" id={id} tone="ink" step={9} />
-
-        <SvgLaneLabel x={28} y={1004}>05 · REVIEW</SvgLaneLabel>
-        <SvgNode x={28} y={1020} width={304} height={64} eyebrow="USER REVIEW" title="사용자 검토" tone="ink" step={9} />
-
-        <SvgNode x={28} y={1112} width={304} height={70} eyebrow="CURRENT SECURITY CONTROLS" title="auth · ownership · quarantine · SHA-256" detail="검증과 업로드 처리 전에 확인" tone="blue" dashed step={10} />
-        <SvgConnector d="M 28 1147 H 16 V 301 H 24" id={id} tone="blue" dashed step={10} />
-      </DiagramSvg>
-    );
-  }
-
-  return (
-    <DiagramSvg id={id} kind="document" mobile={false} width={800} height={430}>
-      <SvgLaneLabel x={18} y={28}>01 · DEFINE</SvgLaneLabel>
-      <SvgLaneLabel x={168} y={28}>02 · VALIDATE</SvgLaneLabel>
-      <SvgLaneLabel x={328} y={28}>03 · SELECTED WORKFLOW</SvgLaneLabel>
-      <SvgLaneLabel x={548} y={28}>04 · BIND</SvgLaneLabel>
-      <SvgLaneLabel x={690} y={28}>05 · REVIEW</SvgLaneLabel>
-
-      <SvgNode x={18} y={46} width={130} height={70} eyebrow="DOCUMENT INTENT" title="문서 업무 의도" tone="red" step={1} />
-      <SvgNode x={18} y={136} width={130} height={70} eyebrow="REGISTERED FLOW" title={["등록된 문서", "처리 경로"]} tone="red" step={2} />
-      <SvgConnector d="M 83 116 V 132" id={id} tone="red" step={2} />
-
-      <SvgNode x={168} y={46} width={140} height={78} eyebrow="DOCUMENT CONTRACT" title={["Template · Field", "Schema · Policy"]} tone="blue" step={3} />
-      <SvgNode x={168} y={144} width={140} height={78} eyebrow="REQUIRED FIELDS" title={["필수 입력 없으면", "STOP"]} tone="red" step={4} />
-      <SvgConnector d="M 148 171 H 158 V 85 H 164" id={id} tone="red" step={3} />
-      <SvgConnector d="M 238 124 V 140" id={id} tone="red" step={4} />
-
-      <SvgNode x={328} y={38} width={196} height={62} eyebrow="PATH 01" title="한국어 공식 문서" detail="local render · no model rewrite" tone="blue" step={5} />
-      <SvgNode x={328} y={118} width={196} height={62} eyebrow="PATH 02" title="공식 문서 번역" detail="source-bound full translation" tone="blue" step={5} />
-      <SvgNode x={328} y={198} width={196} height={62} eyebrow="PATH 03" title="업로드 문서 번역" detail="full / summary · explicit selection" tone="red" step={5} />
-      <SvgConnector d="M 308 183 H 318 V 69 H 324" id={id} tone="blue" step={5} />
-      <SvgConnector d="M 308 183 H 316 V 149 H 324" id={id} tone="blue" step={5} />
-      <SvgConnector d="M 308 183 H 318 V 229 H 324" id={id} tone="red" step={5} />
-
-      <SvgNode x={548} y={72} width={124} height={76} eyebrow="SOURCE-BOUND" title={["Controlled", "Transformation"]} tone="blue" step={7} />
-      <SvgNode x={548} y={172} width={124} height={76} eyebrow="OUTPUT CONTRACT" title={["no inference", "no fail-open"]} tone="red" step={8} />
-      <SvgConnector d="M 524 69 H 538 V 110 H 544" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 524 149 H 544" id={id} tone="blue" step={6} />
-      <SvgConnector d="M 524 229 H 538 V 110 H 544" id={id} tone="red" step={6} />
-      <SvgConnector d="M 610 148 V 168" id={id} tone="red" step={8} />
-
-      <SvgNode x={690} y={110} width={92} height={92} eyebrow="USER" title={["사용자", "검토"]} tone="ink" step={9} />
-      <SvgConnector d="M 672 210 H 680 V 156 H 686" id={id} tone="ink" step={9} />
-
-      <SvgNode x={168} y={330} width={504} height={68} eyebrow="CURRENT SECURITY CONTROLS" title="Authentication · Ownership · Quarantine · SHA-256" detail="필수 필드 검증과 업로드 처리 전에 확인" tone="blue" dashed step={10} />
-      <SvgConnector d="M 238 330 V 304 H 238 V 226" id={id} tone="blue" dashed step={10} />
-      <SvgConnector d="M 510 330 V 302 H 426 V 264" id={id} tone="blue" dashed step={10} />
-    </DiagramSvg>
-  );
+function DiagramPair({ kind, language }: { kind: TechnologyMotionKind; language: Language }) {
+  if (kind === "overview") return <><OverviewSvg language={language} mobile={false} /><OverviewSvg language={language} mobile /></>;
+  if (kind === "evidence") return <><EvidenceSvg language={language} mobile={false} /><EvidenceSvg language={language} mobile /></>;
+  if (kind === "engine") return <><EngineSvg language={language} mobile={false} /><EngineSvg language={language} mobile /></>;
+  if (kind === "document") return <><DocumentSvg language={language} mobile={false} /><DocumentSvg language={language} mobile /></>;
+  return <><LayerSvg language={language} mobile={false} /><LayerSvg language={language} mobile /></>;
 }
 
-const layerTargetSteps = [
-  ["Korean Medical-context", "PHI / PII Classification"],
-  "Purpose-aware Minimization",
-  "Reversible Tokenization",
-  "External Processing with Tokens",
-  "Response Token Integrity",
-  "Authorized Rehydration",
-  "사용자에게 허용된 결과",
-] as const;
-
-function LayerSvg({ mobile }: { mobile: boolean }) {
-  const id = `technology-layer-${mobile ? "mobile" : "desktop"}`;
-
-  if (mobile) {
-    return (
-      <DiagramSvg id={id} kind="layer" mobile width={360} height={1100}>
-        <SvgLaneLabel x={28} y={30} tone="blue">RUNNING TODAY · SOLID</SvgLaneLabel>
-        <SvgNode x={28} y={46} width={304} height={72} eyebrow="01 · ACCESS" title="인증된 요청 · 소유권 확인 파일" tone="red" step={1} />
-        <SvgConnector d="M 180 118 V 130" id={id} tone="blue" step={2} />
-        <SvgNode x={28} y={146} width={304} height={72} eyebrow="02 · CONTROL" title="Current Security Controls" detail="quarantine · integrity · minimum audit" tone="blue" step={3} />
-        <SvgConnector d="M 180 218 V 230" id={id} tone="blue" step={4} />
-        <SvgNode x={28} y={246} width={304} height={72} eyebrow="03 · BOUNDARY" title="Authorized Processing Boundary" detail="provider restrictions · fail closed" tone="red" step={5} />
-        <SvgConnector d="M 180 318 V 334 H 340 V 400 H 336" id={id} tone="muted" dashed step={6} />
-
-        <SvgLaneLabel x={28} y={350} tone="muted">ARCHITECTURE IN DEVELOPMENT · DASHED</SvgLaneLabel>
-        <SvgNode x={28} y={366} width={304} height={68} eyebrow="TARGET 01" title={layerTargetSteps[0]} tone="muted" dashed step={6} />
-        <SvgConnector d="M 180 434 V 446" id={id} tone="muted" dashed step={7} />
-        <SvgNode x={28} y={462} width={304} height={64} eyebrow="TARGET 02" title={layerTargetSteps[1]} tone="muted" dashed step={7} />
-        <SvgConnector d="M 180 526 V 538" id={id} tone="muted" dashed step={8} />
-        <SvgNode x={28} y={554} width={304} height={64} eyebrow="TARGET 03" title={layerTargetSteps[2]} tone="muted" dashed step={8} />
-
-        <SvgNode x={52} y={638} width={256} height={66} eyebrow="ISOLATED TOKEN VAULT" title="mapping 분리" detail="권한 확인 후 rehydration" tone="blue" dashed step={9} />
-        <SvgConnector d="M 180 618 V 634" id={id} tone="blue" dashed step={9} />
-        <SvgConnector d="M 332 586 H 340 V 706 H 180 V 734" id={id} tone="muted" dashed step={9} />
-
-        <SvgNode x={28} y={738} width={304} height={64} eyebrow="TARGET 04" title={layerTargetSteps[3]} tone="muted" dashed step={10} />
-        <SvgConnector d="M 180 802 V 814" id={id} tone="muted" dashed step={11} />
-        <SvgNode x={28} y={830} width={304} height={64} eyebrow="TARGET 05" title={layerTargetSteps[4]} tone="muted" dashed step={11} />
-        <SvgConnector d="M 180 894 V 906" id={id} tone="muted" dashed step={12} />
-        <SvgNode x={28} y={922} width={304} height={64} eyebrow="TARGET 06" title={layerTargetSteps[5]} tone="muted" dashed step={12} />
-        <SvgConnector d="M 52 671 H 16 V 954 H 24" id={id} tone="blue" dashed step={12} />
-        <SvgConnector d="M 180 986 V 998" id={id} tone="muted" dashed step={13} />
-        <SvgNode x={28} y={1014} width={304} height={64} eyebrow="TARGET 07 · RESULT" title={layerTargetSteps[6]} tone="muted" dashed step={13} />
-      </DiagramSvg>
-    );
-  }
-
-  return (
-    <DiagramSvg id={id} kind="layer" mobile={false} width={800} height={700}>
-      <SvgLaneLabel x={18} y={30} tone="blue">RUNNING TODAY · SOLID</SvgLaneLabel>
-      <SvgNode x={18} y={48} width={226} height={84} eyebrow="01 · ACCESS" title={["인증된 요청", "소유권 확인 파일"]} tone="red" step={1} />
-      <SvgNode x={287} y={48} width={226} height={84} eyebrow="02 · CONTROL" title="Current Security Controls" detail="quarantine · integrity · minimum audit" tone="blue" step={3} />
-      <SvgNode x={556} y={48} width={226} height={84} eyebrow="03 · BOUNDARY" title={["Authorized Processing", "Boundary"]} detail="provider restrictions · fail closed" tone="red" step={5} />
-      <SvgConnector d="M 244 90 H 283" id={id} tone="blue" step={2} />
-      <SvgConnector d="M 513 90 H 552" id={id} tone="blue" step={4} />
-      <SvgConnector d="M 669 132 V 166 H 790 V 236 H 786" id={id} tone="muted" dashed step={6} />
-
-      <SvgLaneLabel x={420} y={188} tone="muted">ARCHITECTURE IN DEVELOPMENT · DASHED</SvgLaneLabel>
-      {layerTargetSteps.map((title, index) => {
-        const y = 204 + (index * 70);
-        const nodeHeight = index === 0 ? 64 : 56;
-        return (
-          <g key={typeof title === "string" ? title : title.join("-")}>
-            <SvgNode x={420} y={y} width={362} height={nodeHeight} eyebrow={`TARGET ${String(index + 1).padStart(2, "0")}`} title={title} tone="muted" dashed step={index + 6} />
-            {index < layerTargetSteps.length - 1 && (
-              <SvgConnector d={`M 601 ${y + nodeHeight} V ${y + 66}`} id={id} tone="muted" dashed step={index + 7} />
-            )}
-          </g>
-        );
-      })}
-
-      <SvgNode x={40} y={422} width={300} height={88} eyebrow="ISOLATED TOKEN VAULT" title="Token mapping 분리" detail="외부 처리 경로와 분리 · 권한 확인 후 rehydration" tone="blue" dashed step={10} />
-      <SvgConnector d="M 420 360 H 380 V 466 H 344" id={id} tone="blue" dashed step={10} />
-      <SvgConnector d="M 340 466 H 380 V 586 H 416" id={id} tone="blue" dashed step={12} />
-    </DiagramSvg>
-  );
-}
-
-function DiagramPair({ kind }: { kind: TechnologyMotionKind }) {
-  if (kind === "overview") return <><OverviewSvg mobile={false} /><OverviewSvg mobile /></>;
-  if (kind === "evidence") return <><EvidenceSvg mobile={false} /><EvidenceSvg mobile /></>;
-  if (kind === "engine") return <><EngineSvg mobile={false} /><EngineSvg mobile /></>;
-  if (kind === "evaluation") return <><EvaluationSvg mobile={false} /><EvaluationSvg mobile /></>;
-  if (kind === "document") return <><DocumentSvg mobile={false} /><DocumentSvg mobile /></>;
-  return <><LayerSvg mobile={false} /><LayerSvg mobile /></>;
-}
-
-export function TechnologyMotion({ kind }: { kind: TechnologyMotionKind }) {
+export function TechnologyMotion({ kind, language }: { kind: TechnologyMotionKind; language: Language }) {
   return (
     <ViewportMotion
       activeClassName="is-active"
@@ -685,7 +439,7 @@ export function TechnologyMotion({ kind }: { kind: TechnologyMotionKind }) {
       once
       threshold={0.14}
     >
-      <DiagramPair kind={kind} />
+      <DiagramPair kind={kind} language={language} />
     </ViewportMotion>
   );
 }

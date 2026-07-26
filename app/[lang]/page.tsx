@@ -84,7 +84,7 @@ export default async function LanguageHome({ params }: { params: LanguageRoutePa
         name: seo.title,
         description: seo.description,
         inLanguage: seo.language,
-        dateModified: "2026-07-20",
+        dateModified: "2026-07-26",
         isPartOf: { "@id": `${SITE_ORIGIN}/#website` },
         about: { "@id": `${SITE_ORIGIN}/#organization` },
         primaryEntity: { "@id": `${SITE_ORIGIN}/#organization` },
@@ -100,8 +100,8 @@ export default async function LanguageHome({ params }: { params: LanguageRoutePa
         operatingSystem: "Web",
         description:
           lang === "ko"
-            ? "의료인의 질문을 맥락에 맞는 근거와 다음 행동으로 연결하는 바이오레의 의료 AI 워크스페이스입니다."
-            : "Viore's medical AI workspace connecting clinical questions to contextual evidence and next actions.",
+            ? "의료인의 질문, 근거, 문서와 도구를 하나의 흐름으로 연결하는 바이오레의 AI Medical Workspace입니다."
+            : "Viore's AI Medical Workspace connecting clinical questions, evidence, documents, and tools in one flow.",
         author: { "@id": `${SITE_ORIGIN}/#organization` },
       },
     ],

@@ -7,10 +7,10 @@
 - 기술·제품·회사 소개를 수정하기 전에
   [`.viore/architecture-contract.md`](.viore/architecture-contract.md)의
   `public-safe` 계약을 읽는다.
-- 현재 계약 버전은 `2026-07-26.1`이며 내부 단일 진실 원본은 비공개
+- 현재 계약 버전은 `2026-07-26.2`이며 내부 단일 진실 원본은 비공개
   `viore-alpha/viore-architecture` 저장소다.
-- 공개 카피는 구현, 통합 진행, 설계, 계획 상태를 반드시 구분한다.
-- AlphaImage는 계획된 기술 경계, AlphaLayer는 설계 단계 아키텍처로 표현한다.
+- 공개 카피는 저장소 구현, 제품 통합, 배포와 운영 상태를 서로 섞지 않는다.
+- AlphaImage는 계획된 기술 경계로 표현한다.
 - AlphaDoc Engine을 자체 LLM 또는 검증되지 않은 범용 provider platform으로
   표현하지 않는다.
 - 공급자, 모델, prompt, routing, token, 평가 임계값과 내부 보안 경계를 공개하지

@@ -53,9 +53,9 @@ const communityCopy = {
     },
   },
   en: {
-    aria: "An iPhone demo of the AlphaDocs community moving through photo posts, anonymous conversations, and a poll",
+    aria: "An iPhone demo of the Alphadocs community moving through photo posts, anonymous conversations, and a poll",
     filter: "Hot posts",
-    panel: "AlphaDocs",
+    panel: "Alphadocs",
     posts: {
       photo: {
         author: "LatteAt2AM",

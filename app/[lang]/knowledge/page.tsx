@@ -18,8 +18,8 @@ export async function generateMetadata({ params }: { params: KnowledgeRouteParam
     lang,
     title: "Knowledge — Viore",
     description: lang === "ko"
-      ? "실시간으로 채워지는 논문 라이브러리. 알파닥 논문 DB에서 신규 의학 논문과 한국어 브리프를 확인하세요."
-      : "A living literature library with newly published medical papers and Korean briefs from the Alphadoc literature database.",
+      ? "실시간으로 채워지는 문헌 라이브러리. AlphaEvidence DB에서 신규 의학 논문과 한국어 브리프를 확인하세요."
+      : "A living literature library with newly published medical papers and Korean briefs from AlphaEvidence DB.",
     path: "/knowledge",
   });
 }

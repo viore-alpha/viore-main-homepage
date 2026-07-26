@@ -40,6 +40,7 @@ export const SEO_KEYWORDS = [
   "Medical OS",
   "알파닥",
   "Alphadoc",
+  "AI Medical Workspace",
   "AlphaDoc Engine",
   "AlphaEvidence",
 ];

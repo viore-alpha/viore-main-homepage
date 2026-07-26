@@ -176,7 +176,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "누적 공개 국내외 가이드라인·지침 문헌", ariaLabel: "누적 공개 국내외 가이드라인과 지침 문헌 9,476건 이상" },
       ],
       efficiency: {
-        title: "Alphadoc\nAI Workspace",
+        title: "Alphadoc\nAI Medical Workspace",
         context: "의료 현장은 수많은 정보와 시스템 사이를 끊임없이 오갑니다.",
         repetition: "기록하고, 계산하고, 검색하고, 확인하는 반복적인 과정은 의료인의 시간을 빼앗습니다.",
         product: "알파닥",
@@ -201,7 +201,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       eyebrow: "TECHNOLOGY · 01",
       title: "AlphaDoc Engine",
       lead: "의료의 질문을 맥락에 맞는 근거와 다음 행동으로 연결하는 바이오레의 핵심 지능입니다.",
-      status: "CORE INTELLIGENCE",
+      status: "DEVELOPED & INTEGRATED",
       statement: "Medical Intelligence Orchestration",
       items: [
         { index: "01", title: "Understand context", body: "의료인의 질문을 진료, 문서와 지식 탐색이라는 실제 업무 맥락 안에서 이해합니다." },
@@ -214,7 +214,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       eyebrow: "TECHNOLOGY · 02",
       title: "AlphaEvidence",
       lead: "흩어진 의료 근거를 출처와 맥락, 변화가 살아 있는 검토 가능한 구조로 연결합니다.",
-      status: "EVIDENCE FOUNDATION",
+      status: "DEVELOPED & INTEGRATED",
       statement: "근거가 판단으로 이어지도록.",
       items: [
         { index: "01", title: "Source context", body: "논문과 지침을 단순히 모으지 않고 출처, 시점과 사용 맥락을 함께 보존합니다." },
@@ -226,13 +226,13 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       kind: "technology",
       eyebrow: "TECHNOLOGY · 03",
       title: "AlphaDocument",
-      lead: "의료의 맥락을 잃지 않고 기록과 서류를 구조화된 검토 흐름으로 이어갑니다.",
-      status: "DOCUMENT INTELLIGENCE",
-      statement: "맥락은 이어지고, 문서는 검토 가능하게.",
+      lead: "다양한 디지털 문서를 구조와 출처가 보존된 재사용 가능한 artifact로 바꿉니다.",
+      status: "DEVELOPED & INTEGRATED",
+      statement: "문서는 한 번 읽히고, 지식은 계속 이어집니다.",
       items: [
-        { index: "01", title: "Context continuity", body: "질문과 업무에서 형성된 맥락이 문서 작성 단계에서 끊기지 않도록 연결합니다." },
-        { index: "02", title: "Structured drafting", body: "진료기록과 의료 서류의 목적에 맞는 구조 안에서 검토 가능한 초안을 만듭니다." },
-        { index: "03", title: "Human review", body: "자동 완결보다 의료인이 확인하고 수정한 뒤 사용할 수 있는 문서 흐름을 우선합니다." },
+        { index: "01", title: "Deterministic artifact", body: "같은 문서와 같은 처리 기준에서 같은 결과를 만들 수 있는 Document Artifact를 생성합니다." },
+        { index: "02", title: "Provenance intact", body: "정규화된 내용과 구조, 원문 위치와 무결성 정보를 하나의 artifact에 함께 보존합니다." },
+        { index: "03", title: "Reusable knowledge", body: "AlphaDoc Engine과 AlphaEvidence가 문서 지식을 각자의 목적에 맞게 다시 활용할 수 있게 합니다." },
       ],
     },
     alphadoc: {
@@ -240,7 +240,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       eyebrow: "PRODUCT",
       title: "Alphadoc",
       lead: "질문에서 근거로, 근거에서 문서와 지식으로. 알파닥은 의료인의 일을 하나의 흐름으로 연결합니다.",
-      status: "MEDICAL WORKSPACE",
+      status: "AI MEDICAL WORKSPACE",
       statement: "하나의 질문이, 하나의 흐름이 됩니다.",
       items: [
         { index: "01", title: "질문과 임상 맥락", body: "알파닥 엔진과 대화하며 의료 질문을 정리하고 필요한 업무를 시작합니다." },
@@ -301,7 +301,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         { kind: "guidelines", value: 9476, label: "Korean & Global Clinical Guidelines", caption: "Current visible guideline corpus", ariaLabel: "More than 9,476 visible Korean and global clinical guidelines" },
       ],
       efficiency: {
-        title: "Alphadoc\nAI Workspace",
+        title: "Alphadoc\nAI Medical Workspace",
         context: "Medical professionals constantly move between countless sources of information and systems.",
         repetition: "Repetitive recording, calculating, searching, and checking takes time away from medical professionals.",
         product: "Alphadoc",
@@ -322,7 +322,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       items: [],
     },
     "alphadoc-engine": {
-      kind: "technology", eyebrow: "TECHNOLOGY · 01", title: "AlphaDoc Engine", lead: "Viore's core intelligence connecting medical questions to contextual evidence and next actions.", status: "CORE INTELLIGENCE", statement: "Medical Intelligence Orchestration",
+      kind: "technology", eyebrow: "TECHNOLOGY · 01", title: "AlphaDoc Engine", lead: "Viore's core intelligence connecting medical questions to contextual evidence and next actions.", status: "DEVELOPED & INTEGRATED", statement: "Medical Intelligence Orchestration",
       items: [
         { index: "01", title: "Understand context", body: "Understands a medical question within the actual context of care, documents, and knowledge work." },
         { index: "02", title: "Converge evidence", body: "Connects relevant literature and current guidelines in a form that can be reviewed." },
@@ -330,7 +330,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       ],
     },
     alphaevidence: {
-      kind: "technology", eyebrow: "TECHNOLOGY · 02", title: "AlphaEvidence", lead: "Connects fragmented medical evidence into a reviewable structure with source, context, and change intact.", status: "EVIDENCE FOUNDATION", statement: "From evidence to judgment.",
+      kind: "technology", eyebrow: "TECHNOLOGY · 02", title: "AlphaEvidence", lead: "Connects fragmented medical evidence into a reviewable structure with source, context, and change intact.", status: "DEVELOPED & INTEGRATED", statement: "From evidence to judgment.",
       items: [
         { index: "01", title: "Source context", body: "Preserves provenance, timing, and context instead of treating papers and guidelines as an undifferentiated collection." },
         { index: "02", title: "Evidence linkage", body: "Connects a medical question and judgment to evidence that supports it or offers a different interpretation." },
@@ -338,15 +338,15 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
       ],
     },
     alphadocument: {
-      kind: "technology", eyebrow: "TECHNOLOGY · 03", title: "AlphaDocument", lead: "Carries medical context into structured, reviewable records and documents without breaking the flow of work.", status: "DOCUMENT INTELLIGENCE", statement: "Context continues. Documents stay reviewable.",
+      kind: "technology", eyebrow: "TECHNOLOGY · 03", title: "AlphaDocument", lead: "Turns digital documents into reusable artifacts with structure and provenance intact.", status: "DEVELOPED & INTEGRATED", statement: "Documents are read once. Knowledge keeps moving.",
       items: [
-        { index: "01", title: "Context continuity", body: "Keeps the context formed through questions and work connected through the document stage." },
-        { index: "02", title: "Structured drafting", body: "Creates reviewable drafts within structures suited to clinical records and medical documents." },
-        { index: "03", title: "Human review", body: "Prioritizes a workflow in which medical professionals verify and revise before use." },
+        { index: "01", title: "Deterministic artifact", body: "Creates the same Document Artifact from the same document under the same processing identity." },
+        { index: "02", title: "Provenance intact", body: "Preserves normalized content, structure, source locations, and integrity in one artifact." },
+        { index: "03", title: "Reusable knowledge", body: "Lets AlphaDoc Engine and AlphaEvidence reuse document knowledge for their own purposes." },
       ],
     },
     alphadoc: {
-      kind: "product", eyebrow: "PRODUCT", title: "Alphadoc", lead: "From questions to evidence, and from evidence to documents and knowledge. Alphadoc connects medical work in one continuous flow.", status: "MEDICAL WORKSPACE", statement: "One question becomes one continuous flow.",
+      kind: "product", eyebrow: "PRODUCT", title: "Alphadoc", lead: "From questions to evidence, and from evidence to documents and knowledge. Alphadoc connects medical work in one continuous flow.", status: "AI MEDICAL WORKSPACE", statement: "One question becomes one continuous flow.",
       items: [
         { index: "01", title: "Questions and clinical context", body: "Work with AlphaDoc Engine to clarify a medical question and begin the task in context." },
         { index: "02", title: "Literature and guidelines", body: "Find relevant sources and review the evidence behind a decision." },
