@@ -107,6 +107,7 @@ function CountMetric({
   index,
   started,
   reduceMotion,
+  language,
 }: {
   value: number;
   label: string;
@@ -114,6 +115,7 @@ function CountMetric({
   index: number;
   started: boolean;
   reduceMotion: boolean;
+  language: Language;
 }) {
   const displayValue = useAnimatedNumber(value, started, reduceMotion, index * 75);
 
@@ -124,7 +126,10 @@ function CountMetric({
         <span>{label}</span>
         {label !== english && <small>{english}</small>}
       </th>
-      <td className="alphaevidence-count-value" aria-label={`${label} ${integerFormatter.format(value)}건`}>
+      <td
+        className="alphaevidence-count-value"
+        aria-label={`${label} ${integerFormatter.format(value)}${language === "ko" ? "건" : ""}`}
+      >
         <strong aria-hidden="true">{integerFormatter.format(displayValue)}</strong>
       </td>
     </tr>
@@ -150,11 +155,17 @@ function SnapshotContent({
       <div className="alphaevidence-snapshot-meta">
         <div>
           <span className={`snapshot-state snapshot-state-${state}`}>
-            {state === "stale" ? (ko ? "STALE · 갱신 지연" : "STALE · UPDATE DELAYED") : "LIVE SNAPSHOT"}
+            {state === "stale"
+              ? (ko ? "갱신 지연" : "STALE · UPDATE DELAYED")
+              : (ko ? "실시간 집계" : "LIVE SNAPSHOT")}
           </span>
           <p>{ko ? "데이터 기준" : "Data as of"} {formatDateTime(snapshot.data_as_of)} KST</p>
         </div>
-        <p>{ko ? "생성" : "Generated"} {formatDateTime(snapshot.generated_at)} KST · 10 min cache</p>
+        <p>
+          {ko ? "생성" : "Generated"} {formatDateTime(snapshot.generated_at)} KST
+          {" · "}
+          {ko ? "10분 캐시" : "10 min cache"}
+        </p>
       </div>
 
       <div className="alphaevidence-table-wrap">
@@ -162,8 +173,8 @@ function SnapshotContent({
           <thead>
             <tr>
               <th scope="col">No.</th>
-              <th scope="col">Metric</th>
-              <th scope="col">Live count</th>
+              <th scope="col">{ko ? "항목" : "Metric"}</th>
+              <th scope="col">{ko ? "현재 집계" : "Live count"}</th>
             </tr>
           </thead>
           <tbody>
@@ -176,6 +187,7 @@ function SnapshotContent({
                 index={index}
                 started={started}
                 reduceMotion={reduceMotion}
+                language={language}
               />
             ))}
           </tbody>

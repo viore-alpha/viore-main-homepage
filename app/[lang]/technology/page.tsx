@@ -13,11 +13,11 @@ export const revalidate = 600;
 const metadataCopy = {
   ko: {
     title: "Technology — Viore",
-    description: "AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaLayer가 의료 근거와 문서, AI 실행을 하나의 기술 생태계로 연결하는 방식을 소개합니다.",
+    description: "AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaLayer에서 시작해 새로 개발·검증·통합되는 바이오레의 기술과 연결 구조를 계속 소개합니다.",
   },
   en: {
     title: "Technology — Viore",
-    description: "Explore how AlphaEvidence, AlphaDoc Engine, AlphaDocument, and AlphaLayer connect medical evidence, documents, and AI execution into one technology constellation.",
+    description: "Viore's Technology Journal begins with AlphaEvidence, AlphaDoc Engine, AlphaDocument, and AlphaLayer, and continues to document newly developed, validated, and integrated technologies.",
   },
 } as const;
 
@@ -39,7 +39,7 @@ const techArticles = {
     {
       id: "technology-alphaevidence",
       headline: "AlphaEvidence — Evidence Foundation",
-      description: "AlphaEvidence DB를 중심으로 출처, 변화, 이용 맥락과 품질이 함께 연결되는 Evidence Foundation을 소개합니다.",
+      description: "AlphaEvidence DB를 데이터 계층으로 삼아 출처, 변화, 이용 맥락과 품질을 검토 가능한 근거 계보로 연결하는 Evidence Foundation을 소개합니다.",
       about: ["Evidence Foundation", "AlphaEvidence DB", "medical evidence provenance"],
     },
     {
@@ -57,7 +57,7 @@ const techArticles = {
     {
       id: "technology-alphalayer",
       headline: "AlphaLayer — Protected Inference Gateway",
-      description: "업무 목적, 정보 최소화, 외부 실행, 응답 무결성과 실행 기록을 하나의 보호 경계로 연결하는 기술을 소개합니다.",
+      description: "업무 목적, 정보 최소화, 조건을 충족한 외부 실행, 응답 무결성과 실행 기록을 하나의 보호 경계로 연결하는 기술을 소개합니다.",
       about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
     },
   ],
@@ -65,7 +65,7 @@ const techArticles = {
     {
       id: "technology-alphaevidence",
       headline: "AlphaEvidence — Evidence Foundation",
-      description: "Explore the Evidence Foundation connecting source, change, rights context, and quality around AlphaEvidence DB.",
+      description: "Explore the Evidence Foundation that uses AlphaEvidence DB as its data layer to connect source, change, rights context, and quality into a reviewable evidence lineage.",
       about: ["Evidence Foundation", "AlphaEvidence DB", "medical evidence provenance"],
     },
     {
@@ -83,7 +83,7 @@ const techArticles = {
     {
       id: "technology-alphalayer",
       headline: "AlphaLayer — Protected Inference Gateway",
-      description: "Explore the protected boundary connecting purpose, minimization, external execution, response integrity, and execution evidence.",
+      description: "Explore the protected boundary connecting purpose, minimization, condition-governed external execution, response integrity, and execution evidence.",
       about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
     },
   ],
@@ -95,20 +95,33 @@ export default async function TechnologyRoute({ params }: { params: TechnologyRo
   const snapshotResult = await getAlphaEvidencePublicSnapshot();
   const pageUrl = `https://vioreai.com/${lang}/technology`;
   const articles = techArticles[lang];
+  const inLanguage = lang === "ko" ? "ko-KR" : "en-US";
+  const articleNodes = articles.map((article) => ({
+    "@type": "TechArticle",
+    "@id": `${pageUrl}#${article.id}`,
+    headline: article.headline,
+    description: article.description,
+    datePublished: "2026-07-21",
+    dateModified: "2026-07-26",
+    about: article.about,
+    isPartOf: { "@type": "CollectionPage", "@id": pageUrl, name: "Viore Technology Journal" },
+    author: { "@type": "Organization", name: "Viore Inc.", url: "https://vioreai.com" },
+    inLanguage,
+  }));
   const jsonLd = {
     "@context": "https://schema.org",
-    "@graph": articles.map((article) => ({
-      "@type": "TechArticle",
-      "@id": `${pageUrl}#${article.id}`,
-      headline: article.headline,
-      description: article.description,
-      datePublished: "2026-07-21",
-      dateModified: "2026-07-26",
-      about: article.about,
-      isPartOf: { "@type": "CollectionPage", "@id": pageUrl, name: "Viore Technology" },
-      author: { "@type": "Organization", name: "Viore Inc.", url: "https://vioreai.com" },
-      inLanguage: lang === "ko" ? "ko-KR" : "en-US",
-    })),
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": pageUrl,
+        name: "Viore Technology Journal",
+        description: metadataCopy[lang].description,
+        dateModified: "2026-07-26",
+        inLanguage,
+        hasPart: articles.map((article) => ({ "@id": `${pageUrl}#${article.id}` })),
+      },
+      ...articleNodes,
+    ],
   };
 
   return (
