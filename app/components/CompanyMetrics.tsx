@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import type { CompanyMetric } from "@/app/site-content";
+import type { CompanyMetric, Language } from "@/app/site-content";
 
 const numberFormatter = new Intl.NumberFormat("en-US");
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
@@ -80,10 +80,12 @@ function Metric({
 
 export function CompanyMetrics({
   metrics,
+  language,
   source = "snapshot",
   generatedAt,
 }: {
   metrics: CompanyMetric[];
+  language: Language;
   source?: "live" | "snapshot";
   generatedAt?: string | null;
 }) {
@@ -93,6 +95,17 @@ export function CompanyMetrics({
   const supportsIntersectionObserver =
     typeof window !== "undefined" && "IntersectionObserver" in window;
   const countingStarted = started || reduceMotion || !supportsIntersectionObserver;
+  const formattedGeneratedAt = generatedAt
+    ? new Intl.DateTimeFormat(language === "ko" ? "ko-KR" : "en-US", {
+      timeZone: "Asia/Seoul",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: source === "live" ? "2-digit" : undefined,
+      minute: source === "live" ? "2-digit" : undefined,
+      hour12: false,
+    }).format(new Date(generatedAt))
+    : null;
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -119,6 +132,17 @@ export function CompanyMetrics({
       data-metrics-source={source}
       data-metrics-generated-at={generatedAt ?? undefined}
     >
+      {formattedGeneratedAt && (
+        <p className="company-metrics-asof">
+          {language === "ko"
+            ? source === "live"
+              ? `데이터 기준 ${formattedGeneratedAt} KST · 공개 집계`
+              : `검증 스냅샷 게시 ${formattedGeneratedAt} KST · 실시간 갱신 확인 중`
+            : source === "live"
+              ? `Data as of ${formattedGeneratedAt} KST · Public aggregate`
+              : `Verified snapshot published ${formattedGeneratedAt} KST · Live refresh pending`}
+        </p>
+      )}
       {metrics.map((metric, index) => (
         <Metric
           key={`${metric.label}-${metric.value}`}

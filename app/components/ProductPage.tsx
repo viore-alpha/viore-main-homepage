@@ -17,8 +17,8 @@ const productCopy = {
       ["alphadocs", "알파닥스"],
     ],
     hero: {
-      titleBrand: "Alphadoc,",
-      titleRest: "From Workstation to AI Workspace",
+      titleBrand: "알파닥,",
+      titleRest: "의료 업무를 하나의 AI Workspace로",
       lead: "임상 질문부터 근거 확인, 문서 작성과 번역까지.\n의료인의 업무를 앱의 형태로 이어주는 공간.",
       primary: "알파닥 시작하기",
       visualLabel: "복합 산-염기 질문이 입력되고 전송된 뒤 알파닥 엔진의 근거 기반 답변으로 전환되는 애니메이션",
@@ -44,12 +44,12 @@ const productCopy = {
       ] satisfies AlphadocFeatureItem[],
     },
     alphadocs: {
-      title: "소통의 모든 순간을,\n가장 트렌디하고 안전하게",
-      body: "알파닥스는 당신이 원하는 어떤 모습으로든 자유롭게 이어지는 트렌디한 프라이빗 커뮤니티입니다. 강력한 프라이버시 위에 펼쳐지는 다채로운 소통을 경험해 보세요.",
+      title: "소통의 모든 순간을,\n더 직관적이고 책임 있게",
+      body: "알파닥스는 알파닥 계정으로 참여하는 커뮤니티입니다. 모바일 중심의 흐름과 참여 범위를 고려한 설계로 의료인의 지식과 경험이 자연스럽게 이어지도록 돕습니다.",
       items: [
-        ["Intuitive UI", "모바일 환경에 완벽히 최적화된 인터페이스를 제공합니다. 매일 쓰던 앱처럼 직관적이고 매끄러운 디자인 덕분에, 별도의 적응 과정 없이 바로 대화에 몰입할 수 있습니다."],
-        ["Verified Access", "철저하게 인증된 알파닥 유저만 참여할 수 있는 프라이빗 커뮤니티입니다. 불필요한 외부 시선에서 벗어나, 믿을 수 있는 사람들과 오롯이 안전한 담소를 나눠보세요."],
-        ["AlphaEncryption", "바이오레에서 독자 개발한 암호화 기술이 오가는 모든 메시지와 데이터를 철저하게 보호합니다. 당신의 소중한 대화는 오직 당신의 커뮤니티 안에서만 안전하게 머뭅니다."],
+        ["Intuitive UI", "모바일 환경에 맞춘 인터페이스로 익숙한 앱처럼 자연스럽게 대화와 콘텐츠를 살펴볼 수 있습니다."],
+        ["Account-based access", "알파닥 계정을 바탕으로 참여하며, 구체적인 참여 조건과 공개 범위는 알파닥의 현재 정책과 제공 기능에 따릅니다."],
+        ["Protection-aware design", "접근 권한과 공개 범위를 구분하는 원칙을 제품 설계에 반영합니다. 실제 데이터 처리와 보호 범위에는 알파닥의 최신 약관과 개인정보처리방침이 적용됩니다."],
       ],
     },
     cta: {
@@ -88,12 +88,12 @@ const productCopy = {
       ] satisfies AlphadocFeatureItem[],
     },
     alphadocs: {
-      title: "Every moment of connection,\nmore current and more secure",
-      body: "Alphadocs is a private community that connects freely in whatever form you choose. Discover vibrant conversation built on robust privacy.",
+      title: "Every moment of connection,\nmore intuitive and considered",
+      body: "Alphadocs is a community for Alphadoc account holders, designed around mobile participation and clearly defined sharing boundaries.",
       items: [
-        ["Intuitive UI", "A mobile-first interface feels as intuitive and fluid as the apps you already use, so you can join the conversation without a learning curve."],
-        ["Verified Access", "Only verified Alphadoc users can join this private community. Step away from outside attention and talk freely with people you can trust."],
-        ["AlphaEncryption", "Viore's proprietary encryption technology protects every message and piece of data exchanged. Your conversations remain safely within your community."],
+        ["Intuitive UI", "A mobile-first interface makes conversations and shared content easy to follow in a familiar flow."],
+        ["Account-based access", "Participation is connected to an Alphadoc account. Current eligibility and visibility follow the product's active features and policies."],
+        ["Protection-aware design", "Access and sharing boundaries are part of the product design. Alphadoc's current terms and privacy policy define the applicable data-handling and protection scope."],
       ],
     },
     cta: {
@@ -110,19 +110,25 @@ export function ProductPage({ language }: { language: Language }) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
+    "@id": "https://alphadoc.ai/#software",
     name: "Alphadoc",
-    applicationCategory: "AI Medical Workspace",
+    alternateName: "알파닥",
+    applicationCategory: "MedicalApplication",
     operatingSystem: "Web",
-    url: "https://www.alphadoc.ai",
+    url: "https://alphadoc.ai",
     description: language === "ko"
       ? "질문과 근거 탐색, 임상 도구, 진료노트와 문서를 한곳에서 이어주는 AI Medical Workspace"
       : "An AI Medical Workspace connecting questions, evidence, clinical tools, notes, and documents in one place",
-    inLanguage: language,
+    inLanguage: language === "ko" ? "ko-KR" : "en-US",
+    author: { "@id": "https://vioreai.com/#organization" },
   };
 
   return (
     <article className={`alphadoc-product lang-${language}`}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replaceAll("<", "\\u003c") }}
+      />
 
       <section className="ap-hero" id="overview" data-ap-section>
         <div className="ap-hero-copy">
@@ -132,7 +138,7 @@ export function ProductPage({ language }: { language: Language }) {
           </h1>
           <p className="ap-hero-lead">{content.hero.lead}</p>
           <div className="ap-hero-actions">
-            <a className="ap-button ap-button-primary" href="https://www.alphadoc.ai" target="_blank" rel="noreferrer">{content.hero.primary}<span aria-hidden="true">↗</span></a>
+            <a className="ap-button ap-button-primary" href="https://alphadoc.ai" target="_blank" rel="noreferrer">{content.hero.primary}<span aria-hidden="true">↗</span></a>
           </div>
         </div>
 
@@ -187,7 +193,7 @@ export function ProductPage({ language }: { language: Language }) {
         <div className="ap-final-copy">
           <h2>{content.cta.title.map((line) => <span key={line}>{line}</span>)}</h2>
           <div className="ap-hero-actions">
-            <a className="ap-button ap-button-primary" href="https://www.alphadoc.ai" target="_blank" rel="noreferrer">{content.cta.primary}<span aria-hidden="true">↗</span></a>
+            <a className="ap-button ap-button-primary" href="https://alphadoc.ai" target="_blank" rel="noreferrer">{content.cta.primary}<span aria-hidden="true">↗</span></a>
             <a className="ap-text-link" href={technologyRouteFor(language)}>{content.cta.secondary}<span aria-hidden="true">→</span></a>
           </div>
         </div>

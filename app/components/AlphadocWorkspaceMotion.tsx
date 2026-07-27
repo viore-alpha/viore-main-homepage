@@ -1,7 +1,7 @@
 import type { Language } from "@/app/site-content";
 import { ViewportMotion } from "@/app/components/ViewportMotion";
 
-const AD_ASSET = "https://www.alphadoc.ai";
+const AD_ASSET = "https://alphadoc.ai";
 const GENERATED_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-chest-pain-night-optimized.webp";
 const GENERATED_SECONDARY_NEWS_IMAGE = "/assets/product/alphadoc/generated/news-antibiotic-review-optimized.webp";
 const GENERATED_COMMUNITY_IMAGE = "/assets/product/alphadoc/generated/community-chest-pain-handoff-optimized.webp";

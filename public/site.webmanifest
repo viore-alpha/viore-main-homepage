@@ -1,7 +1,7 @@
 {
   "name": "바이오레 | Viore",
   "short_name": "Viore",
-  "description": "Viore, Drawing a New Linearity in Medicine.",
+  "description": "의료의 전문성과 시스템을 연결해 새로운 선형을 그리는 주식회사 바이오레 공식 홈페이지",
   "start_url": "/ko",
   "scope": "/",
   "display": "standalone",

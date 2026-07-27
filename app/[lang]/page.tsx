@@ -5,7 +5,7 @@ import {
   HOME_SEO,
   SITE_NAME,
   SITE_ORIGIN,
-  SOCIAL_IMAGE_PATH,
+  SOCIAL_IMAGE_PATHS,
   SQUARE_LOGO_PATH,
   absoluteUrl,
   buildPageMetadata,
@@ -28,6 +28,7 @@ export default async function LanguageHome({ params }: { params: LanguageRoutePa
   if (!isLanguage(lang)) notFound();
   const seo = HOME_SEO[lang];
   const pageUrl = absoluteUrl(`/${lang}`);
+  const socialImagePath = SOCIAL_IMAGE_PATHS[lang];
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -46,7 +47,7 @@ export default async function LanguageHome({ params }: { params: LanguageRoutePa
         },
         image: {
           "@type": "ImageObject",
-          url: absoluteUrl(SOCIAL_IMAGE_PATH),
+          url: absoluteUrl(socialImagePath),
           width: 1200,
           height: 630,
         },
@@ -84,11 +85,11 @@ export default async function LanguageHome({ params }: { params: LanguageRoutePa
         name: seo.title,
         description: seo.description,
         inLanguage: seo.language,
-        dateModified: "2026-07-26",
+        dateModified: "2026-07-27",
         isPartOf: { "@id": `${SITE_ORIGIN}/#website` },
         about: { "@id": `${SITE_ORIGIN}/#organization` },
         primaryEntity: { "@id": `${SITE_ORIGIN}/#organization` },
-        image: absoluteUrl(SOCIAL_IMAGE_PATH),
+        image: absoluteUrl(socialImagePath),
       },
       {
         "@type": "SoftwareApplication",

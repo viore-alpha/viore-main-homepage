@@ -33,7 +33,7 @@ export function KnowledgePage({
     <article className="knowledge-page" data-knowledge-state={result.state}>
       <section className="knowledge-hero" aria-labelledby="knowledge-title">
         <div className="knowledge-shell knowledge-hero-inner">
-          <h1 id="knowledge-title">Knowledge</h1>
+          <h1 id="knowledge-title">{ko ? "의료 지식과 근거" : "Medical knowledge, kept current"}</h1>
           <p className="knowledge-lead">
             {ko ? "실시간으로 채워지는 논문 라이브러리." : "A living library of newly published medical literature."}
           </p>
@@ -64,7 +64,7 @@ export function KnowledgePage({
 
           <footer className="knowledge-library-foot">
             <p>{ko ? "더 깊은 검색과 원문 탐색은 알파닥에서 이어집니다." : "Continue with deeper search and source review in Alphadoc."}</p>
-            <a href="https://www.alphadoc.ai" target="_blank" rel="noopener noreferrer">
+            <a href="https://alphadoc.ai" target="_blank" rel="noopener noreferrer">
               <span>{ko ? "알파닥에서 논문 찾기" : "Search in Alphadoc"}</span>
               <i aria-hidden="true">↗</i>
             </a>

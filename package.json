@@ -10,7 +10,9 @@
     "build": "next build",
     "start": "next start",
     "test": "npm run build && node scripts/test-rendered.mjs",
-    "lint": "eslint . --ignore-pattern .next --ignore-pattern dist"
+    "lint": "eslint . --ignore-pattern .next --ignore-pattern dist",
+    "seo:social-cards": "node scripts/generate-social-cards.mjs",
+    "seo:indexnow": "node scripts/submit-indexnow.mjs"
   },
   "dependencies": {
     "next": "16.2.12",
