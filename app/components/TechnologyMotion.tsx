@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { ViewportMotion } from "@/app/components/ViewportMotion";
 import type { Language } from "@/app/site-content";
 
-export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "image" | "layer";
+export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "image" | "layer" | "seal";
 type DiagramTone = "ink" | "blue" | "red" | "muted";
 type DiagramLines = string | readonly string[];
 
@@ -32,6 +32,10 @@ const diagramCopy = {
       title: "AlphaLayer 보호 실행 경계",
       description: "선택된 보호 텍스트 경로에서 목적과 요청 조건, 정보 최소화, 정책 변환, 응답 무결성과 원문 없는 최소 실행 기록을 하나의 경계로 연결합니다.",
     },
+    seal: {
+      title: "AlphaSeal 대화 봉인 구조",
+      description: "대화별 키를 참여자 신원 키로 봉인해 두 사람의 기기에서만 열리게 하고, 서버에는 읽을 수 없는 암호문과 최소 전달 정보만 남깁니다. 사용자만 가진 키로 봉인 백업해 기기 이전 시 지난 대화를 복원합니다.",
+    },
   },
   en: {
     overview: {
@@ -57,6 +61,10 @@ const diagramCopy = {
     layer: {
       title: "AlphaLayer protected execution boundary",
       description: "On selected protected text paths, purpose and request conditions, minimization, policy transformation, response integrity, and a source-free minimal execution record remain connected through one boundary.",
+    },
+    seal: {
+      title: "AlphaSeal sealed-conversation structure",
+      description: "Each conversation key is sealed to the participants' identity keys so it opens only on the two devices, leaving the server ciphertext and minimal delivery data. A backup sealed under a user-held key restores past conversations on a new device.",
     },
   },
 } as const;
@@ -1439,7 +1447,84 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
   );
 }
 
+function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-seal-${language}-${mobile ? "mobile" : "desktop"}`;
+
+  if (mobile) {
+    return (
+      <DiagramSvg id={id} kind="seal" language={language} mobile width={420} height={980}>
+        <Boundary x={22} y={24} width={376} height={170} label="SENDER · END TO END" tone="ink" step={1} />
+        <PlateModule x={40} y={60} width={160} height={36} label="Compose" tone="blue" step={2} center />
+        <PlateModule x={218} y={56} width={162} height={44} label={["Seal with", "recipient key"]} tone="red" step={3} center />
+        <TokenStrip x={149} y={150} count={8} tone="blue" step={4} />
+
+        <Boundary x={20} y={214} width={380} height={330} label="SERVER · CANNOT READ" tone="red" step={5} emphasized />
+        <PlateModule x={40} y={254} width={340} height={38} label="Encrypted Envelope" tone="red" step={6} center />
+        <PlateModule x={40} y={304} width={340} height={44} label={["Bound to conversation,", "sender & message order"]} tone="red" step={6} center />
+        <Boundary x={40} y={362} width={340} height={92} label="CIPHERTEXT ONLY" tone="red" step={7} solid />
+        <PlateModule x={58} y={398} width={304} height={38} label="Sealed message store" tone="red" step={8} center />
+        <PlateModule x={40} y={478} width={340} height={38} label="Delivery metadata (minimal)" tone="ink" step={9} center />
+
+        <Boundary x={22} y={566} width={376} height={150} label="RECIPIENT" tone="ink" step={10} />
+        <PlateModule x={40} y={602} width={160} height={44} label={["Open with", "own key"]} tone="red" step={11} center />
+        <PlateModule x={218} y={606} width={162} height={36} label="Read & verify" tone="blue" step={11} center />
+        <TokenStrip x={149} y={686} count={8} tone="blue" step={12} />
+
+        <Boundary x={22} y={738} width={376} height={214} label="USER-KEY BACKUP" tone="blue" step={13} />
+        <PlateModule x={42} y={778} width={336} height={38} label="Sealed key backup" tone="blue" step={14} center />
+        <PlateModule x={42} y={830} width={160} height={44} label={["Biometric passkey", "or recovery code"]} tone="blue" step={14} center />
+        <PlateModule x={218} y={830} width={160} height={44} label="New-device restore" tone="blue" step={14} center strong />
+        <MicroLabel x={210} y={922} anchor="middle" tone="muted" step={15}>past messages restored</MicroLabel>
+
+        <Link d="M 210 194 V 214" id={id} tone="blue" step={5} />
+        <Link d="M 210 544 V 566" id={id} tone="blue" step={10} />
+        <Link d="M 210 738 V 716" id={id} tone="blue" step={15} dashed startArrow />
+      </DiagramSvg>
+    );
+  }
+
+  return (
+    <DiagramSvg id={id} kind="seal" language={language} mobile={false} width={960} height={600}>
+      <Boundary x={24} y={70} width={210} height={300} label="SENDER" tone="ink" step={1} />
+      <PlateModule x={40} y={110} width={178} height={40} label="Compose" tone="blue" step={2} center />
+      <PlateModule x={40} y={168} width={178} height={48} label={["Seal with", "recipient key"]} tone="red" step={3} center />
+      <TokenStrip x={80} y={252} count={6} tone="blue" step={4} />
+      <MicroLabel x={129} y={306} anchor="middle" tone="muted" step={4}>sealed on device</MicroLabel>
+
+      <Boundary x={270} y={44} width={330} height={360} label="SERVER" tone="red" step={5} emphasized />
+      <MicroLabel x={435} y={78} anchor="middle" tone="red" step={5}>CANNOT READ CONTENT</MicroLabel>
+      <PlateModule x={294} y={92} width={282} height={38} label="Encrypted Envelope" tone="red" step={6} center />
+      <PlateModule x={294} y={148} width={282} height={46} label={["Bound to conversation,", "sender & message order"]} tone="red" step={6} center />
+      <Boundary x={294} y={214} width={282} height={96} label="CIPHERTEXT ONLY" tone="red" step={7} solid />
+      <PlateModule x={312} y={248} width={246} height={40} label="Sealed message store" tone="red" step={8} center />
+      <PlateModule x={294} y={330} width={282} height={40} label="Delivery metadata (minimal)" tone="ink" step={9} center />
+
+      <Boundary x={636} y={70} width={210} height={300} label="RECIPIENT" tone="ink" step={10} />
+      <PlateModule x={652} y={110} width={178} height={48} label={["Open with", "own key"]} tone="red" step={11} center />
+      <PlateModule x={652} y={176} width={178} height={40} label="Read & verify" tone="blue" step={11} center />
+      <TokenStrip x={690} y={252} count={6} tone="blue" step={12} />
+      <MicroLabel x={741} y={306} anchor="middle" tone="muted" step={12}>opens only here</MicroLabel>
+
+      <Boundary x={120} y={440} width={720} height={120} label="USER-KEY BACKUP" tone="blue" step={13} />
+      <PlateModule x={150} y={482} width={180} height={44} label="Sealed key backup" tone="blue" step={14} center />
+      <PlateModule x={360} y={482} width={200} height={44} label={["Biometric passkey", "or recovery code"]} tone="blue" step={14} center />
+      <PlateModule x={600} y={482} width={200} height={44} label="New-device restore" tone="blue" step={14} center strong />
+      <MicroLabel x={480} y={548} anchor="middle" tone="muted" step={15}>past messages restored across devices</MicroLabel>
+
+      <Link d="M 234 188 H 270" id={id} tone="blue" step={5} />
+      <Link d="M 600 154 H 636" id={id} tone="blue" step={10} />
+      <Link d="M 330 504 H 360" id={id} tone="ink" step={15} />
+      <Link d="M 560 504 H 600" id={id} tone="ink" step={15} />
+      <Link d="M 129 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
+      <Link d="M 741 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
+    </DiagramSvg>
+  );
+}
+
 function DiagramPair({ kind, language }: { kind: TechnologyMotionKind; language: Language }) {
+  if (kind === "seal") {
+    return <><SealSvg language={language} mobile={false} /><SealSvg language={language} mobile /></>;
+  }
   if (kind === "overview") {
     return <><OverviewSvg language={language} mobile={false} /><OverviewSvg language={language} mobile /></>;
   }
