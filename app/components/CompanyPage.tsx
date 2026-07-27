@@ -62,6 +62,7 @@ export async function CompanyPage({ language }: { language: Language }) {
               <h2 id="company-knowledge-title">{page.metricsTitle}</h2>
               <CompanyMetrics
                 metrics={companyMetrics?.metrics ?? page.metrics}
+                language={language}
                 source={companyMetrics?.source}
                 generatedAt={companyMetrics?.generatedAt}
               />

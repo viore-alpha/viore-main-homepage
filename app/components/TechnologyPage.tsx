@@ -4,24 +4,34 @@ import { TechnologyArticleNav } from "@/app/components/TechnologyArticleNav";
 import { TechnologyMotion, type TechnologyMotionKind } from "@/app/components/TechnologyMotion";
 import type { Language } from "@/app/site-content";
 
-type TechnologyStatus = "DEVELOPED & INTEGRATED";
+type TechnologyStatus =
+  | "implemented-foundation"
+  | "implemented-capability"
+  | "integration-in-progress"
+  | "selected-path-verified";
 
-const VERIFIED_DATE = "2026-07-26";
+const VERIFIED_DATE = "2026-07-27";
 
 const sharedCopy = {
   ko: {
     journal: "Journal",
     published: "2026년 7월 21일",
-    updated: "2026년 7월 26일 업데이트",
+    updated: "2026년 7월 27일 업데이트",
     hero: <>우리만의 선형을<br />만드는 과정</>,
     author: "Viore Team",
     status: "상태",
     verified: "최근 검증",
     figure: "그림",
+    statuses: {
+      "implemented-foundation": "구현된 기반",
+      "implemented-capability": "구현된 기능",
+      "integration-in-progress": "구현 · 통합 진행 중",
+      "selected-path-verified": "선택 경로 검증",
+    },
     intro: [
       "의료 AI는 하나의 거대한 모델만으로 완성되지 않습니다. 좋은 근거가 어디에서 왔는지 기억하는 기반, 문서를 다시 쓸 수 있는 지식으로 바꾸는 기술, 업무의 목적에 따라 실행을 조율하는 지능, 그리고 외부 실행을 보호하는 경계가 함께 움직여야 합니다.",
-      "바이오레의 기술은 앞에서 뒤로 한 번 흘러가는 파이프라인이 아닙니다. 현재 공개된 AlphaEvidence, AlphaDocument, AlphaLayer는 각자의 책임을 지키면서 AlphaDoc Engine과 계속 정보를 주고받습니다. Alphadoc은 이 기술들이 의료인의 실제 업무 안에서 만나는 공간입니다.",
-      "각 기술은 독립적으로 발전하면서 함께 작동할 때 더 큰 가치를 만듭니다. 새로운 근거는 지식의 맥락을 넓히고, 새로운 문서는 다시 활용할 수 있는 아티팩트가 됩니다. 새로운 AI가 등장해도 실행 경계는 유지됩니다.",
+      "현재 AlphaEvidence와 AlphaDoc Engine은 각각 구현된 기반과 기능입니다. AlphaDocument는 엔진 구현을 마치고 제품 통합을 진행하고 있으며, AlphaLayer는 선택된 보호 텍스트 경로의 런타임을 검증했습니다. 바이오레는 이 상태를 하나의 ‘완성’으로 묶지 않고 구분해 공개합니다.",
+      "각 기술은 책임을 분리한 채 연결됩니다. 새로운 근거는 지식의 맥락을 넓히고, 문서는 재사용 가능한 아티팩트가 됩니다. 외부 AI 실행이 필요한 선택 경로에는 독립된 보호 경계를 적용할 수 있습니다.",
       "이 구조는 지금 소개하는 기술로 끝나지 않습니다. 바이오레가 새로운 기술을 개발하고 검증해 제품에 통합할 때마다, 그 역할과 연결 방식도 이 Technology Journal에 계속 더해집니다.",
     ],
     quote: {
@@ -33,16 +43,22 @@ const sharedCopy = {
   en: {
     journal: "Journal",
     published: "July 21, 2026",
-    updated: "Updated July 26, 2026",
+    updated: "Updated July 27, 2026",
     hero: <>How we build<br />our own technology system</>,
     author: "Viore Team",
     status: "Status",
     verified: "Last verified",
     figure: "Figure",
+    statuses: {
+      "implemented-foundation": "IMPLEMENTED FOUNDATION",
+      "implemented-capability": "IMPLEMENTED CAPABILITY",
+      "integration-in-progress": "IMPLEMENTED · INTEGRATION IN PROGRESS",
+      "selected-path-verified": "SELECTED PATH VERIFIED",
+    },
     intro: [
       "Medical AI does not come from one large model alone. It needs a foundation that remembers where evidence came from, technology that turns documents into reusable knowledge, intelligence that orchestrates execution around purpose, and a boundary that protects external execution.",
-      "Viore's technologies do not form a one-way pipeline. The technologies presented today—AlphaEvidence, AlphaDocument, and AlphaLayer—retain distinct responsibilities while continuously interacting with AlphaDoc Engine. Alphadoc is where they meet the real work of medical professionals.",
-      "Each technology advances independently and creates greater value together. New evidence expands the context of knowledge. New documents become reusable artifacts. New AI can emerge while the execution boundary remains consistent.",
+      "AlphaEvidence and AlphaDoc Engine are currently implemented as a foundation and a product capability. AlphaDocument is implemented with product integration in progress. AlphaLayer has a verified runtime for selected protected text paths. Viore reports these states separately rather than presenting them as one completed rollout.",
+      "Each technology keeps a distinct responsibility while connecting through explicit contracts. New evidence expands knowledge context, documents become reusable artifacts, and selected external AI paths can use a separate protection boundary.",
       "The system does not end with the technologies presented here. As Viore develops, validates, and integrates new technologies into its products, their roles and connections will continue to be added to this Technology Journal.",
     ],
     quote: {
@@ -94,13 +110,13 @@ const articleCopy = {
         {
           title: "서로 다른 기술을 하나의 경험으로 오케스트레이션합니다",
           paragraphs: [
-            "AlphaEvidence에서 출처가 연결된 근거를 받고, AlphaDocument의 아티팩트에서 문서 맥락을 읽으며, 외부 AI 실행이 필요할 때는 AlphaLayer의 보호 경계를 사용합니다. 그 결과는 다시 Alphadoc의 앱과 도구, 문서와 검토 흐름으로 이어집니다.",
+            "AlphaEvidence에서 출처가 연결된 근거를 받습니다. 통합되는 문서 업무에는 AlphaDocument 아티팩트를 연결하고, 외부 AI가 필요한 일부 보호 텍스트 경로에는 AlphaLayer 경계를 적용합니다. 각 연결은 구현과 제품 통합 상태를 구분해 확장합니다.",
             "Release Identity는 실행에 사용된 코드와 동작 조건을 구분해 남깁니다. 평가 게이트는 근거의 충실도, 결과의 쓸모와 의료인의 검토 항목을 따로 살핍니다. 여러 기준을 평균 점수 하나로 뭉개지 않고, 무엇이 실행됐는지도 함께 추적합니다.",
           ],
         },
       ],
       figureTitle: "Purpose-defined orchestration",
-      figureCaption: "AlphaDoc Engine은 질문, 근거, 문서, 보호된 AI 실행과 의료인의 검토를 업무 목적에 맞게 조율합니다. 필요한 기술을 선택하고 결과를 다시 제품과 다음 작업에 연결합니다.",
+      figureCaption: "AlphaDoc Engine은 질문, 근거, 문서, 선택된 보호 AI 실행 경로와 사용자 검토를 업무 목적에 맞게 조율합니다. 각 기술의 통합 상태에 따라 결과를 제품과 다음 작업에 연결합니다.",
     },
     document: {
       name: "AlphaDocument",
@@ -117,13 +133,13 @@ const articleCopy = {
         {
           title: "한 번 만든 문서 지식이 여러 기술에서 다시 쓰입니다",
           paragraphs: [
-            "Document Artifact는 특정 화면이나 기능에 묶이지 않습니다. AlphaDoc Engine은 문서 맥락이 필요한 업무에 아티팩트를 활용하고, AlphaEvidence는 디지털 문서에서 들어온 근거의 출처와 구조를 이어받을 수 있습니다.",
-            "출처가 보존된 아티팩트를 여러 업무가 공유하므로 문서를 매번 처음부터 해석할 필요가 없습니다. AlphaDocument는 바이오레의 문서 지식 기반입니다.",
+            "Document Artifact는 특정 화면이나 기능에 묶이지 않는 계약으로 구현되어 있습니다. AlphaDoc Engine과 AlphaEvidence가 문서 맥락과 출처 구조를 재사용하도록 연결하는 제품 통합은 단계적으로 진행하고 있습니다.",
+            "출처가 보존된 하나의 아티팩트를 여러 업무에서 재사용하는 것이 AlphaDocument의 목표입니다. 현재 공개 상태는 엔진 구현과 제품 통합 진행을 분리해 표시합니다.",
           ],
         },
       ],
       figureTitle: "One document, many reusable contexts",
-      figureCaption: "서로 다른 디지털 문서는 AlphaDocument에서 구조와 출처가 보존된 아티팩트가 됩니다. AlphaDoc Engine과 AlphaEvidence는 이 아티팩트를 각자의 목적에 맞게 다시 활용합니다.",
+      figureCaption: "서로 다른 디지털 문서는 AlphaDocument에서 구조와 출처가 보존된 아티팩트가 됩니다. AlphaDoc Engine과 AlphaEvidence가 이를 재사용하도록 연결하는 제품 통합은 진행 중입니다.",
     },
     layer: {
       name: "AlphaLayer",
@@ -134,19 +150,19 @@ const articleCopy = {
           title: "보호 원칙을 실행 구조에 담습니다",
           paragraphs: [
             "의료 AI의 보호는 입력창에서 몇 개의 문자열을 가리는 것으로 끝나지 않습니다. 어떤 업무를 위해 어떤 정보가 필요한지 확인하고, 외부 실행 전후의 경계를 하나의 구조로 통제해야 합니다.",
-            "AlphaLayer는 AlphaDoc Engine과 외부 생성 모델 사이의 실행 경계를 담당하는 Protected Inference Gateway입니다. 등록된 업무 목적과 처리 조건을 확인하고, 필요한 정보만 남긴 요청만 실행 경계를 통과시킵니다. 외부 AI가 바뀌어도 바이오레가 정의한 보호 경계는 유지됩니다.",
+            "AlphaLayer는 AlphaDoc Engine과 외부 생성 모델 사이에 두는 Protected Inference Gateway입니다. 현재 선택된 보호 텍스트 경로에서 등록된 목적과 처리 조건, 정보 최소화가 적용되는 런타임을 검증했습니다.",
           ],
         },
         {
           title: "요청과 응답, 실행의 증거까지 하나의 경계 안에서",
           paragraphs: [
-            "AlphaLayer는 외부로 나가는 요청과 돌아오는 응답을 같은 실행 맥락에 묶습니다. 응답 무결성을 확인하고 어떤 보호 정책 아래 실행됐는지 기록합니다.",
-            "실행 기록에는 원문을 남기지 않고 필요한 최소 정보만 담습니다. AlphaLayer는 바이오레의 AI 기능이 같은 보호 원칙 안에서 확장되도록 받치는 공통 실행 기반입니다.",
+            "검증된 선택 경로에서 AlphaLayer는 외부 요청과 응답을 같은 실행 맥락에 묶고, 적용된 보호 정책과 실행 결과를 확인할 수 있는 최소 기록을 남깁니다.",
+            "이 상태는 전체 서비스 적용, 환자정보 처리 준비 또는 법적 적합성 확인을 의미하지 않습니다. 적용 경로는 별도의 검증과 승인에 따라 단계적으로 넓힙니다.",
           ],
         },
       ],
       figureTitle: "Protection around every execution",
-      figureCaption: "AlphaLayer 안에서 목적 확인, 정보 최소화, 조건을 충족한 외부 실행, 응답 무결성과 실행 기록이 함께 작동합니다. 보호 경계는 요청부터 응답까지 실행 전체를 둘러쌉니다.",
+      figureCaption: "선택된 보호 텍스트 경로에서 목적 확인, 정보 최소화, 외부 실행 통제와 최소 실행 기록이 하나의 런타임 경계로 검증되었습니다.",
     },
   },
   en: {
@@ -189,13 +205,13 @@ const articleCopy = {
         {
           title: "Distinct technologies become one experience",
           paragraphs: [
-            "AlphaDoc Engine receives source-bound evidence from AlphaEvidence, reads document context from AlphaDocument artifacts, and uses AlphaLayer when protected external execution is needed. The result returns to apps, tools, documents, and review inside Alphadoc.",
+            "AlphaDoc Engine receives source-bound evidence from AlphaEvidence. Document workflows can connect to AlphaDocument artifacts as integration progresses, while selected protected text paths can use the AlphaLayer boundary. Each connection expands according to its verified implementation and product-integration state.",
             "Release Identity records the code and behavior conditions used for an execution. Evaluation gates examine evidence fidelity, usefulness, and professional review separately while preserving what was executed.",
           ],
         },
       ],
       figureTitle: "Purpose-defined orchestration",
-      figureCaption: "AlphaDoc Engine orchestrates questions, evidence, documents, protected AI execution, and professional review around the purpose of the work. It selects the technologies needed and connects the result back to the product and the next task.",
+      figureCaption: "AlphaDoc Engine orchestrates questions, evidence, documents, selected protected AI execution paths, and user review around the purpose of the work. Connections expand according to each technology's integration state.",
     },
     document: {
       name: "AlphaDocument",
@@ -212,13 +228,13 @@ const articleCopy = {
         {
           title: "Document knowledge that works across technologies",
           paragraphs: [
-            "A Document Artifact is not tied to one screen or feature. AlphaDoc Engine can use it for document-aware work, while AlphaEvidence can preserve the source and structure of evidence arriving through digital documents.",
-            "Instead of interpreting the same document from scratch every time, Viore technologies share one provenance-carrying artifact. That is why AlphaDocument is more than a parser.",
+            "A Document Artifact is implemented as a contract independent of any one screen or feature. Product integration is progressing so AlphaDoc Engine and AlphaEvidence can reuse document context and source structure.",
+            "AlphaDocument's goal is to let multiple workflows reuse one provenance-carrying artifact instead of interpreting the same document from scratch. Its public status separates engine implementation from product integration.",
           ],
         },
       ],
       figureTitle: "One document, many reusable contexts",
-      figureCaption: "Different digital documents become provenance-carrying artifacts in AlphaDocument. AlphaDoc Engine and AlphaEvidence can reuse those artifacts for their own purposes.",
+      figureCaption: "Different digital documents become provenance-carrying artifacts in AlphaDocument. Product integration for reuse across AlphaDoc Engine and AlphaEvidence is in progress.",
     },
     layer: {
       name: "AlphaLayer",
@@ -229,19 +245,19 @@ const articleCopy = {
           title: "Protection principles built into execution",
           paragraphs: [
             "Protecting medical AI does not end with masking a few strings. The system must understand why information is needed and control the boundary before and after external execution.",
-            "AlphaLayer is the Protected Inference Gateway that governs the execution boundary between AlphaDoc Engine and external generation models. It checks registered purpose and processing conditions, then allows only requests reduced to necessary information through the execution boundary. External AI can change while Viore's protection boundary remains consistent.",
+            "AlphaLayer is a Protected Inference Gateway between AlphaDoc Engine and external generation models. Viore has verified a runtime for selected protected text paths, including registered purpose, processing conditions, and information minimization.",
           ],
         },
         {
           title: "Request, response, and execution evidence in one boundary",
           paragraphs: [
-            "AlphaLayer binds outbound requests and returning responses to the same execution context. It verifies response integrity and records the protection policy under which execution occurred.",
-            "Execution records omit source content and retain only the minimum information needed. AlphaLayer is the shared execution foundation that lets Viore's AI capabilities expand under the same protection principles.",
+            "Within the selected verified paths, AlphaLayer binds outbound requests and returning responses to one execution context and retains the minimum record needed to review the applied protection policy and result.",
+            "This status does not represent a full-service rollout, patient-information processing readiness, or legal suitability. Additional paths require separate validation and approval.",
           ],
         },
       ],
       figureTitle: "Protection around every execution",
-      figureCaption: "Purpose, minimization, condition-governed external execution, response integrity, and execution evidence work together inside AlphaLayer. The protection boundary surrounds the full execution from request to response.",
+      figureCaption: "Purpose checks, minimization, external execution controls, and minimal execution records have been verified together for selected protected text paths.",
     },
   },
 } as const;
@@ -262,7 +278,7 @@ function TechnologySectionHeader({
   status: TechnologyStatus;
 }) {
   const labels = sharedCopy[language];
-  const statusClass = status.toLowerCase().replaceAll(" ", "-").replaceAll("&", "and");
+  const statusClass = status;
 
   return (
     <header className="technology-section-header">
@@ -278,7 +294,7 @@ function TechnologySectionHeader({
       <dl className="technology-status-list">
         <div>
           <dt>{labels.status}</dt>
-          <dd><span className={`technology-status technology-status-${statusClass}`}>{status}</span></dd>
+          <dd><span className={`technology-status technology-status-${statusClass}`}>{labels.statuses[status]}</span></dd>
         </div>
         <div>
           <dt>{labels.verified}</dt>
@@ -373,22 +389,22 @@ export function TechnologyPage({
           kind="overview"
           title={language === "ko" ? "Viore technology constellation" : "Viore technology constellation"}
           caption={language === "ko"
-            ? "AlphaDoc Engine을 중심으로 현재 공개된 AlphaEvidence, AlphaDocument, AlphaLayer와 Alphadoc이 각자의 책임을 유지한 채 상호작용합니다. 새로운 기술도 같은 연결 원칙 위에 더해지며, 업무 목적에 따라 필요한 기술이 선택되고 다시 연결됩니다."
-            : "The technologies currently presented—AlphaEvidence, AlphaDocument, AlphaLayer, and Alphadoc—interact around AlphaDoc Engine while retaining distinct responsibilities. New technologies can be added through the same connection principles as the system continues to expand."}
+            ? "AlphaEvidence와 AlphaDoc Engine은 구현된 기반과 기능, AlphaDocument는 통합 진행, AlphaLayer는 선택 경로 검증 상태입니다. 각 기술은 상태와 책임을 구분한 채 명시적인 연결 계약으로 이어집니다."
+            : "AlphaEvidence and AlphaDoc Engine are implemented as a foundation and capability, AlphaDocument integration is in progress, and AlphaLayer is verified for selected paths. Explicit contracts connect them while preserving distinct status and responsibility."}
         />
       </header>
 
       <TechnologyArticleNav language={language} />
 
       <main className="technology-article-stream">
-        <article id="technology-alphaevidence" className="technology-post" data-tech-status="developed-integrated">
+        <article id="technology-alphaevidence" className="technology-post" data-tech-status="implemented-foundation">
           <TechnologySectionHeader
             language={language}
             index="01"
             name={articles.evidence.name}
             englishTitle={articles.evidence.englishTitle}
             lead={articles.evidence.lead}
-            status="DEVELOPED & INTEGRATED"
+            status="implemented-foundation"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.evidence.sections} />
@@ -406,14 +422,14 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphadoc-engine" className="technology-post" data-tech-status="developed-integrated">
+        <article id="technology-alphadoc-engine" className="technology-post" data-tech-status="implemented-capability">
           <TechnologySectionHeader
             language={language}
             index="02"
             name={articles.engine.name}
             englishTitle={articles.engine.englishTitle}
             lead={articles.engine.lead}
-            status="DEVELOPED & INTEGRATED"
+            status="implemented-capability"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.engine.sections} />
@@ -427,14 +443,14 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphadocument" className="technology-post" data-tech-status="developed-integrated">
+        <article id="technology-alphadocument" className="technology-post" data-tech-status="integration-in-progress">
           <TechnologySectionHeader
             language={language}
             index="03"
             name={articles.document.name}
             englishTitle={articles.document.englishTitle}
             lead={articles.document.lead}
-            status="DEVELOPED & INTEGRATED"
+            status="integration-in-progress"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.document.sections} />
@@ -448,14 +464,14 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphalayer" className="technology-post" data-tech-status="developed-integrated">
+        <article id="technology-alphalayer" className="technology-post" data-tech-status="selected-path-verified">
           <TechnologySectionHeader
             language={language}
             index="04"
             name={articles.layer.name}
             englishTitle={articles.layer.englishTitle}
             lead={articles.layer.lead}
-            status="DEVELOPED & INTEGRATED"
+            status="selected-path-verified"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.layer.sections} />

@@ -455,16 +455,21 @@
   color: var(--technology-blue);
 }
 
-.technology-status-developed-and-integrated {
+.technology-status-implemented-foundation,
+.technology-status-implemented-capability {
   color: var(--technology-blue);
 }
 
-.technology-status-architecture-in-development {
+.technology-status-integration-in-progress {
   color: var(--technology-muted);
 }
 
-.technology-status-architecture-in-development::before {
+.technology-status-integration-in-progress::before {
   background: transparent;
+}
+
+.technology-status-selected-path-verified {
+  color: var(--technology-red);
 }
 
 .technology-definition {

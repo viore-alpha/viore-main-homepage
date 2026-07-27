@@ -12,33 +12,93 @@ async function render(pathname) {
   });
 }
 
-test("server-renders canonical Viore homepage metadata", async () => {
-  const response = await render("/ko");
+test("server-renders independent Korean and English homepage metadata", async () => {
+  const [response, englishResponse] = await Promise.all([
+    render("/ko"),
+    render("/en"),
+  ]);
   assert.equal(response.status, 200);
+  assert.equal(englishResponse.status, 200);
 
-  const html = await response.text();
-  assert.match(html, /<title>Viore, Drawing a New Linearity in Medicine\.<\/title>/);
+  const [html, englishHtml] = await Promise.all([
+    response.text(),
+    englishResponse.text(),
+  ]);
+  assert.match(html, /<html lang="ko-KR"/);
+  assert.match(html, /<title>바이오레, 새로운 선형을 그리다\.<\/title>/);
   assert.match(html, /<meta name="description" content="의료의 전문성과 시스템을 연결해/);
   assert.match(html, /<meta name="robots" content="index, follow"/);
   assert.match(html, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko"/);
   assert.match(html, /<link rel="alternate" hrefLang="en-US" href="https:\/\/vioreai\.com\/en"/);
-  assert.match(html, /<meta property="og:title" content="Viore, Drawing a New Linearity in Medicine\."/);
-  assert.match(html, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-white-v3\.png"/);
+  assert.match(html, /<meta property="og:title" content="바이오레, 새로운 선형을 그리다\."/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-ko-v1\.png"/);
   assert.match(html, /<meta property="og:image:width" content="1200"/);
   assert.match(html, /<meta property="og:image:height" content="630"/);
-  assert.match(html, /<meta name="twitter:title" content="Viore, Drawing a New Linearity in Medicine\."/);
+  assert.match(html, /<meta name="twitter:title" content="바이오레, 새로운 선형을 그리다\."/);
   assert.match(html, /<link rel="icon" href="\/brand\/viore-v-square-white-v2\.png"/);
   assert.match(html, /<meta name="google-site-verification"/);
   assert.match(html, /<meta name="naver-site-verification"/);
   assert.match(html, /id="viore-home-structured-data"/);
   assert.match(html, /"legalName":"주식회사 바이오레"/);
   assert.doesNotMatch(html, /\[object Object\]/);
+
+  assert.match(englishHtml, /<html lang="en-US"/);
+  assert.match(englishHtml, /<title>Viore, Drawing a New Linearity in Medicine\.<\/title>/);
+  assert.match(englishHtml, /<meta property="og:title" content="Viore, Drawing a New Linearity in Medicine\."/);
+  assert.match(englishHtml, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-en-v1\.png"/);
+  assert.doesNotMatch(englishHtml, /<title>바이오레,/);
+});
+
+test("server-renders the correct document language for every canonical page", async () => {
+  const paths = [
+    "/ko",
+    "/en",
+    "/ko/technology",
+    "/en/technology",
+    "/ko/product/alphadoc",
+    "/en/product/alphadoc",
+    "/ko/knowledge",
+    "/en/knowledge",
+    "/ko/legal",
+    "/en/legal",
+  ];
+  const responses = await Promise.all(paths.map((pathname) => render(pathname)));
+
+  for (const [index, response] of responses.entries()) {
+    assert.equal(response.status, 200, paths[index]);
+    const html = await response.text();
+    const expectedLanguage = paths[index].startsWith("/ko") ? "ko-KR" : "en-US";
+    assert.match(html, new RegExp(`<html lang="${expectedLanguage}"`), paths[index]);
+    assert.match(html, new RegExp(`<link rel="canonical" href="https://vioreai\\.com${paths[index]}"`), paths[index]);
+  }
 });
 
 test("permanently redirects the root index to the Korean canonical page", async () => {
   const response = await render("/");
   assert.equal(response.status, 308);
   assert.equal(new URL(response.headers.get("location"), "http://localhost").pathname, "/ko");
+});
+
+test("permanently maps retired locale entry points to current canonical pages", async () => {
+  for (const [legacyPath, currentPath] of [
+    ["/global", "/en"],
+    ["/global/", "/en"],
+    ["/legal", "/ko/legal"],
+    ["/legal/", "/ko/legal"],
+  ]) {
+    const response = await render(legacyPath);
+    assert.equal(response.status, 308);
+    assert.equal(new URL(response.headers.get("location"), "http://localhost").pathname, currentPath);
+  }
+});
+
+test("serves a clean noindex document for retired and unknown pages", async () => {
+  const response = await render("/medical-ai-startup");
+  assert.equal(response.status, 404);
+  const html = await response.text();
+  assert.match(html, /<title>페이지를 찾을 수 없습니다 \| Viore<\/title>/);
+  assert.equal((html.match(/<meta name="robots" content="noindex"/g) ?? []).length, 1);
+  assert.doesNotMatch(html, /<meta name="robots" content="index, follow"/);
 });
 
 test("permanently redirects the former Company routes to each locale homepage", async () => {
@@ -73,14 +133,17 @@ test("keeps the inactive language option legible over the translucent header", a
 });
 
 test("ships aligned crawler files and brand thumbnail dimensions", async () => {
-  const [robots, sitemap, llms, manifestText, socialImage, squareImage] = await Promise.all([
+  const [robots, sitemapResponse, llms, manifestText, koreanSocialImage, englishSocialImage, squareImage] = await Promise.all([
     readFile(new URL("../public/robots.txt", import.meta.url), "utf8"),
-    readFile(new URL("../public/sitemap.xml", import.meta.url), "utf8"),
+    render("/sitemap.xml"),
     readFile(new URL("../public/llms.txt", import.meta.url), "utf8"),
     readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8"),
-    readFile(new URL("../public/brand/viore-social-card-white-v3.png", import.meta.url)),
+    readFile(new URL("../public/brand/viore-social-card-ko-v1.png", import.meta.url)),
+    readFile(new URL("../public/brand/viore-social-card-en-v1.png", import.meta.url)),
     readFile(new URL("../public/brand/viore-v-square-white-v2.png", import.meta.url)),
   ]);
+  assert.equal(sitemapResponse.status, 200);
+  const sitemap = await sitemapResponse.text();
 
   assert.match(robots, /Sitemap: https:\/\/vioreai\.com\/sitemap\.xml/);
   assert.match(robots, /Disallow: \/api\//);
@@ -92,22 +155,27 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
   assert.doesNotMatch(sitemap, /\/council/);
   assert.doesNotMatch(sitemap, /\/insight\//);
   assert.match(sitemap, /hreflang="x-default" href="https:\/\/vioreai\.com\/ko"/);
+  assert.equal((sitemap.match(/hreflang="x-default"/g) ?? []).length, 10);
+  assert.equal((sitemap.match(/<loc>/g) ?? []).length, 10);
   assert.match(llms, /Korean homepage: https:\/\/vioreai\.com\/ko/);
   assert.doesNotMatch(llms, /vioreai\.com\/ko\/company/);
-  assert.match(llms, /Knowledge: https:\/\/vioreai\.com\/ko\/knowledge/);
-  assert.match(llms, /Technology Journal documents an expanding technology system/);
-  assert.match(llms, /New technologies are added to the journal/);
+  assert.match(llms, /Korean knowledge: https:\/\/vioreai\.com\/ko\/knowledge/);
+  assert.match(llms, /English knowledge: https:\/\/vioreai\.com\/en\/knowledge/);
+  assert.match(llms, /AlphaDocument's deterministic document-to-artifact engine is implemented, with product integration in progress/);
+  assert.match(llms, /AlphaLayer has a verified runtime for selected protected text paths/);
   assert.doesNotMatch(llms, /Council:|\/council/);
 
   const manifest = JSON.parse(manifestText);
   assert.equal(manifest.name, "바이오레 | Viore");
+  assert.match(manifest.description, /주식회사 바이오레/);
   assert.equal(manifest.icons[0].src, "/brand/viore-v-square-white-v2.png");
 
   const pngSize = (buffer) => ({
     width: buffer.readUInt32BE(16),
     height: buffer.readUInt32BE(20),
   });
-  assert.deepEqual(pngSize(socialImage), { width: 1200, height: 630 });
+  assert.deepEqual(pngSize(koreanSocialImage), { width: 1200, height: 630 });
+  assert.deepEqual(pngSize(englishSocialImage), { width: 1200, height: 630 });
   assert.deepEqual(pngSize(squareImage), { width: 1024, height: 1024 });
 
   const optimizedTexture = await render("/media/viore-paper-texture-dark-v2.webp");
@@ -116,6 +184,23 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
     optimizedTexture.headers.get("cache-control"),
     "public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800",
   );
+});
+
+test("submits exactly the production sitemap through IndexNow after a successful deployment", async () => {
+  const [packageJson, script, workflow] = await Promise.all([
+    readFile(new URL("../package.json", import.meta.url), "utf8"),
+    readFile(new URL("../scripts/submit-indexnow.mjs", import.meta.url), "utf8"),
+    readFile(new URL("../.github/workflows/indexnow.yml", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(packageJson, /"seo:indexnow": "node scripts\/submit-indexnow\.mjs"/);
+  assert.match(script, /const SITEMAP_URL = `\$\{SITE_ORIGIN\}\/sitemap\.xml`/);
+  assert.match(script, /urlList\.length !== 10/);
+  assert.match(script, /response\.status !== 200 && response\.status !== 202/);
+  assert.match(workflow, /deployment_status:/);
+  assert.match(workflow, /github\.event\.deployment\.environment == 'Production'/);
+  assert.match(workflow, /ref: \$\{\{ github\.event\.deployment\.sha \}\}/);
+  assert.doesNotMatch(workflow, /pull_request:/);
 });
 
 test("server-renders the Korean Company story as the homepage", async () => {
@@ -139,6 +224,8 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.match(html, /바이오레는 의료인의 질문과 문서, 지식과 도구가 끊김 없이 이어지는 환경을 Medical OS\(Operating System\)라고 부릅니다\./);
   assert.match(html, /class="detail-statement-lead"/);
   assert.match(html, /data-metrics-source="(?:live|snapshot)"/);
+  assert.match(html, /class="company-metrics-asof"/);
+  assert.match(html, /(?:데이터 기준|검증 스냅샷 게시)/);
   assert.match(html, /Medical Documents Added Monthly/);
   assert.match(html, /Standardized Medical Documents/);
   assert.match(html, /Korean &amp; Global Clinical Guidelines/);
@@ -165,14 +252,14 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.doesNotMatch(html, /기존의 가치를 대체하지 않으며/);
   assert.match(html, /One connected Flow/);
   assert.match(html, /for Medicine/);
-  assert.match(html, /엄격한 보안 아키텍처/);
+  assert.match(html, /보호를 고려한 설계/);
   assert.match(html, /더 직관적인 경험/);
   assert.match(html, /다양한 의료 도구/);
   assert.match(html, /빠른 의료 노트 작성/);
   assert.match(html, /쉽게 보는 최신 의료 근거/);
   assert.match(html, /함께 성장하는 지식 커뮤니티/);
-  assert.ok(html.indexOf("더 직관적인 경험") < html.indexOf("엄격한 보안 아키텍처"));
-  assert.ok(html.indexOf("엄격한 보안 아키텍처") < html.indexOf("다양한 의료 도구"));
+  assert.ok(html.indexOf("더 직관적인 경험") < html.indexOf("보호를 고려한 설계"));
+  assert.ok(html.indexOf("보호를 고려한 설계") < html.indexOf("다양한 의료 도구"));
   assert.ok(html.indexOf("다양한 의료 도구") < html.indexOf("빠른 의료 노트 작성"));
   assert.doesNotMatch(html, /처음부터 설계 기준에 포함된 보안/);
   assert.match(html, /class="company-convergence-canvas"/);
@@ -215,6 +302,8 @@ test("keeps Knowledge public while Council is unavailable and marked coming soon
   assert.doesNotMatch(companyHtml, />Insight<\/button>/);
   assert.doesNotMatch(knowledgeHtml, /INSIGHT ·/);
   assert.match(knowledgeHtml, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko\/knowledge"/);
+  assert.match(knowledgeHtml, /<title>바이오레 Knowledge \| 최신 의학 논문과 근거<\/title>/);
+  assert.match(knowledgeHtml, /<h1 id="knowledge-title">의료 지식과 근거<\/h1>/);
   assert.match(knowledgeHtml, /class="knowledge-page" data-knowledge-state="live"/);
   assert.doesNotMatch(knowledgeHtml, /VIORE · ALPHADOC LITERATURE/);
   assert.match(knowledgeHtml, /실시간으로 채워지는 논문 라이브러리\./);
@@ -380,13 +469,13 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.equal(response.status, 200);
 
   const html = await response.text();
-  assert.match(html, /<title>Alphadoc, an AI Medical Workspace\.<\/title>/);
+  assert.match(html, /<title>알파닥 \| 의료 업무를 잇는 AI Medical Workspace<\/title>/);
   assert.match(html, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko\/product\/alphadoc"/);
   assert.match(html, /class="alphadoc-product lang-ko"/);
   assert.match(html, /class="site-header site-header-dark"/);
   assert.match(html, /class="site-footer "/);
   assert.doesNotMatch(html, /class="site-footer site-footer-dark"/);
-  assert.match(html, /class="ap-hero-brand">Alphadoc,<\/span><span class="ap-hero-tagline">From Workstation to AI Workspace<\/span>/);
+  assert.match(html, /class="ap-hero-brand">알파닥,<\/span><span class="ap-hero-tagline">의료 업무를 하나의 AI Workspace로<\/span>/);
   assert.match(html, /임상 질문부터 근거 확인, 문서 작성과 번역까지\.\s*의료인의 업무를 앱의 형태로 이어주는 공간\./);
   assert.match(html, /의료인들의 하루를 바꾸는 워크스페이스/);
   assert.match(html, /class="ap-hero-motion-scene"/);
@@ -455,13 +544,13 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productSource, /판단이 필요한 순간, 필요한 의료 도구를 바로 엽니다/);
   assert.match(html, /의료 도구/);
   assert.match(html, /외 다수의 앱들/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/panel\/paper\/logo\.svg/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/functions\/medical-notices\/logo\.png/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/functions\/guide\/logo\.svg/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/functions\/document-translation\/logo\.svg/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/functions\/medical-tools\/logo\.svg/);
-  assert.match(html, /소통의 모든 순간을,\s*가장 트렌디하고 안전하게/);
-  assert.match(html, /알파닥스는 당신이 원하는 어떤 모습으로든 자유롭게 이어지는 트렌디한 프라이빗 커뮤니티입니다/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/panel\/paper\/logo\.svg/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/functions\/medical-notices\/logo\.png/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/functions\/guide\/logo\.svg/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/functions\/document-translation\/logo\.svg/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/functions\/medical-tools\/logo\.svg/);
+  assert.match(html, /소통의 모든 순간을,\s*더 직관적이고 책임 있게/);
+  assert.match(html, /알파닥스는 알파닥 계정으로 참여하는 커뮤니티입니다/);
   assert.match(html, /class="ap-alphadocs-demo/);
   assert.match(html, /class="ap-alphadocs-phone"/);
   assert.match(html, /class="ap-community-panel-switcher"/);
@@ -479,9 +568,10 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.doesNotMatch(html, /ap-community-global-head|새로운 소식이 있나요\?/);
   assert.doesNotMatch(html, /내과의 · 18분|중증 패혈증 초기 수액 후 승압제/);
   assert.match(html, /Intuitive UI/);
-  assert.match(html, /Verified Access/);
-  assert.match(html, /AlphaEncryption/);
-  assert.match(html, /https:\/\/www\.alphadoc\.ai\/brand\/feature-icons\/panel\/community\/logo\.svg/);
+  assert.match(html, /Account-based access/);
+  assert.match(html, /Protection-aware design/);
+  assert.doesNotMatch(html, /Verified Access|AlphaEncryption|proprietary encryption|독자 개발한 암호화/);
+  assert.match(html, /https:\/\/alphadoc\.ai\/brand\/feature-icons\/panel\/community\/logo\.svg/);
   assert.match(html, /바이오레의 첫번째 선형,/);
   assert.match(html, /이제 시작해보세요\./);
   assert.match(html, /class="ap-final-logo-stage"/);
@@ -534,6 +624,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(energyCanvasSource, /mainContext\.filter = `blur/);
   assert.match(energyCanvasSource, /frame = window\.requestAnimationFrame\(animate\)/);
   assert.match(html, /"@type":"SoftwareApplication"/);
+  assert.match(html, /"@id":"https:\/\/alphadoc\.ai\/#software"/);
+  assert.match(html, /"inLanguage":"ko-KR"/);
   assert.match(html, /class="ap-feature-gallery/);
   assert.match(html, /class="ap-feature-rail"[^>]*role="list"/);
   assert.match(html, /data-feature-card="papers"/);
@@ -834,8 +926,8 @@ test("keeps the three connected principles text-only over the continuous company
   assert.doesNotMatch(connections, /padStart|String\(index \+ 1\)/);
   assert.match(connections, /content\.nodes\.map/);
   assert.match(connections, /aria-labelledby="company-connections-title"/);
-  assert.equal((content.match(/더 직관적인 경험|엄격한 보안 아키텍처|다양한 의료 도구|빠른 의료 노트 작성|쉽게 보는 최신 의료 근거|함께 성장하는 지식 커뮤니티/g) ?? []).length, 6);
-  assert.match(content, /Rigorous security architecture/);
+  assert.equal((content.match(/더 직관적인 경험|보호를 고려한 설계|다양한 의료 도구|빠른 의료 노트 작성|쉽게 보는 최신 의료 근거|함께 성장하는 지식 커뮤니티/g) ?? []).length, 6);
+  assert.match(content, /Protection-aware design/);
   assert.match(content, /A more intuitive experience/);
   assert.match(content, /A diverse range of medical tools/);
   assert.match(content, /Fast medical note drafting/);
@@ -902,6 +994,8 @@ test("server-renders an accessible, expanding Technology journal with its curren
   ]);
 
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
+  assert.match(html, /<html lang="ko-KR"/);
+  assert.match(html, /<title>바이오레 기술 \| 의료 근거·문서·AI 실행을 잇는 기술<\/title>/);
   assert.match(html, />Journal/);
   assert.doesNotMatch(html, />Tech Blog</);
   assert.match(html, /우리만의 선형을/);
@@ -928,10 +1022,15 @@ test("server-renders an accessible, expanding Technology journal with its curren
   ]) {
     assert.match(html, new RegExp(`<article id="${id}"`));
   }
-  assert.equal((html.match(/DEVELOPED &amp; INTEGRATED/g) ?? []).length, 4);
+  assert.match(html, /구현된 기반/);
+  assert.match(html, /구현된 기능/);
+  assert.match(html, /구현 · 통합 진행 중/);
+  assert.match(html, /선택 경로 검증/);
+  assert.doesNotMatch(html, /DEVELOPED &amp; INTEGRATED/);
   assert.match(html, /2026년 7월 21일/);
-  assert.match(html, /2026년 7월 26일 업데이트/);
-  assert.match(html, /2026-07-26/);
+  assert.match(html, /2026년 7월 27일 업데이트/);
+  assert.match(html, /2026-07-27/);
+  assert.match(html, /전체 서비스 적용, 환자정보 처리 준비 또는 법적 적합성 확인을 의미하지 않습니다/);
   assert.doesNotMatch(html, /IN PRODUCTION|CONTROLLED WORKFLOWS|ARCHITECTURE IN DEVELOPMENT/);
   assert.doesNotMatch(html, /현재 범위|주장하지 않는 범위|한계|LIMITATION|CLAIM BOUNDARY|STATUS NOTE/);
   assert.match(html, /data-snapshot-state="live"/);
@@ -941,7 +1040,7 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(html, /출처·변경 관찰 기록/);
   assert.match(html, /실시간 집계/);
   assert.match(html, /현재 집계/);
-  assert.match(html, /의료인의 검토와 판단/);
+  assert.match(html, /사용자 검토와 판단/);
   assert.match(html, /TechArticle/);
   assert.match(html, /CollectionPage/);
   assert.equal((html.match(/<figcaption>/g) ?? []).length, 5);
@@ -953,6 +1052,8 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.doesNotMatch(html, /개발 지시 — 비공개|개발 계약 — 비공개|내부 근거 지도/);
 
   assert.match(englishHtml, /How we build/);
+  assert.match(englishHtml, /<html lang="en-US"/);
+  assert.match(englishHtml, /<title>Viore Technology \| Connected Medical Intelligence<\/title>/);
   assert.match(englishHtml, /our own technology system/);
   assert.match(englishHtml, /The system does not end with the technologies presented here/);
   assert.match(englishHtml, /NEW TECHNOLOGIES EXTEND THE SAME SYSTEM/);
@@ -960,6 +1061,10 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(englishHtml, /Medical work starts with purpose/);
   assert.match(englishHtml, /From document files to reusable artifacts/);
   assert.match(englishHtml, /Protection principles built into execution/);
+  assert.match(englishHtml, /IMPLEMENTED FOUNDATION/);
+  assert.match(englishHtml, /IMPLEMENTED CAPABILITY/);
+  assert.match(englishHtml, /IMPLEMENTED · INTEGRATION IN PROGRESS/);
+  assert.match(englishHtml, /SELECTED PATH VERIFIED/);
   assert.doesNotMatch(englishHtml, /우리만의 선형|살아 있는 근거의 중심|보안을 설정이 아니라/);
   assert.match(englishHtml, /"inLanguage":"en-US"/);
 });
@@ -1092,6 +1197,6 @@ test("classifies fresh and stale AlphaEvidence snapshots at the fixed boundary",
 test("redirects legacy Technology detail routes to the matching article anchor", async () => {
   const response = await render("/ko/technology/alphaevidence");
 
-  assert.equal(response.status, 307);
+  assert.equal(response.status, 308);
   assert.match(response.headers.get("location") ?? "", /\/ko\/technology#technology-alphaevidence$/);
 });

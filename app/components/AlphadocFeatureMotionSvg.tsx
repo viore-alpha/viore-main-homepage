@@ -3,7 +3,7 @@
 import { memo, useId } from "react";
 import type { Language } from "@/app/site-content";
 
-const ALPHADOC_ASSET_ROOT = "https://www.alphadoc.ai";
+const ALPHADOC_ASSET_ROOT = "https://alphadoc.ai";
 const NOTIFICATION_ICON = `${ALPHADOC_ASSET_ROOT}/brand/feature-icons/header/notification/logo.svg`;
 
 export type AlphadocFeatureId = "papers" | "notices" | "forms" | "translation" | "tools";

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { notFound, permanentRedirect, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import {
   AlphaDocumentVisual,
   AlphaDocOrchestrationVisual,
   AlphaEvidenceVisual,
   CouncilPartnersVisual,
 } from "@/app/components/BrandVisuals";
-import { buildPageMetadata } from "@/app/seo";
+import { buildPageMetadata, PAGE_SEO } from "@/app/seo";
 import { detailContent, insightPageFromLegacySlug, isLanguage, pageKeyFromSlug, pageRoutes, routeFor, technologyAnchorFromLegacySlug, technologyRouteFor, type Language, type PageKey } from "@/app/site-content";
 
 type RouteParams = Promise<{ lang: string; slug: string[] }>;
@@ -15,11 +15,10 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
   const { lang, slug } = await params;
   const technologyAnchor = technologyAnchorFromLegacySlug(slug);
   if (isLanguage(lang) && technologyAnchor) {
+    const copy = PAGE_SEO.technology[lang];
     return {
-      title: "Technology — Viore",
-      description: lang === "ko"
-        ? "현재 공개된 기술에서 시작해 새로 개발·검증·통합되는 바이오레의 기술과 연결 구조를 계속 소개합니다."
-        : "Viore's Technology Journal begins with its currently presented technologies and continues to document newly developed, validated, and integrated technologies.",
+      title: copy.title,
+      description: copy.description,
       alternates: { canonical: technologyRouteFor(lang, technologyAnchor) },
     };
   }
@@ -27,22 +26,20 @@ export async function generateMetadata({ params }: { params: RouteParams }): Pro
   if (!isLanguage(lang) || !key) return {};
   if (key === "company" || key === "contact") return {};
   if (key === "knowledge") {
+    const copy = PAGE_SEO.knowledge[lang];
     return buildPageMetadata({
       lang,
-      title: "Knowledge — Viore",
-      description: lang === "ko"
-        ? "실시간으로 채워지는 문헌 라이브러리. AlphaEvidence DB에서 신규 의학 논문과 한국어 브리프를 확인하세요."
-        : "A living literature library with newly published medical papers and Korean briefs from AlphaEvidence DB.",
+      title: copy.title,
+      description: copy.description,
       path: `/${pageRoutes[key]}`,
     });
   }
   if (key === "alphadoc") {
+    const copy = PAGE_SEO.product[lang];
     return buildPageMetadata({
       lang,
-      title: "Alphadoc, an AI Medical Workspace.",
-      description: lang === "ko"
-        ? "알파닥은 질문과 근거 탐색, 진료노트, 진료서류, 문서 번역과 의료 공지를 하나의 흐름으로 잇는 AI Medical Workspace입니다."
-        : "Alphadoc is an AI Medical Workspace connecting questions, evidence discovery, clinical notes, forms, translation, and medical updates in one flow.",
+      title: copy.title,
+      description: copy.description,
       path: `/${pageRoutes[key]}`,
     });
   }
@@ -78,7 +75,7 @@ export default async function DetailRoute({ params }: { params: RouteParams }) {
   const { lang, slug } = await params;
   if (!isLanguage(lang)) notFound();
   const technologyAnchor = technologyAnchorFromLegacySlug(slug);
-  if (technologyAnchor) redirect(technologyRouteFor(lang, technologyAnchor));
+  if (technologyAnchor) permanentRedirect(technologyRouteFor(lang, technologyAnchor));
   const legacyInsightPage = insightPageFromLegacySlug(slug);
   if (legacyInsightPage) permanentRedirect(routeFor(lang, legacyInsightPage));
   const pageKey = pageKeyFromSlug(slug);

@@ -10,7 +10,7 @@ const diagramCopy = {
   ko: {
     overview: {
       title: "바이오레 기술 시스템 맵",
-      description: "현재 공개된 기술과 Alphadoc이 각자의 책임을 유지하면서 근거, 문서, 실행, 검토와 무결성 기록을 주고받습니다. 새 기술도 같은 연결 원칙 위에서 확장됩니다.",
+      description: "구현된 기반과 기능, 통합 진행 중인 기술, 선택 경로에서 검증된 실행 경계를 상태별로 구분하고 명시적인 계약으로 연결합니다.",
     },
     evidence: {
       title: "AlphaEvidence 근거 계보 구조",
@@ -26,13 +26,13 @@ const diagramCopy = {
     },
     layer: {
       title: "AlphaLayer 보호 실행 경계",
-      description: "목적과 정책, 최소화, 보호 실행, 응답 무결성과 원문 없는 실행 증거가 중첩된 경계 안에서 요청과 응답을 연결합니다.",
+      description: "선택된 보호 텍스트 경로에서 목적과 정책, 정보 최소화, 외부 실행 통제와 최소 실행 기록을 하나의 경계로 검증합니다.",
     },
   },
   en: {
     overview: {
       title: "Viore technology system map",
-      description: "The technologies currently presented and Alphadoc preserve distinct responsibilities while exchanging evidence, documents, execution, review, and integrity records. New technologies extend the same connection principles.",
+      description: "Implemented foundations and capabilities, integration in progress, and selected-path runtime verification are reported separately and connected through explicit contracts.",
     },
     evidence: {
       title: "AlphaEvidence provenance architecture",
@@ -48,7 +48,7 @@ const diagramCopy = {
     },
     layer: {
       title: "AlphaLayer protected execution boundary",
-      description: "Purpose and policy, minimization, protected execution, response integrity, and payload-free assurance connect requests and responses through nested boundaries.",
+      description: "Selected protected text paths verify purpose and policy checks, information minimization, external execution controls, and minimal execution records within one boundary.",
     },
   },
 } as const;
@@ -610,7 +610,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
         width={198}
         height={152}
         title="AI MEDICAL WORKSPACE"
-        rows={["Workspace Apps", pick(language, "의료인의 검토", "Human Review"), "User Permissions", "Records / UI"]}
+        rows={["Workspace Apps", pick(language, "사용자 검토", "User Review"), "User Permissions", "Records / UI"]}
         tone="blue"
         step={10}
         tokens={8}
@@ -621,7 +621,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
         y={424}
         width={268}
         height={102}
-        label={pick(language, "의료인의 검토와 판단", "PROFESSIONAL REVIEW CONTROL")}
+        label={pick(language, "사용자 검토와 판단", "USER REVIEW CONTROL")}
         tone="ink"
         step={9}
       />

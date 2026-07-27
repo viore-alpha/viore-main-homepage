@@ -5,6 +5,7 @@ const COMPANY_METRICS_ENDPOINT = process.env.VIORE_COMPANY_METRICS_ENDPOINT ??
 const COMPANY_METRICS_PUBLISHABLE_KEY = process.env.VIORE_METRICS_SUPABASE_PUBLISHABLE_KEY ??
   "sb_publishable_luvxrrYk1-G4PvatU1tILg__1r4aRc6";
 const COMPANY_METRICS_REVALIDATE_SECONDS = 10 * 60;
+const VERIFIED_SNAPSHOT_PUBLISHED_AT = "2026-07-22T02:14:00+09:00";
 
 type CompanyMetricsRow = {
   generated_at: string;
@@ -104,7 +105,7 @@ export async function getCompanyMetrics(
     console.error("[company-metrics] using verified snapshot fallback", error);
     return {
       metrics: fallbackMetrics,
-      generatedAt: null,
+      generatedAt: VERIFIED_SNAPSHOT_PUBLISHED_AT,
       source: "snapshot",
     };
   }

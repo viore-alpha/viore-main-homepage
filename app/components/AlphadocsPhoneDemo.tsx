@@ -152,9 +152,9 @@ export function AlphadocsPhoneDemo({ language }: { language: Language }) {
           <span className="ap-phone-island" />
 
           <div className="ap-community-panel-switcher">
-            <img src="https://www.alphadoc.ai/brand/feature-icons/panel/news/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
-            <img src="https://www.alphadoc.ai/brand/feature-icons/panel/literature/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
-            <img src="https://www.alphadoc.ai/brand/feature-icons/panel/community/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
+            <img src="https://alphadoc.ai/brand/feature-icons/panel/news/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
+            <img src="https://alphadoc.ai/brand/feature-icons/panel/literature/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
+            <img src="https://alphadoc.ai/brand/feature-icons/panel/community/logo.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
             <strong>{copy.panel}</strong>
           </div>
 

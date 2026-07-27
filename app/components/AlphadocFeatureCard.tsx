@@ -10,7 +10,7 @@ const AlphadocFeatureMotionSvg = lazy(async () => {
   return { default: loadedModule.AlphadocFeatureMotionSvg };
 });
 
-const ALPHADOC_ASSET_ROOT = "https://www.alphadoc.ai";
+const ALPHADOC_ASSET_ROOT = "https://alphadoc.ai";
 
 export interface AlphadocFeatureItem {
   id: AlphadocFeatureId;

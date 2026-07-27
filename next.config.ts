@@ -6,6 +6,39 @@ const staticAssetCacheHeader = {
 };
 
 const nextConfig: NextConfig = {
+  skipTrailingSlashRedirect: true,
+  experimental: {
+    globalNotFound: true,
+  },
+  async redirects() {
+    return [
+      {
+        source: "/global",
+        destination: "/en",
+        permanent: true,
+      },
+      {
+        source: "/global/",
+        destination: "/en",
+        permanent: true,
+      },
+      {
+        source: "/legal",
+        destination: "/ko/legal",
+        permanent: true,
+      },
+      {
+        source: "/legal/",
+        destination: "/ko/legal",
+        permanent: true,
+      },
+      {
+        source: "/:path+/",
+        destination: "/:path+",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return ["assets", "brand", "media"].map((directory) => ({
       source: `/${directory}/:path*`,

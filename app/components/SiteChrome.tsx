@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { routeFor, siteContent, technologyRouteFor, type Language, type PageKey } from "@/app/site-content";
 
@@ -23,10 +23,6 @@ export function SiteChrome({ language, children }: { language: Language; childre
   const menus: Record<MenuId, MenuItem[]> = {
     product: [{ label: "Alphadoc", key: "alphadoc" }],
   };
-
-  useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
 
   const navLabel = (id: MenuId) => content.nav[id];
 
