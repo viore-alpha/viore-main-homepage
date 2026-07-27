@@ -457,16 +457,18 @@
 .ap-alphadocs-list h3 { margin: 0; font-size: var(--ap-type-item-title); font-weight: 600; letter-spacing: -.02em; }
 .ap-alphadocs-list p { margin: 0; color: var(--ap-muted); font-size: var(--ap-type-item-body); line-height: 1.6; }
 
-.ap-final-cta { position: relative; min-height: 100svh; padding: 120px max(48px,calc((100vw - 1340px)/2)); display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: clamp(60px,8vw,130px); overflow: hidden; isolation: isolate; border-top: 1px solid var(--line); color: var(--ink); color-scheme: light; background-color: var(--paper-base); background-image: var(--paper-texture); background-repeat: repeat; background-size: var(--paper-size); }
+.ap-final-cta { position: relative; min-height: 100svh; padding: 96px max(48px,calc((100vw - 1340px)/2)); display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto; align-content: center; justify-items: center; gap: 28px; overflow: hidden; isolation: isolate; border-top: 1px solid var(--line); color: var(--ink); color-scheme: light; background-color: var(--paper-base); background-image: var(--paper-texture); background-repeat: repeat; background-size: var(--paper-size); }
 .ap-final-screen,.ap-final-copy { position: relative; z-index: 2; }
-.ap-final-screen { height: 560px; display: grid; place-items: center; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
-.ap-final-logo-stage { position: relative; width: min(102%,540px); aspect-ratio: 1; display: grid; place-items: center; isolation: isolate; }
+.ap-final-screen { width: 100%; height: auto; display: grid; place-items: center; overflow: visible; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.ap-final-logo-stage { position: relative; width: min(38vw,460px); aspect-ratio: 1; display: grid; place-items: center; isolation: isolate; }
 .ap-final-logo-stage::before { content: ""; position: absolute; inset: 13%; z-index: 0; border-radius: 50%; background: radial-gradient(circle,rgba(255,105,27,.24) 0%,rgba(255,126,29,.11) 38%,transparent 70%); filter: blur(24px); opacity: .42; transform: scale(.86); }
 .ap-final-logo-stage::after { content: ""; position: absolute; left: 50%; top: 50%; z-index: 2; width: min(72%,350px); max-width: 350px; aspect-ratio: 419/365; pointer-events: none; background: linear-gradient(128deg,rgba(255,229,173,.28) 4%,rgba(255,135,38,.12) 29%,transparent 54%,rgba(0,0,0,.16) 100%); -webkit-mask: url("/brand/alphadoc-alpha.png") center/contain no-repeat; mask: url("/brand/alphadoc-alpha.png") center/contain no-repeat; mix-blend-mode: screen; opacity: .28; filter: brightness(.9); transform: translate(-50%,-50%); }
 .ap-final-cta.is-playing .ap-final-logo-stage::before { will-change: opacity,transform; animation: ap-final-energy-pulse 4.6s ease-in-out infinite; }
 .ap-final-cta.is-playing .ap-final-logo-stage::after { will-change: opacity,filter; animation: ap-final-logo-light 4.6s ease-in-out infinite; }
 .ap-final-screen .ap-final-logo { position: relative; z-index: 1; width: min(72%,350px); max-width: 350px; height: auto; transform: none; filter: none; transition: transform .8s var(--ap-ease); }
 .ap-final-cta:hover .ap-final-screen .ap-final-logo { transform: scale(1.025); }
+.ap-final-copy { width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.ap-final-copy .ap-hero-actions { justify-content: center; }
 .ap-final-copy h2 { margin: 0; font-size: var(--ap-type-title); font-weight: var(--ap-type-title-weight); line-height: var(--ap-type-title-line); letter-spacing: var(--ap-type-title-tracking); word-break: keep-all; }
 .ap-final-cta .ap-text-link { border-bottom-color: rgba(15,15,16,.42); color: var(--ink); }
 @keyframes ap-final-energy-pulse { 0%,100% { opacity: .42; transform: scale(.86); } 50% { opacity: 1; transform: scale(1.08); } }
@@ -517,8 +519,8 @@
   .ap-alphadocs-demo { min-height: 590px; }
   .ap-alphadocs-phone { width: min(100%,258px); }
   .ap-alphadocs-copy { padding: 68px 20px 100px; }
-  .ap-final-cta { padding: 100px 20px; grid-template-columns: 1fr; }
-  .ap-final-screen { height: min(118vw,600px); }
+  .ap-final-cta { padding: 100px 20px; }
+  .ap-final-screen { height: auto; }
 }
 
 @media (max-width: 560px) {
@@ -579,8 +581,14 @@
   .ap-alphadocs-phone { width: min(100%,244px); }
   .ap-alphadocs-copy > h2 { font-size: var(--ap-type-title); }
   .ap-alphadocs-list article { grid-template-columns: 1fr; gap: 8px; }
+  .ap-final-cta { min-height:100svh; padding:56px 20px 72px; grid-template-rows:auto auto; align-content:center; align-items:start; gap:18px; }
+  .ap-final-screen { height:auto; place-items:center; border-radius:0; }
+  .ap-final-logo-stage { width:180px; }
+  .ap-final-logo-stage::before { inset:18%; filter:blur(16px); }
+  .ap-final-logo-stage::after,.ap-final-screen .ap-final-logo { width:72%; max-width:none; }
+  .ap-final-copy { width:100%; display:flex; flex-direction:column; align-items:center; text-align:center; }
+  .ap-final-copy .ap-hero-actions { align-items:center; }
   .ap-final-copy h2 { font-size: var(--ap-type-title); }
-  .ap-final-screen { height: 430px; border-radius: 22px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

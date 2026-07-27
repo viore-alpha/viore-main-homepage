@@ -2,10 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Soft bloom (glow) is produced once per frame with a single GPU blur pass
-// instead of per-stroke shadowBlur, which keeps the glow while cutting cost.
-const BLOOM_BLUR_PX = 7;
-const BLOOM_STRENGTH = 0.62;
+const FRAME_INTERVAL = 1000 / 20;
 type EnergyFamily = 0 | 1 | 2;
 type Rgb = readonly [number, number, number];
 
@@ -54,14 +51,10 @@ export function CompanyNetworkBackdrop() {
   useEffect(() => {
     const backdrop = backdropRef.current;
     const canvas = canvasRef.current;
-    const mainContext = canvas?.getContext("2d", { alpha: true });
-    // Strands are drawn to an offscreen buffer at full device resolution so the
-    // visible canvas can composite a crisp pass plus a soft bloom pass.
-    const scene = document.createElement("canvas");
-    const context = scene.getContext("2d", { alpha: true });
+    const context = canvas?.getContext("2d", { alpha: true });
     const chapter = backdrop?.closest<HTMLElement>(".company-dark-chapter");
     const join = chapter?.querySelector<HTMLElement>(".company-join") ?? null;
-    if (!backdrop || !canvas || !mainContext || !context) return;
+    if (!backdrop || !canvas || !context) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 1;
@@ -69,7 +62,7 @@ export function CompanyNetworkBackdrop() {
     let progress = 0;
     let animationFrame = 0;
     let scrollFrame = 0;
-    let renderScale = 1;
+    let lastFrame = 0;
     let isIntersecting = false;
     let primaryGradient: CanvasGradient | null = null;
     let counterGradient: CanvasGradient | null = null;
@@ -82,7 +75,7 @@ export function CompanyNetworkBackdrop() {
       const localProgress = clamp(progress + 0.035 * (1 - progress));
       const convergence = Math.pow(localProgress, 2.6);
       const compact = width < 700;
-      const lateralScale = compact ? 0.64 : 1;
+      const lateralScale = 0.64;
       const spreadScale = family === 0 ? 0.38 : family === 1 ? 0.31 : 0.43;
       const initialSpread = width * spreadScale * lateralScale;
       const finalSpread = Math.max(compact ? 2.4 : 3.2, width * 0.0035);
@@ -228,6 +221,18 @@ export function CompanyNetworkBackdrop() {
           ? 0.055 * convergenceAlpha
           : (accent ? 0.78 : 0.21) * shimmer * convergenceAlpha;
         context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+
+        if (haze || accent) {
+          context.shadowColor = progress > 0.72
+            ? "rgba(255, 59, 48, .28)"
+            : family === 2
+              ? "rgba(248, 183, 53, .2)"
+              : "rgba(255, 93, 31, .24)";
+          context.shadowBlur = haze ? 20 : 8;
+        } else {
+          context.shadowBlur = 0;
+        }
+
         context.stroke();
       }
     };
@@ -260,22 +265,6 @@ export function CompanyNetworkBackdrop() {
       strokeFamily(compact ? 11 : 17, seconds, 2, goldGradient);
 
       context.restore();
-
-      // Composite the offscreen scene onto the visible canvas: a crisp base
-      // pass for sharp lines, then a single blurred additive pass for the glow.
-      mainContext.setTransform(1, 0, 0, 1, 0, 0);
-      mainContext.clearRect(0, 0, canvas.width, canvas.height);
-      mainContext.filter = "none";
-      mainContext.globalCompositeOperation = "source-over";
-      mainContext.globalAlpha = 1;
-      mainContext.drawImage(scene, 0, 0);
-      mainContext.globalCompositeOperation = "lighter";
-      mainContext.filter = `blur(${(BLOOM_BLUR_PX * renderScale).toFixed(2)}px)`;
-      mainContext.globalAlpha = BLOOM_STRENGTH;
-      mainContext.drawImage(scene, 0, 0);
-      mainContext.filter = "none";
-      mainContext.globalCompositeOperation = "source-over";
-      mainContext.globalAlpha = 1;
     };
 
     const updateProgress = () => {
@@ -307,8 +296,6 @@ export function CompanyNetworkBackdrop() {
       gradientProgress = -1;
       if (canvas.width !== 1) canvas.width = 1;
       if (canvas.height !== 1) canvas.height = 1;
-      if (scene.width !== 1) scene.width = 1;
-      if (scene.height !== 1) scene.height = 1;
     };
 
     const resize = () => {
@@ -316,17 +303,14 @@ export function CompanyNetworkBackdrop() {
       const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      // Render at full device resolution (capped at 2x) for crisp lines.
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      renderScale = pixelRatio;
+      const pixelRatioCap = width < 700 ? 1 : 1.15;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
 
       if (canvas.width !== renderWidth || canvas.height !== renderHeight) {
         canvas.width = renderWidth;
         canvas.height = renderHeight;
-        scene.width = renderWidth;
-        scene.height = renderHeight;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         primaryGradient = null;
         counterGradient = null;
@@ -338,13 +322,17 @@ export function CompanyNetworkBackdrop() {
     };
 
     const animate = (timestamp: number) => {
-      draw(timestamp / 1000);
+      if (timestamp - lastFrame >= FRAME_INTERVAL) {
+        draw(timestamp / 1000);
+        lastFrame = timestamp;
+      }
       animationFrame = window.requestAnimationFrame(animate);
     };
 
     const syncMotion = () => {
       window.cancelAnimationFrame(animationFrame);
       animationFrame = 0;
+      lastFrame = 0;
 
       if (!isIntersecting || document.hidden) {
         releaseCanvas();
