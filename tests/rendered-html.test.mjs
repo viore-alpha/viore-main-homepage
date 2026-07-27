@@ -1039,9 +1039,12 @@ test("server-renders an accessible, expanding Technology journal with its curren
     "technology-alphadocument",
     "technology-alphaimage",
     "technology-alphalayer",
+    "technology-alphaseal",
   ]) {
     assert.match(html, new RegExp(`<article id="${id}"`));
   }
+  assert.match(html, /End-to-End Conversation Seal/);
+  assert.match(html, /대화의 주인은 대화한 두 사람뿐/);
   assert.match(html, /구현된 기반/);
   assert.match(html, /구현된 기능/);
   assert.match(html, /구현 · 출시 검토 중/);
@@ -1064,13 +1067,14 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(html, /사용자 검토와 판단/);
   assert.match(html, /TechArticle/);
   assert.match(html, /CollectionPage/);
-  assert.equal((html.match(/<figcaption>/g) ?? []).length, 6);
+  assert.equal((html.match(/<figcaption>/g) ?? []).length, 7);
   assert.match(html, /technology-raw-diagram-overview/);
   assert.match(html, /technology-raw-diagram-evidence/);
   assert.match(html, /technology-raw-diagram-engine/);
   assert.match(html, /technology-raw-diagram-document/);
   assert.match(html, /technology-raw-diagram-image/);
   assert.match(html, /technology-raw-diagram-layer/);
+  assert.match(html, /technology-raw-diagram-seal/);
   assert.doesNotMatch(html, /개발 지시 — 비공개|개발 계약 — 비공개|내부 근거 지도/);
 
   assert.match(englishHtml, /How we build/);

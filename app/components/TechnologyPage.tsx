@@ -612,7 +612,13 @@ export function TechnologyPage({
           />
           <div className="technology-prose">
             <ProseSections sections={articles.seal.sections} />
-            {/* 전용 다이어그램은 후속 디자인 작업. 확정 전까지 도형 없이 산문만 노출한다. */}
+            <TechnologyFigure
+              language={language}
+              number="07"
+              kind="seal"
+              title={articles.seal.figureTitle}
+              caption={articles.seal.figureCaption}
+            />
           </div>
         </article>
       </main>
