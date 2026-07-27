@@ -460,16 +460,18 @@
   color: var(--technology-blue);
 }
 
-.technology-status-integration-in-progress {
-  color: var(--technology-muted);
+.technology-status-release-in-review,
+.technology-status-integration-in-review {
+  color: var(--technology-blue);
 }
 
-.technology-status-integration-in-progress::before {
+.technology-status-release-in-review::before,
+.technology-status-integration-in-review::before {
   background: transparent;
 }
 
-.technology-status-selected-path-verified {
-  color: var(--technology-red);
+.technology-status-selected-path-active {
+  color: var(--technology-blue);
 }
 
 .technology-definition {
@@ -1830,7 +1832,7 @@
 
   .technology-article-nav ol {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .technology-article-nav a {
@@ -1898,7 +1900,7 @@
 
   .technology-article-nav ol {
     width: max-content;
-    grid-template-columns: repeat(4, minmax(126px, auto));
+    grid-template-columns: repeat(5, minmax(126px, auto));
   }
 
   .technology-post {

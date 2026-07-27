@@ -7,8 +7,9 @@ import type { Language } from "@/app/site-content";
 type TechnologyStatus =
   | "implemented-foundation"
   | "implemented-capability"
-  | "integration-in-progress"
-  | "selected-path-verified";
+  | "release-in-review"
+  | "integration-in-review"
+  | "selected-path-active";
 
 const VERIFIED_DATE = "2026-07-27";
 
@@ -25,13 +26,14 @@ const sharedCopy = {
     statuses: {
       "implemented-foundation": "구현된 기반",
       "implemented-capability": "구현된 기능",
-      "integration-in-progress": "구현 · 통합 진행 중",
-      "selected-path-verified": "선택 경로 검증",
+      "release-in-review": "구현 · 출시 검토 중",
+      "integration-in-review": "구현 · 통합 검토 중",
+      "selected-path-active": "구현 · 선택 경로 운영 중",
     },
     intro: [
-      "의료 AI는 하나의 거대한 모델만으로 완성되지 않습니다. 좋은 근거가 어디에서 왔는지 기억하는 기반, 문서를 다시 쓸 수 있는 지식으로 바꾸는 기술, 업무의 목적에 따라 실행을 조율하는 지능, 그리고 외부 실행을 보호하는 경계가 함께 움직여야 합니다.",
-      "현재 AlphaEvidence와 AlphaDoc Engine은 각각 구현된 기반과 기능입니다. AlphaDocument는 엔진 구현을 마치고 제품 통합을 진행하고 있으며, AlphaLayer는 선택된 보호 텍스트 경로의 런타임을 검증했습니다. 바이오레는 이 상태를 하나의 ‘완성’으로 묶지 않고 구분해 공개합니다.",
-      "각 기술은 책임을 분리한 채 연결됩니다. 새로운 근거는 지식의 맥락을 넓히고, 문서는 재사용 가능한 아티팩트가 됩니다. 외부 AI 실행이 필요한 선택 경로에는 독립된 보호 경계를 적용할 수 있습니다.",
+      "의료 AI는 하나의 거대한 모델만으로 완성되지 않습니다. 좋은 근거가 어디에서 왔는지 기억하는 기반, 문서와 이미지를 다시 쓸 수 있는 아티팩트로 바꾸는 기술, 업무의 목적에 따라 실행을 조율하는 지능, 그리고 외부 실행을 보호하는 경계가 함께 움직여야 합니다.",
+      "현재 AlphaEvidence와 AlphaDoc Engine은 각각 구현된 기반과 기능입니다. AlphaDocument는 출시 검토 중이고, AlphaImage는 정적 이미지 아티팩트 구현을 마치고 Alphadoc 사용자 workflow 통합을 검토하고 있습니다. AlphaLayer는 선택된 보호 텍스트 경로에서 동작합니다. 바이오레는 이 상태를 하나의 ‘완성’으로 묶지 않고 구분해 공개합니다.",
+      "각 기술은 책임을 분리한 채 연결됩니다. 새로운 근거는 지식의 맥락을 넓히고, 문서와 이미지는 재사용 가능한 아티팩트가 됩니다. 외부 AI 실행이 필요한 선택 경로에는 독립된 보호 경계를 적용합니다.",
       "이 구조는 지금 소개하는 기술로 끝나지 않습니다. 바이오레가 새로운 기술을 개발하고 검증해 제품에 통합할 때마다, 그 역할과 연결 방식도 이 Technology Journal에 계속 더해집니다.",
     ],
     quote: {
@@ -52,13 +54,14 @@ const sharedCopy = {
     statuses: {
       "implemented-foundation": "IMPLEMENTED FOUNDATION",
       "implemented-capability": "IMPLEMENTED CAPABILITY",
-      "integration-in-progress": "IMPLEMENTED · INTEGRATION IN PROGRESS",
-      "selected-path-verified": "SELECTED PATH VERIFIED",
+      "release-in-review": "IMPLEMENTED · RELEASE IN REVIEW",
+      "integration-in-review": "IMPLEMENTED · INTEGRATION IN REVIEW",
+      "selected-path-active": "IMPLEMENTED · SELECTED PATHS ACTIVE",
     },
     intro: [
-      "Medical AI does not come from one large model alone. It needs a foundation that remembers where evidence came from, technology that turns documents into reusable knowledge, intelligence that orchestrates execution around purpose, and a boundary that protects external execution.",
-      "AlphaEvidence and AlphaDoc Engine are currently implemented as a foundation and a product capability. AlphaDocument is implemented with product integration in progress. AlphaLayer has a verified runtime for selected protected text paths. Viore reports these states separately rather than presenting them as one completed rollout.",
-      "Each technology keeps a distinct responsibility while connecting through explicit contracts. New evidence expands knowledge context, documents become reusable artifacts, and selected external AI paths can use a separate protection boundary.",
+      "Medical AI does not come from one large model alone. It needs a foundation that remembers where evidence came from, technology that turns documents and images into reusable artifacts, intelligence that orchestrates execution around purpose, and a boundary that protects external execution.",
+      "AlphaEvidence and AlphaDoc Engine are implemented as a foundation and a product capability. AlphaDocument is under release review. AlphaImage's static-image artifact technology is implemented, while activation in Alphadoc user workflows remains under integration review. AlphaLayer operates on selected protected text paths. Viore reports these states separately rather than presenting them as one completed rollout.",
+      "Each technology keeps a distinct responsibility while connecting through explicit contracts. New evidence expands knowledge context, documents and images become reusable artifacts, and selected external AI paths use a separate protection boundary.",
       "The system does not end with the technologies presented here. As Viore develops, validates, and integrates new technologies into its products, their roles and connections will continue to be added to this Technology Journal.",
     ],
     quote: {
@@ -110,13 +113,13 @@ const articleCopy = {
         {
           title: "서로 다른 기술을 하나의 경험으로 오케스트레이션합니다",
           paragraphs: [
-            "AlphaEvidence에서 출처가 연결된 근거를 받습니다. 통합되는 문서 업무에는 AlphaDocument 아티팩트를 연결하고, 외부 AI가 필요한 일부 보호 텍스트 경로에는 AlphaLayer 경계를 적용합니다. 각 연결은 구현과 제품 통합 상태를 구분해 확장합니다.",
+            "AlphaEvidence에서 출처가 연결된 근거를 받습니다. 문서와 이미지 맥락이 필요한 업무에는 AlphaDocument와 AlphaImage 아티팩트를 연결하고, 외부 AI가 필요한 일부 보호 텍스트 경로에는 AlphaLayer 경계를 적용합니다. 각 연결은 구현과 제품 통합 상태를 구분해 확장합니다.",
             "Release Identity는 실행에 사용된 코드와 동작 조건을 구분해 남깁니다. 평가 게이트는 근거의 충실도, 결과의 쓸모와 의료인의 검토 항목을 따로 살핍니다. 여러 기준을 평균 점수 하나로 뭉개지 않고, 무엇이 실행됐는지도 함께 추적합니다.",
           ],
         },
       ],
       figureTitle: "Purpose-defined orchestration",
-      figureCaption: "AlphaDoc Engine은 질문, 근거, 문서, 선택된 보호 AI 실행 경로와 사용자 검토를 업무 목적에 맞게 조율합니다. 각 기술의 통합 상태에 따라 결과를 제품과 다음 작업에 연결합니다.",
+      figureCaption: "AlphaDoc Engine은 질문, 근거, 문서·이미지 아티팩트, 선택된 보호 AI 실행 경로와 사용자 검토를 업무 목적에 맞게 조율합니다. 각 기술의 통합 상태에 따라 결과를 제품과 다음 작업에 연결합니다.",
     },
     document: {
       name: "AlphaDocument",
@@ -133,36 +136,59 @@ const articleCopy = {
         {
           title: "한 번 만든 문서 지식이 여러 기술에서 다시 쓰입니다",
           paragraphs: [
-            "Document Artifact는 특정 화면이나 기능에 묶이지 않는 계약으로 구현되어 있습니다. AlphaDoc Engine과 AlphaEvidence가 문서 맥락과 출처 구조를 재사용하도록 연결하는 제품 통합은 단계적으로 진행하고 있습니다.",
-            "출처가 보존된 하나의 아티팩트를 여러 업무에서 재사용하는 것이 AlphaDocument의 목표입니다. 현재 공개 상태는 엔진 구현과 제품 통합 진행을 분리해 표시합니다.",
+            "Document Artifact는 특정 화면이나 기능에 묶이지 않는 계약으로 구현되어 있습니다. AlphaDoc Engine과 AlphaEvidence는 문서 맥락과 출처 구조가 필요한 업무에 이 아티팩트를 활용할 수 있습니다.",
+            "출처가 보존된 하나의 아티팩트를 여러 업무에서 재사용하는 것이 AlphaDocument의 목표입니다. 엔진 구현은 완료됐고 제품 출시는 검토 중입니다.",
           ],
         },
       ],
       figureTitle: "One document, many reusable contexts",
-      figureCaption: "서로 다른 디지털 문서는 AlphaDocument에서 구조와 출처가 보존된 아티팩트가 됩니다. AlphaDoc Engine과 AlphaEvidence가 이를 재사용하도록 연결하는 제품 통합은 진행 중입니다.",
+      figureCaption: "서로 다른 디지털 문서는 AlphaDocument에서 구조와 출처가 보존된 아티팩트가 됩니다. AlphaDoc Engine과 AlphaEvidence는 이를 각자의 목적에 맞게 활용할 수 있습니다.",
+    },
+    image: {
+      name: "AlphaImage",
+      englishTitle: "Deterministic Image Artifact Compiler",
+      lead: "이미지를 해석하기 전에, 안전하고 다시 쓸 수 있는 Image Artifact로 만듭니다.",
+      sections: [
+        {
+          title: "정적 이미지를 검증 가능한 아티팩트로",
+          paragraphs: [
+            "같은 이미지라도 파일 형식, 방향, 해상도와 좌표계가 다르면 후속 작업은 서로 다른 입력을 보게 됩니다. 원본과 파생 이미지를 따로 다루면 어느 변환에서 무엇이 바뀌었는지도 잃기 쉽습니다.",
+            "AlphaImage는 허용된 정적 이미지 입력을 안전하게 확인하고, 픽셀 표현과 방향·좌표계를 일관된 구조로 정규화합니다. 원본과 처리 기준, 파생 표현의 무결성을 묶은 불변 Image Artifact가 만들어지므로 같은 입력을 같은 기준으로 다시 사용할 수 있습니다.",
+          ],
+        },
+        {
+          title: "좌표와 주석의 계보를 그대로 이어갑니다",
+          paragraphs: [
+            "경계 상자, 다각형, 마스크처럼 이미 존재하는 주석은 원본 좌표에서 정규화 좌표로 연결되고, 어떤 원천과 검토 상태에서 왔는지도 함께 남습니다. AlphaImage는 주석 형식과 좌표를 검증하지만 임상적 참·거짓을 대신 판단하지 않습니다.",
+            "AlphaImage는 판독 모델이나 진단 기능이 아니라 이미지 기반 업무가 같은 표현·좌표·계보를 공유하도록 만드는 기반입니다. 기술 구현은 완료됐고, Alphadoc 사용자 workflow와의 연결은 통합 검토 중입니다.",
+          ],
+        },
+      ],
+      figureTitle: "One image, one verifiable coordinate system",
+      figureCaption: "AlphaImage는 허용된 정적 이미지를 안전한 표현으로 정규화하고, 원본·좌표 변환·기존 주석·무결성 정보를 Image Artifact에 연결합니다. 결과는 분석이나 진단이 아니라 후속 workflow가 재사용할 수 있는 검증 가능한 이미지 기반입니다.",
     },
     layer: {
       name: "AlphaLayer",
       englishTitle: "Protected Inference Gateway",
-      lead: "AI를 실행하는 순간에도 의료 정보의 맥락과 통제를 놓치지 않습니다.",
+      lead: "선택된 외부 AI 실행을 하나의 보호 경계 안에서 통제합니다.",
       sections: [
         {
-          title: "보호 원칙을 실행 구조에 담습니다",
+          title: "선택된 보호 경로에서 실제로 작동합니다",
           paragraphs: [
             "의료 AI의 보호는 입력창에서 몇 개의 문자열을 가리는 것으로 끝나지 않습니다. 어떤 업무를 위해 어떤 정보가 필요한지 확인하고, 외부 실행 전후의 경계를 하나의 구조로 통제해야 합니다.",
-            "AlphaLayer는 AlphaDoc Engine과 외부 생성 모델 사이에 두는 Protected Inference Gateway입니다. 현재 선택된 보호 텍스트 경로에서 등록된 목적과 처리 조건, 정보 최소화가 적용되는 런타임을 검증했습니다.",
+            "AlphaLayer는 AlphaDoc Engine과 외부 생성 모델 사이의 실행 경계를 담당하는 Protected Inference Gateway입니다. 등록된 업무 목적과 요청 조건을 확인하고, 민감정보를 정책에 따라 변환해 필요한 정보만 남깁니다. 조건을 충족하지 못한 요청은 외부 실행 전에 차단됩니다.",
           ],
         },
         {
-          title: "요청과 응답, 실행의 증거까지 하나의 경계 안에서",
+          title: "요청부터 응답까지, 실행 맥락을 하나로 묶습니다",
           paragraphs: [
-            "검증된 선택 경로에서 AlphaLayer는 외부 요청과 응답을 같은 실행 맥락에 묶고, 적용된 보호 정책과 실행 결과를 확인할 수 있는 최소 기록을 남깁니다.",
-            "이 상태는 전체 서비스 적용, 환자정보 처리 준비 또는 법적 적합성 확인을 의미하지 않습니다. 적용 경로는 별도의 검증과 승인에 따라 단계적으로 넓힙니다.",
+            "AlphaLayer는 외부로 나가는 요청과 돌아오는 응답을 같은 실행 맥락에 묶습니다. 응답 무결성을 확인하고, 원문 대신 어떤 보호 조건 아래 실행됐는지 필요한 최소 정보만 기록합니다.",
+            "현재 Alphadoc의 선택된 보호 텍스트 경로가 AlphaLayer에 연결돼 있습니다. 이는 모든 기능이 자동으로 보호됐다는 의미가 아니며, 전체 서비스 적용·환자정보 처리 준비·법적 적합성 확인을 뜻하지 않습니다.",
           ],
         },
       ],
-      figureTitle: "Protection around every execution",
-      figureCaption: "선택된 보호 텍스트 경로에서 목적 확인, 정보 최소화, 외부 실행 통제와 최소 실행 기록이 하나의 런타임 경계로 검증되었습니다.",
+      figureTitle: "Selected execution paths, one protected boundary",
+      figureCaption: "AlphaLayer는 선택된 보호 텍스트 경로에서 목적과 요청 조건을 확인하고, 정보 최소화와 정책 변환을 거친 실행만 외부 경계로 보냅니다. 응답 무결성과 원문 없는 최소 실행 기록까지 같은 맥락에 연결됩니다.",
     },
   },
   en: {
@@ -205,13 +231,13 @@ const articleCopy = {
         {
           title: "Distinct technologies become one experience",
           paragraphs: [
-            "AlphaDoc Engine receives source-bound evidence from AlphaEvidence. Document workflows can connect to AlphaDocument artifacts as integration progresses, while selected protected text paths can use the AlphaLayer boundary. Each connection expands according to its verified implementation and product-integration state.",
+            "AlphaDoc Engine receives source-bound evidence from AlphaEvidence. Workflows that need document or image context can connect to AlphaDocument and AlphaImage artifacts, while selected protected text paths use the AlphaLayer boundary. Each connection expands according to its verified implementation and product-integration state.",
             "Release Identity records the code and behavior conditions used for an execution. Evaluation gates examine evidence fidelity, usefulness, and professional review separately while preserving what was executed.",
           ],
         },
       ],
       figureTitle: "Purpose-defined orchestration",
-      figureCaption: "AlphaDoc Engine orchestrates questions, evidence, documents, selected protected AI execution paths, and user review around the purpose of the work. Connections expand according to each technology's integration state.",
+      figureCaption: "AlphaDoc Engine orchestrates questions, evidence, document and image artifacts, selected protected AI execution paths, and user review around the purpose of the work. Connections expand according to each technology's integration state.",
     },
     document: {
       name: "AlphaDocument",
@@ -228,36 +254,59 @@ const articleCopy = {
         {
           title: "Document knowledge that works across technologies",
           paragraphs: [
-            "A Document Artifact is implemented as a contract independent of any one screen or feature. Product integration is progressing so AlphaDoc Engine and AlphaEvidence can reuse document context and source structure.",
-            "AlphaDocument's goal is to let multiple workflows reuse one provenance-carrying artifact instead of interpreting the same document from scratch. Its public status separates engine implementation from product integration.",
+            "A Document Artifact is implemented as a contract independent of any one screen or feature. AlphaDoc Engine and AlphaEvidence can use the artifact where document context and source structure are required.",
+            "AlphaDocument's goal is to let multiple workflows reuse one provenance-carrying artifact instead of interpreting the same document from scratch. Engine implementation is complete, while product release remains under review.",
           ],
         },
       ],
       figureTitle: "One document, many reusable contexts",
-      figureCaption: "Different digital documents become provenance-carrying artifacts in AlphaDocument. Product integration for reuse across AlphaDoc Engine and AlphaEvidence is in progress.",
+      figureCaption: "Different digital documents become provenance-carrying artifacts in AlphaDocument. AlphaDoc Engine and AlphaEvidence can use them for their respective purposes.",
+    },
+    image: {
+      name: "AlphaImage",
+      englishTitle: "Deterministic Image Artifact Compiler",
+      lead: "Before interpreting an image, we turn it into a safe, reusable Image Artifact.",
+      sections: [
+        {
+          title: "From static images to verifiable artifacts",
+          paragraphs: [
+            "The same image can appear different to downstream systems when file format, orientation, resolution, or coordinate space changes. Treating source and derivative images separately also makes it easy to lose what changed at each transformation.",
+            "AlphaImage safely validates supported static image inputs and normalizes pixel representations, orientation, and coordinate systems into one consistent structure. The resulting immutable Image Artifact binds the source, processing identity, derivative representations, and integrity so the same input can be reused under the same rules.",
+          ],
+        },
+        {
+          title: "Coordinate and annotation lineage stays connected",
+          paragraphs: [
+            "Existing bounding boxes, polygons, and masks are mapped from source coordinates into normalized coordinates while retaining their origin and declared review state. AlphaImage validates annotation format and geometry without deciding whether a clinical assertion is true.",
+            "AlphaImage is not a reading model or diagnostic feature. It is the foundation that lets image-based workflows share the same representations, coordinates, and lineage. The technology is implemented, while activation in Alphadoc user workflows remains under integration review.",
+          ],
+        },
+      ],
+      figureTitle: "One image, one verifiable coordinate system",
+      figureCaption: "AlphaImage normalizes supported static images into safe representations and binds the source, coordinate transforms, existing annotations, and integrity inside an Image Artifact. The output is not an analysis or diagnosis, but a verifiable image foundation for downstream workflows.",
     },
     layer: {
       name: "AlphaLayer",
       englishTitle: "Protected Inference Gateway",
-      lead: "Medical context and control remain intact at the moment AI executes.",
+      lead: "Selected external AI executions operate inside one protected boundary.",
       sections: [
         {
-          title: "Protection principles built into execution",
+          title: "Protection operating on selected paths",
           paragraphs: [
             "Protecting medical AI does not end with masking a few strings. The system must understand why information is needed and control the boundary before and after external execution.",
-            "AlphaLayer is a Protected Inference Gateway between AlphaDoc Engine and external generation models. Viore has verified a runtime for selected protected text paths, including registered purpose, processing conditions, and information minimization.",
+            "AlphaLayer is the Protected Inference Gateway between AlphaDoc Engine and external generation models. It checks registered purpose and request conditions, transforms sensitive information under policy, and retains only what the execution needs. Requests that fail those conditions are blocked before external execution.",
           ],
         },
         {
-          title: "Request, response, and execution evidence in one boundary",
+          title: "One execution context from request to response",
           paragraphs: [
-            "Within the selected verified paths, AlphaLayer binds outbound requests and returning responses to one execution context and retains the minimum record needed to review the applied protection policy and result.",
-            "This status does not represent a full-service rollout, patient-information processing readiness, or legal suitability. Additional paths require separate validation and approval.",
+            "AlphaLayer binds outbound requests and returning responses to the same execution context. It verifies response integrity and records only the minimum information needed to identify the protection conditions, without retaining source content.",
+            "Selected protected text paths in Alphadoc now run through AlphaLayer. This does not mean every feature is covered, and it does not represent full-service rollout, patient-information processing readiness, or legal suitability.",
           ],
         },
       ],
-      figureTitle: "Protection around every execution",
-      figureCaption: "Purpose checks, minimization, external execution controls, and minimal execution records have been verified together for selected protected text paths.",
+      figureTitle: "Selected execution paths, one protected boundary",
+      figureCaption: "For selected protected text paths, AlphaLayer checks purpose and request conditions, applies minimization and policy transformation, and permits only conforming external execution. Response integrity and a source-free minimal execution record remain bound to the same context.",
     },
   },
 } as const;
@@ -389,8 +438,8 @@ export function TechnologyPage({
           kind="overview"
           title={language === "ko" ? "Viore technology constellation" : "Viore technology constellation"}
           caption={language === "ko"
-            ? "AlphaEvidence와 AlphaDoc Engine은 구현된 기반과 기능, AlphaDocument는 통합 진행, AlphaLayer는 선택 경로 검증 상태입니다. 각 기술은 상태와 책임을 구분한 채 명시적인 연결 계약으로 이어집니다."
-            : "AlphaEvidence and AlphaDoc Engine are implemented as a foundation and capability, AlphaDocument integration is in progress, and AlphaLayer is verified for selected paths. Explicit contracts connect them while preserving distinct status and responsibility."}
+            ? "AlphaEvidence와 AlphaDoc Engine은 구현된 기반과 기능, AlphaDocument는 출시 검토, AlphaImage는 통합 검토, AlphaLayer는 선택 경로 운영 상태입니다. 각 기술은 상태와 책임을 구분한 채 명시적인 연결 계약으로 이어집니다."
+            : "AlphaEvidence and AlphaDoc Engine are implemented as a foundation and capability. AlphaDocument is under release review, AlphaImage is under integration review, and AlphaLayer operates on selected paths. Explicit contracts connect them while preserving distinct status and responsibility."}
         />
       </header>
 
@@ -443,14 +492,14 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphadocument" className="technology-post" data-tech-status="integration-in-progress">
+        <article id="technology-alphadocument" className="technology-post" data-tech-status="release-in-review">
           <TechnologySectionHeader
             language={language}
             index="03"
             name={articles.document.name}
             englishTitle={articles.document.englishTitle}
             lead={articles.document.lead}
-            status="integration-in-progress"
+            status="release-in-review"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.document.sections} />
@@ -464,20 +513,41 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphalayer" className="technology-post" data-tech-status="selected-path-verified">
+        <article id="technology-alphaimage" className="technology-post" data-tech-status="integration-in-review">
           <TechnologySectionHeader
             language={language}
             index="04"
+            name={articles.image.name}
+            englishTitle={articles.image.englishTitle}
+            lead={articles.image.lead}
+            status="integration-in-review"
+          />
+          <div className="technology-prose">
+            <ProseSections sections={articles.image.sections} />
+            <TechnologyFigure
+              language={language}
+              number="05"
+              kind="image"
+              title={articles.image.figureTitle}
+              caption={articles.image.figureCaption}
+            />
+          </div>
+        </article>
+
+        <article id="technology-alphalayer" className="technology-post" data-tech-status="selected-path-active">
+          <TechnologySectionHeader
+            language={language}
+            index="05"
             name={articles.layer.name}
             englishTitle={articles.layer.englishTitle}
             lead={articles.layer.lead}
-            status="selected-path-verified"
+            status="selected-path-active"
           />
           <div className="technology-prose">
             <ProseSections sections={articles.layer.sections} />
             <TechnologyFigure
               language={language}
-              number="05"
+              number="06"
               kind="layer"
               title={articles.layer.figureTitle}
               caption={articles.layer.figureCaption}

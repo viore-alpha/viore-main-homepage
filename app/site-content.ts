@@ -73,6 +73,7 @@ export const technologyAnchors = {
   alphaevidence: "technology-alphaevidence",
   "alphadoc-engine": "technology-alphadoc-engine",
   alphadocument: "technology-alphadocument",
+  alphaimage: "technology-alphaimage",
   alphalayer: "technology-alphalayer",
 } as const;
 
