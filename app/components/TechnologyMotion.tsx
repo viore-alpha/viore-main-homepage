@@ -1454,7 +1454,7 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
     return (
       <DiagramSvg id={id} kind="seal" language={language} mobile width={420} height={980}>
         <Boundary x={22} y={24} width={376} height={170} label="SENDER · END TO END" tone="ink" step={1} />
-        <PlateModule x={40} y={60} width={160} height={36} label="Compose" tone="blue" step={2} />
+        <PlateModule x={40} y={60} width={160} height={36} label="Compose" tone="blue" step={2} center />
         <PlateModule x={218} y={56} width={162} height={44} label={["Seal with", "recipient key"]} tone="red" step={3} center />
         <TokenStrip x={149} y={150} count={8} tone="blue" step={4} />
 
@@ -1467,7 +1467,7 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
 
         <Boundary x={22} y={566} width={376} height={150} label="RECIPIENT" tone="ink" step={10} />
         <PlateModule x={40} y={602} width={160} height={44} label={["Open with", "own key"]} tone="red" step={11} center />
-        <PlateModule x={218} y={606} width={162} height={36} label="Read & verify" tone="blue" step={11} />
+        <PlateModule x={218} y={606} width={162} height={36} label="Read & verify" tone="blue" step={11} center />
         <TokenStrip x={149} y={686} count={8} tone="blue" step={12} />
 
         <Boundary x={22} y={738} width={376} height={214} label="USER-KEY BACKUP" tone="blue" step={13} />
@@ -1486,7 +1486,7 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
   return (
     <DiagramSvg id={id} kind="seal" language={language} mobile={false} width={960} height={600}>
       <Boundary x={24} y={70} width={210} height={300} label="SENDER" tone="ink" step={1} />
-      <PlateModule x={40} y={110} width={178} height={40} label="Compose" tone="blue" step={2} />
+      <PlateModule x={40} y={110} width={178} height={40} label="Compose" tone="blue" step={2} center />
       <PlateModule x={40} y={168} width={178} height={48} label={["Seal with", "recipient key"]} tone="red" step={3} center />
       <TokenStrip x={80} y={252} count={6} tone="blue" step={4} />
       <MicroLabel x={129} y={306} anchor="middle" tone="muted" step={4}>sealed on device</MicroLabel>
@@ -1501,7 +1501,7 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
 
       <Boundary x={636} y={70} width={210} height={300} label="RECIPIENT" tone="ink" step={10} />
       <PlateModule x={652} y={110} width={178} height={48} label={["Open with", "own key"]} tone="red" step={11} center />
-      <PlateModule x={652} y={176} width={178} height={40} label="Read & verify" tone="blue" step={11} />
+      <PlateModule x={652} y={176} width={178} height={40} label="Read & verify" tone="blue" step={11} center />
       <TokenStrip x={690} y={252} count={6} tone="blue" step={12} />
       <MicroLabel x={741} y={306} anchor="middle" tone="muted" step={12}>opens only here</MicroLabel>
 
