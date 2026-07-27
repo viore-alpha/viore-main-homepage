@@ -190,15 +190,15 @@ const articleCopy = {
       figureTitle: "Selected execution paths, one protected boundary",
       figureCaption: "AlphaLayer는 선택된 보호 텍스트 경로에서 목적과 요청 조건을 확인하고, 정보 최소화와 정책 변환을 거친 실행만 외부 경계로 보냅니다. 응답 무결성과 원문 없는 최소 실행 기록까지 같은 맥락에 연결됩니다.",
     },
-    guard: {
-      name: "AlphaGuard",
-      englishTitle: "End-to-End Conversation Guard",
-      lead: "의료인 간 대화를, 서버도 열지 못하는 종단간 암호화로 보호합니다.",
+    seal: {
+      name: "AlphaSeal",
+      englishTitle: "End-to-End Conversation Seal",
+      lead: "의료인 간 대화를, 서버도 열지 못하는 종단간 암호화로 봉인합니다.",
       sections: [
         {
           title: "대화의 주인은 대화한 두 사람뿐",
           paragraphs: [
-            "쪽지 보호는 전송 구간만 암호화하는 것으로 끝나지 않습니다. 서버가 내용을 복호화할 수 있다면, 보관과 운영의 모든 지점이 신뢰의 대상이 됩니다. AlphaGuard는 그 전제를 바꿉니다.",
+            "쪽지 보호는 전송 구간만 암호화하는 것으로 끝나지 않습니다. 서버가 내용을 복호화할 수 있다면, 보관과 운영의 모든 지점이 신뢰의 대상이 됩니다. AlphaSeal은 그 전제를 바꿉니다.",
             "대화마다 별도의 키를 만들어 참여한 두 사람의 신원 키로만 봉인합니다. 서버는 암호문과 최소한의 전달 정보만 보관하며, 대화 내용을 읽지 못합니다. 개인 키는 브라우저의 보안 저장소에 non-extractable 형태로 두어, 악성 스크립트가 침입해도 키 자체를 꺼내 갈 수 없습니다.",
           ],
         },
@@ -211,7 +211,7 @@ const articleCopy = {
         },
       ],
       figureTitle: "One conversation, sealed end to end",
-      figureCaption: "AlphaGuard는 대화별 키를 참여자 신원 키로 봉인해 두 기기에서만 열리게 하고, 서버에는 읽을 수 없는 암호문만 남깁니다. 위변조 감지와 사용자 키 기반 백업으로, 대화의 무결성과 기기 이전 복원을 같은 경계 안에서 보장합니다.",
+      figureCaption: "AlphaSeal은 대화별 키를 참여자 신원 키로 봉인해 두 기기에서만 열리게 하고, 서버에는 읽을 수 없는 암호문만 남깁니다. 위변조 감지와 사용자 키 기반 백업으로, 대화의 무결성과 기기 이전 복원을 같은 경계 안에서 보장합니다.",
     },
   },
   en: {
@@ -331,15 +331,15 @@ const articleCopy = {
       figureTitle: "Selected execution paths, one protected boundary",
       figureCaption: "For selected protected text paths, AlphaLayer checks purpose and request conditions, applies minimization and policy transformation, and permits only conforming external execution. Response integrity and a source-free minimal execution record remain bound to the same context.",
     },
-    guard: {
-      name: "AlphaGuard",
-      englishTitle: "End-to-End Conversation Guard",
-      lead: "Protects conversations between clinicians with end-to-end encryption the server cannot open.",
+    seal: {
+      name: "AlphaSeal",
+      englishTitle: "End-to-End Conversation Seal",
+      lead: "Seals conversations between clinicians with end-to-end encryption the server cannot open.",
       sections: [
         {
           title: "A conversation belongs only to the two who share it",
           paragraphs: [
-            "Protecting messages does not end with encrypting the transport link. If the server can decrypt the content, every point of storage and operation becomes something to trust. AlphaGuard changes that premise.",
+            "Protecting messages does not end with encrypting the transport link. If the server can decrypt the content, every point of storage and operation becomes something to trust. AlphaSeal changes that premise.",
             "Each conversation gets its own key, sealed only to the identity keys of the two participants. The server holds ciphertext and minimal delivery data, and cannot read the content. Private keys live in the browser's secure store as non-extractable keys, so even a script that breaks in cannot take the key itself.",
           ],
         },
@@ -352,7 +352,7 @@ const articleCopy = {
         },
       ],
       figureTitle: "One conversation, sealed end to end",
-      figureCaption: "AlphaGuard seals each conversation key to the participants' identity keys so it opens only on the two devices, leaving the server unreadable ciphertext. Tamper detection and user-key backup keep conversation integrity and cross-device restore within the same boundary.",
+      figureCaption: "AlphaSeal seals each conversation key to the participants' identity keys so it opens only on the two devices, leaving the server unreadable ciphertext. Tamper detection and user-key backup keep conversation integrity and cross-device restore within the same boundary.",
     },
   },
 } as const;
@@ -601,17 +601,17 @@ export function TechnologyPage({
           </div>
         </article>
 
-        <article id="technology-alphaguard" className="technology-post" data-tech-status="implemented-capability">
+        <article id="technology-alphaseal" className="technology-post" data-tech-status="implemented-capability">
           <TechnologySectionHeader
             language={language}
             index="06"
-            name={articles.guard.name}
-            englishTitle={articles.guard.englishTitle}
-            lead={articles.guard.lead}
+            name={articles.seal.name}
+            englishTitle={articles.seal.englishTitle}
+            lead={articles.seal.lead}
             status="implemented-capability"
           />
           <div className="technology-prose">
-            <ProseSections sections={articles.guard.sections} />
+            <ProseSections sections={articles.seal.sections} />
             {/* 전용 다이어그램은 후속 디자인 작업. 확정 전까지 도형 없이 산문만 노출한다. */}
           </div>
         </article>
