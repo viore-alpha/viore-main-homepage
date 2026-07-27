@@ -280,19 +280,22 @@ test("server-renders the Korean Company story as the homepage", async () => {
 });
 
 test("keeps Knowledge public while Council is unavailable and marked coming soon", async () => {
-  const [companyResponse, knowledgeResponse, councilResponse] = await Promise.all([
+  const [companyResponse, knowledgeResponse, englishKnowledgeResponse, councilResponse] = await Promise.all([
     render("/ko"),
     render("/ko/knowledge"),
+    render("/en/knowledge"),
     render("/ko/council"),
   ]);
 
   assert.equal(companyResponse.status, 200);
   assert.equal(knowledgeResponse.status, 200);
+  assert.equal(englishKnowledgeResponse.status, 200);
   assert.equal(councilResponse.status, 404);
 
-  const [companyHtml, knowledgeHtml] = await Promise.all([
+  const [companyHtml, knowledgeHtml, englishKnowledgeHtml] = await Promise.all([
     companyResponse.text(),
     knowledgeResponse.text(),
+    englishKnowledgeResponse.text(),
   ]);
 
   assert.match(companyHtml, /href="\/ko\/knowledge"[^>]*>Knowledge<\/a>/);
@@ -303,10 +306,12 @@ test("keeps Knowledge public while Council is unavailable and marked coming soon
   assert.doesNotMatch(knowledgeHtml, /INSIGHT ·/);
   assert.match(knowledgeHtml, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko\/knowledge"/);
   assert.match(knowledgeHtml, /<title>바이오레 Knowledge \| 최신 의학 논문과 근거<\/title>/);
-  assert.match(knowledgeHtml, /<h1 id="knowledge-title">의료 지식과 근거<\/h1>/);
+  assert.match(knowledgeHtml, /<h1 id="knowledge-title">Knowledge<\/h1>/);
+  assert.match(englishKnowledgeHtml, /<h1 id="knowledge-title">Knowledge<\/h1>/);
   assert.match(knowledgeHtml, /class="knowledge-page" data-knowledge-state="live"/);
   assert.doesNotMatch(knowledgeHtml, /VIORE · ALPHADOC LITERATURE/);
-  assert.match(knowledgeHtml, /실시간으로 채워지는 논문 라이브러리\./);
+  assert.doesNotMatch(knowledgeHtml, /실시간으로 채워지는 논문 라이브러리\./);
+  assert.doesNotMatch(englishKnowledgeHtml, /A living library of newly published medical literature\./);
   assert.match(knowledgeHtml, /신규 논문과 브리프/);
   assert.match(knowledgeHtml, /AlphaEvidence DB에서 선별한 국내외 최신 논문/);
   assert.match(knowledgeHtml, /aria-label="전체"[^>]*aria-pressed="true"/);
@@ -345,7 +350,8 @@ test("implements Knowledge as a paginated live literature contract on paper", as
   assert.match(dataSource, /AbortSignal\.timeout\(KNOWLEDGE_FEED_FETCH_TIMEOUT_MS\)/);
   assert.match(dataSource, /next: \{ revalidate: KNOWLEDGE_FEED_REVALIDATE_SECONDS \}/);
   assert.doesNotMatch(dataSource, /service_role|service-role|secret key/i);
-  assert.match(component, /실시간으로 채워지는 논문 라이브러리\./);
+  assert.match(component, /<h1 id="knowledge-title">Knowledge<\/h1>/);
+  assert.doesNotMatch(component, /실시간으로 채워지는 논문 라이브러리\.|A living library of newly published medical literature\./);
   assert.match(paperLibrary, /useState<KnowledgeFilter>\("all"\)/);
   assert.match(paperLibrary, /aria-pressed=\{activeFilter === filter\.value\}/);
   assert.match(paperLibrary, /new IntersectionObserver/);

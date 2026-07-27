@@ -33,10 +33,7 @@ export function KnowledgePage({
     <article className="knowledge-page" data-knowledge-state={result.state}>
       <section className="knowledge-hero" aria-labelledby="knowledge-title">
         <div className="knowledge-shell knowledge-hero-inner">
-          <h1 id="knowledge-title">{ko ? "의료 지식과 근거" : "Medical knowledge, kept current"}</h1>
-          <p className="knowledge-lead">
-            {ko ? "실시간으로 채워지는 논문 라이브러리." : "A living library of newly published medical literature."}
-          </p>
+          <h1 id="knowledge-title">Knowledge</h1>
           <div className="knowledge-live-line" aria-label={ko ? "AlphaEvidence DB 연결 상태" : "AlphaEvidence DB connection status"}>
             <i aria-hidden="true" />
             <span>{stateLabel}</span>
