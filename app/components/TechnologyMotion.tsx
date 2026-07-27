@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { ViewportMotion } from "@/app/components/ViewportMotion";
 import type { Language } from "@/app/site-content";
 
-export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "layer";
+export type TechnologyMotionKind = "overview" | "evidence" | "engine" | "document" | "image" | "layer";
 type DiagramTone = "ink" | "blue" | "red" | "muted";
 type DiagramLines = string | readonly string[];
 
@@ -10,7 +10,7 @@ const diagramCopy = {
   ko: {
     overview: {
       title: "바이오레 기술 시스템 맵",
-      description: "구현된 기반과 기능, 통합 진행 중인 기술, 선택 경로에서 검증된 실행 경계를 상태별로 구분하고 명시적인 계약으로 연결합니다.",
+      description: "AlphaEvidence, AlphaDocument, AlphaImage, AlphaLayer와 Alphadoc의 구현·통합·운영 상태를 구분하면서 근거, 문서·이미지 아티팩트, 실행, 검토와 무결성 기록을 연결합니다.",
     },
     evidence: {
       title: "AlphaEvidence 근거 계보 구조",
@@ -24,15 +24,19 @@ const diagramCopy = {
       title: "AlphaDocument 디지털 아티팩트 구조",
       description: "디지털 문서를 블록, 의미 앵커, 스키마와 출처 연결로 분해하고 검증한 뒤 재사용 가능한 문서 아티팩트로 조립합니다.",
     },
+    image: {
+      title: "AlphaImage 이미지 아티팩트 구조",
+      description: "허용된 정적 이미지의 표현과 좌표를 정규화하고 원본, 기존 주석, 변환 계보와 무결성을 재사용 가능한 Image Artifact에 연결합니다.",
+    },
     layer: {
       title: "AlphaLayer 보호 실행 경계",
-      description: "선택된 보호 텍스트 경로에서 목적과 정책, 정보 최소화, 외부 실행 통제와 최소 실행 기록을 하나의 경계로 검증합니다.",
+      description: "선택된 보호 텍스트 경로에서 목적과 요청 조건, 정보 최소화, 정책 변환, 응답 무결성과 원문 없는 최소 실행 기록을 하나의 경계로 연결합니다.",
     },
   },
   en: {
     overview: {
       title: "Viore technology system map",
-      description: "Implemented foundations and capabilities, integration in progress, and selected-path runtime verification are reported separately and connected through explicit contracts.",
+      description: "AlphaEvidence, AlphaDocument, AlphaImage, AlphaLayer, and Alphadoc preserve distinct implementation, integration, and operating states while exchanging evidence, document and image artifacts, execution, review, and integrity records.",
     },
     evidence: {
       title: "AlphaEvidence provenance architecture",
@@ -46,9 +50,13 @@ const diagramCopy = {
       title: "AlphaDocument digital artifact architecture",
       description: "Digital documents are decomposed into blocks, semantic anchors, schema, and provenance links, then validated and assembled into reusable artifacts.",
     },
+    image: {
+      title: "AlphaImage image artifact architecture",
+      description: "Supported static images are normalized into consistent representations and coordinates, then bound to their source, existing annotations, transformation lineage, and integrity in a reusable Image Artifact.",
+    },
     layer: {
       title: "AlphaLayer protected execution boundary",
-      description: "Selected protected text paths verify purpose and policy checks, information minimization, external execution controls, and minimal execution records within one boundary.",
+      description: "On selected protected text paths, purpose and request conditions, minimization, policy transformation, response integrity, and a source-free minimal execution record remain connected through one boundary.",
     },
   },
 } as const;
@@ -390,7 +398,7 @@ function ArtifactChain({
   const items = [
     "Evidence Packet",
     pick(language, "검토 상태", "Review State"),
-    "Document Artifact",
+    "Typed Artifacts",
     "Citation Map",
     "Integrity Record",
   ];
@@ -474,18 +482,10 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
           step={2}
           tokens={6}
         />
-        <Boundary x={220} y={24} width={180} height={190} label="ALPHADOCUMENT" tone="blue" step={1} solid />
-        <StackPanel
-          x={234}
-          y={54}
-          width={152}
-          height={140}
-          title="DOCUMENT DOMAIN"
-          rows={["Block Structure", "Provenance", "Validation", "Assembly"]}
-          tone="blue"
-          step={3}
-          tokens={6}
-        />
+        <Boundary x={220} y={24} width={180} height={190} label="ARTIFACT COMPILERS" tone="blue" step={1} solid />
+        <PlateModule x={234} y={60} width={152} height={50} label={["AlphaDocument", "Document Artifact"]} tone="blue" step={3} />
+        <PlateModule x={234} y={126} width={152} height={50} label={["AlphaImage", "Image Artifact"]} tone="blue" step={3} />
+        <TokenStrip x={274} y={190} count={6} tone="blue" step={3} size={7} gap={3} />
 
         <Boundary x={24} y={248} width={372} height={298} label="ALPHADOC ENGINE" tone="red" step={4} emphasized />
         <MicroLabel x={210} y={285} anchor="middle" tone="red" step={5}>
@@ -497,7 +497,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
         <Boundary x={46} y={356} width={328} height={142} label="CAPABILITY FABRIC" tone="ink" step={6} />
         <PlateModule x={64} y={390} width={88} height={34} label={["Evidence", "Retrieval"]} tone="blue" step={7} center />
         <PlateModule x={166} y={378} width={88} height={34} label={["Reasoning", "Synthesis"]} tone="red" step={7} center strong />
-        <PlateModule x={268} y={390} width={88} height={34} label={["Document", "Assembly"]} tone="blue" step={7} center />
+        <PlateModule x={268} y={390} width={88} height={34} label={["Artifact", "Assembly"]} tone="blue" step={7} center />
         <PlateModule x={115} y={444} width={88} height={34} label={["Citation", "Binding"]} tone="ink" step={8} center />
         <PlateModule x={217} y={444} width={88} height={34} label={["Quality", "Check"]} tone="ink" step={8} center />
         <Link d="M 152 407 L 166 395" id={id} tone="blue" step={9} />
@@ -513,7 +513,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
           width={152}
           height={154}
           title="PROTECTED EXECUTION"
-          rows={["Purpose Binding", "Minimization", "Integrity", "Assurance"]}
+          rows={["Registered Path", "Minimization", "Integrity", "Minimal Record"]}
           tone="red"
           step={11}
           tokens={6}
@@ -568,7 +568,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
       <Boundary x={314} y={180} width={332} height={164} label="CAPABILITY FABRIC" tone="ink" step={4} />
       <PlateModule x={332} y={216} width={88} height={38} label={["Evidence", "Retrieval"]} tone="blue" step={5} center />
       <PlateModule x={436} y={204} width={88} height={38} label={["Reasoning", "Synthesis"]} tone="red" step={5} center strong />
-      <PlateModule x={540} y={216} width={88} height={38} label={["Document", "Assembly"]} tone="blue" step={5} center />
+      <PlateModule x={540} y={216} width={88} height={38} label={["Artifact", "Assembly"]} tone="blue" step={5} center />
       <PlateModule x={384} y={286} width={88} height={38} label={["Citation", "Binding"]} tone="ink" step={6} center />
       <PlateModule x={488} y={286} width={88} height={38} label={["Quality", "Check"]} tone="ink" step={6} center />
       <Link d="M 420 235 L 436 223" id={id} tone="blue" step={7} />
@@ -578,18 +578,10 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
       <Link d="M 420 235 C 455 265 505 265 540 235" id={id} tone="muted" step={7} dashed />
       <TokenStrip x={424} y={366} count={9} tone="red" step={8} />
 
-      <Boundary x={710} y={34} width={224} height={220} label="ALPHADOCUMENT" tone="blue" step={1} solid />
-      <StackPanel
-        x={726}
-        y={67}
-        width={192}
-        height={165}
-        title="DOCUMENT DOMAIN"
-        rows={["Block Structure", "Semantic Anchors", "Provenance", "Validation / Assembly"]}
-        tone="blue"
-        step={3}
-        tokens={8}
-      />
+      <Boundary x={710} y={34} width={224} height={220} label="ARTIFACT COMPILERS" tone="blue" step={1} solid />
+      <PlateModule x={726} y={75} width={192} height={60} label={["AlphaDocument", "Document Artifact"]} tone="blue" step={3} />
+      <PlateModule x={726} y={157} width={192} height={60} label={["AlphaImage", "Image Artifact"]} tone="blue" step={3} />
+      <TokenStrip x={789} y={232} count={8} tone="blue" step={3} size={7} gap={3} />
 
       <Boundary x={62} y={318} width={230} height={208} label="ALPHALAYER" tone="red" step={8} solid />
       <StackPanel
@@ -598,7 +590,7 @@ function OverviewSvg({ language, mobile }: { language: Language; mobile: boolean
         width={198}
         height={152}
         title="PROTECTED EXECUTION"
-        rows={["Purpose Binding", "Minimization", "Response Integrity", "Payload-free Assurance"]}
+        rows={["Registered Path", "Minimization", "Response Integrity", "Minimal Record"]}
         tone="red"
         step={9}
         tokens={8}
@@ -829,7 +821,7 @@ function EngineSvg({ language, mobile }: { language: Language; mobile: boolean }
     pick(language, "의료 업무 의도", "Medical Intent"),
     pick(language, "임상 맥락", "Clinical Context"),
     "Evidence Packet",
-    "Document Artifact",
+    ["Document Artifact", "Image Artifact"],
   ];
 
   if (mobile) {
@@ -838,7 +830,7 @@ function EngineSvg({ language, mobile }: { language: Language; mobile: boolean }
         <Boundary x={22} y={24} width={376} height={166} label="CONTEXT INPUTS" tone="ink" step={1} />
         {inputRows.map((row, index) => (
           <PlateModule
-            key={row}
+            key={asLines(row).join("-")}
             x={38 + (index % 2) * 174}
             y={60 + Math.floor(index / 2) * 48}
             width={158}
@@ -1182,19 +1174,147 @@ function DocumentSvg({ language, mobile }: { language: Language; mobile: boolean
   );
 }
 
+function ImageSvg({ language, mobile }: { language: Language; mobile: boolean }) {
+  const id = `technology-image-${language}-${mobile ? "mobile" : "desktop"}`;
+  const inputRows = [
+    pick(language, "정적 이미지", "Static Raster"),
+    pick(language, "제한된 2D X-ray", "Bounded 2D X-ray"),
+    pick(language, "기존 주석", "Existing Annotations"),
+    pick(language, "원본 식별 정보", "Source Identity"),
+  ];
+
+  if (mobile) {
+    return (
+      <DiagramSvg id={id} kind="image" language={language} mobile width={420} height={1000}>
+        <Boundary x={22} y={24} width={376} height={190} label="SUPPORTED STATIC INPUTS" tone="ink" step={1} />
+        {inputRows.map((row, index) => (
+          <PlateModule
+            key={row}
+            x={38 + (index % 2) * 174}
+            y={62 + Math.floor(index / 2) * 50}
+            width={158}
+            height={36}
+            label={row}
+            tone={index < 2 ? "blue" : "ink"}
+            step={2 + index}
+          />
+        ))}
+        <TokenStrip x={149} y={190} count={9} tone="blue" step={5} />
+
+        <Boundary x={22} y={250} width={376} height={500} label="ALPHAIMAGE" tone="blue" step={6} emphasized />
+        <Boundary x={40} y={286} width={340} height={112} label="BOUNDED INPUT CONTRACT" tone="ink" step={7} />
+        <PlateModule x={54} y={326} width={92} height={38} label={["Type", "Size"]} tone="blue" step={8} center />
+        <PlateModule x={164} y={326} width={92} height={38} label={["Static", "Frame"]} tone="blue" step={8} center />
+        <PlateModule x={274} y={326} width={92} height={38} label={["Safe", "Decode"]} tone="blue" step={8} center />
+
+        <Boundary x={40} y={420} width={340} height={140} label="REPRESENTATION NORMALIZATION" tone="blue" step={9} solid />
+        <PlateModule x={54} y={462} width={92} height={42} label="Native" tone="ink" step={10} center />
+        <PlateModule x={164} y={462} width={92} height={42} label="Normalized" tone="blue" step={10} center strong />
+        <PlateModule x={274} y={462} width={92} height={42} label="Preview" tone="ink" step={10} center />
+        <Link d="M 146 483 H 164" id={id} tone="blue" step={11} />
+        <Link d="M 256 483 H 274" id={id} tone="blue" step={11} />
+        <TokenStrip x={155} y={530} count={8} tone="blue" step={11} hollowEvery={4} />
+
+        <Boundary x={40} y={582} width={340} height={140} label="COORDINATES + LINEAGE" tone="red" step={12} />
+        <PlateModule x={54} y={622} width={92} height={42} label={["Coordinate", "Map"]} tone="blue" step={13} center />
+        <PlateModule x={164} y={622} width={92} height={42} label={["Existing", "Annotations"]} tone="ink" step={13} center />
+        <PlateModule x={274} y={622} width={92} height={42} label={["Integrity", "Binding"]} tone="red" step={13} center />
+        <Link d="M 146 643 H 164" id={id} tone="blue" step={14} />
+        <Link d="M 256 643 H 274" id={id} tone="red" step={14} />
+        <TokenStrip x={155} y={690} count={8} tone="red" step={14} hollowEvery={4} />
+
+        <Link d="M 210 214 V 250" id={id} tone="blue" step={6} />
+        <Link d="M 210 398 V 420" id={id} tone="blue" step={9} />
+        <Link d="M 210 560 V 582" id={id} tone="red" step={12} />
+
+        <Boundary x={22} y={790} width={376} height={170} label="IMAGE ARTIFACT V1" tone="red" step={15} solid />
+        <PlateModule x={40} y={832} width={158} height={36} label="Safe Representations" tone="blue" step={16} />
+        <PlateModule x={222} y={832} width={158} height={36} label="Coordinate Systems" tone="blue" step={16} />
+        <PlateModule x={40} y={884} width={158} height={36} label="Annotation Lineage" tone="ink" step={17} />
+        <PlateModule x={222} y={884} width={158} height={36} label="Integrity Record" tone="red" step={17} />
+        <Link d="M 210 750 V 774 H 119 V 790" id={id} tone="blue" step={15} />
+        <Link d="M 210 774 H 301 V 790" id={id} tone="red" step={15} />
+      </DiagramSvg>
+    );
+  }
+
+  return (
+    <DiagramSvg id={id} kind="image" language={language} mobile={false} width={960} height={590}>
+      <Boundary x={20} y={82} width={180} height={390} label="STATIC IMAGE INPUTS" tone="ink" step={1} />
+      <StackPanel
+        x={36}
+        y={122}
+        width={148}
+        height={320}
+        title="SOURCE"
+        rows={inputRows}
+        tone="ink"
+        step={2}
+        tokens={8}
+      />
+
+      <Boundary x={230} y={30} width={500} height={500} label="ALPHAIMAGE" tone="blue" step={3} emphasized />
+      <Boundary x={252} y={68} width={456} height={96} label="BOUNDED INPUT CONTRACT" tone="ink" step={4} />
+      <PlateModule x={270} y={104} width={126} height={38} label="Type + Size" tone="blue" step={5} center />
+      <PlateModule x={417} y={104} width={126} height={38} label="Static Frame" tone="blue" step={5} center />
+      <PlateModule x={564} y={104} width={126} height={38} label="Safe Decode" tone="blue" step={5} center />
+
+      <Boundary x={252} y={186} width={456} height={142} label="REPRESENTATION NORMALIZATION" tone="blue" step={6} solid />
+      <PlateModule x={270} y={228} width={126} height={44} label="Native" tone="ink" step={7} center />
+      <PlateModule x={417} y={228} width={126} height={44} label="Normalized" tone="blue" step={7} center strong />
+      <PlateModule x={564} y={228} width={126} height={44} label="Preview" tone="ink" step={7} center />
+      <Link d="M 396 250 H 417" id={id} tone="blue" step={8} />
+      <Link d="M 543 250 H 564" id={id} tone="blue" step={8} />
+      <TokenStrip x={432} y={296} count={9} tone="blue" step={8} hollowEvery={5} />
+
+      <Boundary x={252} y={350} width={456} height={154} label="COORDINATES + LINEAGE" tone="red" step={9} />
+      <PlateModule x={270} y={394} width={126} height={44} label={["Coordinate", "Transform"]} tone="blue" step={10} center />
+      <PlateModule x={417} y={394} width={126} height={44} label={["Existing Annotation", "Lineage"]} tone="ink" step={10} center />
+      <PlateModule x={564} y={394} width={126} height={44} label={["Processing +", "Integrity Identity"]} tone="red" step={10} center />
+      <Link d="M 396 416 H 417" id={id} tone="blue" step={11} />
+      <Link d="M 543 416 H 564" id={id} tone="red" step={11} />
+      <TokenStrip x={432} y={466} count={9} tone="red" step={11} hollowEvery={5} />
+
+      <Link d="M 200 250 H 216 V 116 H 230" id={id} tone="blue" step={3} />
+      <Link d="M 480 164 V 186" id={id} tone="blue" step={6} />
+      <Link d="M 480 328 V 350" id={id} tone="red" step={9} />
+
+      <Boundary x={760} y={82} width={180} height={390} label="IMAGE ARTIFACT V1" tone="red" step={12} solid />
+      <StackPanel
+        x={778}
+        y={122}
+        width={144}
+        height={320}
+        title="TYPED OUTPUT"
+        rows={["Safe Representations", "Coordinate Systems", "Annotation Lineage", "Processing Identity", "Integrity Record"]}
+        tone="red"
+        step={13}
+        tokens={8}
+      />
+      <Link d="M 730 266 H 744 V 222 H 760" id={id} tone="blue" step={13} />
+      <Link d="M 708 428 H 744 V 372 H 760" id={id} tone="red" step={13} />
+
+      <MicroLabel x={24} y={552} tone="muted" step={14}>
+        REPRESENTATION · COORDINATES · ANNOTATION LINEAGE · INTEGRITY
+      </MicroLabel>
+      <TokenStrip x={780} y={540} count={12} tone="red" step={14} size={8} gap={4} hollowEvery={6} />
+    </DiagramSvg>
+  );
+}
+
 function LayerSvg({ language, mobile }: { language: Language; mobile: boolean }) {
   const id = `technology-layer-${language}-${mobile ? "mobile" : "desktop"}`;
   const requestRows = [
-    pick(language, "근거 질의", "Research Query"),
-    pick(language, "임상 요청", "Clinical Request"),
-    pick(language, "문서 생성", "Document Build"),
-    pick(language, "번역", "Translation"),
+    pick(language, "근거 텍스트", "Evidence Text"),
+    pick(language, "문서 텍스트", "Document Text"),
+    pick(language, "업무 텍스트", "Workflow Text"),
+    pick(language, "등록된 작업", "Registered Task"),
   ];
 
   if (mobile) {
     return (
       <DiagramSvg id={id} kind="layer" language={language} mobile width={420} height={1050}>
-        <Boundary x={22} y={24} width={376} height={166} label="REQUEST CLASSES" tone="ink" step={1} />
+        <Boundary x={22} y={24} width={376} height={166} label="SELECTED PROTECTED TEXT PATHS" tone="ink" step={1} />
         {requestRows.map((row, index) => (
           <PlateModule
             key={row}
@@ -1211,35 +1331,35 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
 
         <Boundary x={20} y={224} width={380} height={552} label="PURPOSE + POLICY BOUNDARY" tone="blue" step={6} emphasized />
         <PlateModule x={40} y={264} width={102} height={34} label="Purpose Bind" tone="blue" step={7} center />
-        <PlateModule x={159} y={264} width={102} height={34} label="Policy Eval" tone="blue" step={7} center />
-        <PlateModule x={278} y={264} width={102} height={34} label="Access Control" tone="blue" step={7} center />
+        <PlateModule x={159} y={264} width={102} height={34} label="Request Contract" tone="blue" step={7} center />
+        <PlateModule x={278} y={264} width={102} height={34} label="Processing Scope" tone="blue" step={7} center />
         <TokenStrip x={155} y={315} count={8} tone="red" step={7} />
 
         <Boundary x={40} y={342} width={340} height={180} label="MINIMIZATION BOUNDARY" tone="blue" step={8} />
         <PlateModule x={56} y={380} width={92} height={38} label={["Data", "Minimization"]} tone="blue" step={9} center />
-        <PlateModule x={164} y={380} width={92} height={38} label={["Field", "Filtering"]} tone="blue" step={9} center />
+        <PlateModule x={164} y={380} width={92} height={38} label={["Policy", "Transform"]} tone="blue" step={9} center />
         <PlateModule x={272} y={380} width={92} height={38} label={["Scope", "Limitation"]} tone="blue" step={9} center />
         <TokenStrip x={155} y={444} count={8} tone="red" step={10} />
 
         <Boundary x={58} y={468} width={304} height={164} label="PROTECTED EXECUTION" tone="red" step={10} solid />
-        <PlateModule x={76} y={512} width={82} height={44} label={["Policy", "Engine"]} tone="red" step={11} center />
-        <PlateModule x={169} y={512} width={82} height={44} label={["Secure", "Processing"]} tone="red" step={11} center strong />
-        <PlateModule x={262} y={512} width={82} height={44} label={["Execution", "Guards"]} tone="red" step={11} center />
+        <PlateModule x={76} y={512} width={82} height={44} label={["Policy", "Check"]} tone="red" step={11} center />
+        <PlateModule x={169} y={512} width={82} height={44} label={["Controlled", "Egress"]} tone="red" step={11} center strong />
+        <PlateModule x={262} y={512} width={82} height={44} label={["Response", "Guard"]} tone="red" step={11} center />
         <TokenStrip x={155} y={590} count={8} tone="red" step={11} />
 
         <Boundary x={40} y={650} width={164} height={100} label="RESPONSE INTEGRITY" tone="blue" step={12} />
         <PlateModule x={56} y={688} width={132} height={34} label="Request Binding" tone="blue" step={13} />
-        <Boundary x={216} y={650} width={164} height={100} label="PAYLOAD-FREE ASSURANCE" tone="red" step={12} />
-        <PlateModule x={232} y={688} width={132} height={34} label="Integrity Record" tone="red" step={13} />
+        <Boundary x={216} y={650} width={164} height={100} label="MINIMAL EXECUTION RECORD" tone="red" step={12} />
+        <PlateModule x={232} y={688} width={132} height={34} label="Policy Reference" tone="red" step={13} />
 
         <Link d="M 210 190 V 224" id={id} tone="blue" step={6} />
         <Link d="M 210 298 V 342" id={id} tone="red" step={8} />
         <Link d="M 210 522 V 650" id={id} tone="red" step={12} />
         <Link d="M 210 632 V 650" id={id} tone="blue" step={12} />
 
-        <Boundary x={22} y={812} width={376} height={206} label="BINDING LOOPS" tone="ink" step={14} />
-        <PlateModule x={42} y={852} width={154} height={34} label="Request Tokens" tone="blue" step={15} />
-        <PlateModule x={224} y={852} width={154} height={34} label="Response Tokens" tone="blue" step={15} />
+        <Boundary x={22} y={812} width={376} height={206} label="EXECUTION CONTEXT" tone="ink" step={14} />
+        <PlateModule x={42} y={852} width={154} height={34} label="Request Context" tone="blue" step={15} />
+        <PlateModule x={224} y={852} width={154} height={34} label="Minimal Record" tone="blue" step={15} />
         <PlateModule x={42} y={912} width={102} height={32} label="Policy Bind" tone="red" step={16} center />
         <PlateModule x={159} y={912} width={102} height={32} label="Execution Bind" tone="red" step={16} center />
         <PlateModule x={276} y={912} width={102} height={32} label="Response Bind" tone="red" step={16} center />
@@ -1255,13 +1375,13 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
 
   return (
     <DiagramSvg id={id} kind="layer" language={language} mobile={false} width={960} height={600}>
-      <Boundary x={20} y={94} width={170} height={356} label="REQUEST CLASSES" tone="ink" step={1} />
+      <Boundary x={20} y={94} width={170} height={356} label="SELECTED PATHS" tone="ink" step={1} />
       <StackPanel
         x={36}
         y={132}
         width={138}
         height={272}
-        title="INTENT"
+        title="PROTECTED TEXT"
         rows={requestRows}
         tone="ink"
         step={2}
@@ -1270,21 +1390,21 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
 
       <Boundary x={220} y={30} width={520} height={464} label="PURPOSE + POLICY BOUNDARY" tone="blue" step={3} emphasized />
       <PlateModule x={244} y={72} width={108} height={34} label="Purpose Binding" tone="blue" step={4} center />
-      <PlateModule x={372} y={72} width={108} height={34} label="Policy Evaluation" tone="blue" step={4} center />
-      <PlateModule x={500} y={72} width={108} height={34} label="Access Control" tone="blue" step={4} center />
-      <PlateModule x={628} y={72} width={88} height={34} label="Use Scope" tone="blue" step={4} center />
+      <PlateModule x={372} y={72} width={108} height={34} label="Request Contract" tone="blue" step={4} center />
+      <PlateModule x={500} y={72} width={108} height={34} label="Policy Gate" tone="blue" step={4} center />
+      <PlateModule x={628} y={72} width={88} height={34} label="Scope" tone="blue" step={4} center />
       <TokenStrip x={432} y={122} count={9} tone="red" step={5} />
 
       <Boundary x={250} y={146} width={460} height={306} label="MINIMIZATION BOUNDARY" tone="blue" step={5} />
       <PlateModule x={276} y={188} width={122} height={38} label="Data Minimization" tone="blue" step={6} center />
-      <PlateModule x={419} y={188} width={122} height={38} label="Field Filtering" tone="blue" step={6} center />
+      <PlateModule x={419} y={188} width={122} height={38} label="Policy Transform" tone="blue" step={6} center />
       <PlateModule x={562} y={188} width={122} height={38} label="Scope Limitation" tone="blue" step={6} center />
       <TokenStrip x={432} y={244} count={9} tone="red" step={7} />
 
       <Boundary x={276} y={270} width={408} height={148} label="PROTECTED EXECUTION" tone="red" step={7} solid />
-      <PlateModule x={296} y={314} width={110} height={50} label={["Policy", "Engine"]} tone="red" step={8} center />
-      <PlateModule x={425} y={314} width={110} height={50} label={["Secure", "Processing"]} tone="red" step={8} center strong />
-      <PlateModule x={554} y={314} width={110} height={50} label={["Execution", "Guards"]} tone="red" step={8} center />
+      <PlateModule x={296} y={314} width={110} height={50} label={["Policy", "Check"]} tone="red" step={8} center />
+      <PlateModule x={425} y={314} width={110} height={50} label={["Controlled", "Egress"]} tone="red" step={8} center strong />
+      <PlateModule x={554} y={314} width={110} height={50} label={["Response", "Guard"]} tone="red" step={8} center />
       <TokenStrip x={428} y={390} count={9} tone="red" step={9} />
 
       <Boundary x={770} y={94} width={170} height={170} label="RESPONSE INTEGRITY" tone="blue" step={9} />
@@ -1292,8 +1412,8 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
       <PlateModule x={788} y={182} width={134} height={34} label="Request Binding" tone="blue" step={10} />
       <TokenStrip x={817} y={238} count={7} tone="blue" step={10} />
 
-      <Boundary x={770} y={284} width={170} height={166} label="PAYLOAD-FREE ASSURANCE" tone="red" step={9} />
-      <PlateModule x={788} y={326} width={134} height={34} label="Integrity Record" tone="red" step={10} />
+      <Boundary x={770} y={284} width={170} height={166} label="MINIMAL EXECUTION RECORD" tone="red" step={9} />
+      <PlateModule x={788} y={326} width={134} height={34} label="Execution State" tone="red" step={10} />
       <PlateModule x={788} y={372} width={134} height={34} label="Policy Binding" tone="red" step={10} />
       <TokenStrip x={817} y={424} count={7} tone="red" step={10} />
 
@@ -1305,12 +1425,12 @@ function LayerSvg({ language, mobile }: { language: Language; mobile: boolean })
       <Link d="M 250 302 H 220 V 506 H 480 V 494" id={id} tone="blue" step={11} dashed />
       <Link d="M 710 302 H 744 V 506 H 480" id={id} tone="red" step={11} dashed />
 
-      <Boundary x={84} y={516} width={792} height={58} label="BINDING LOOPS" tone="ink" step={11} />
-      <PlateModule x={110} y={538} width={132} height={26} label="Request Tokens" tone="blue" step={12} center />
+      <Boundary x={84} y={516} width={792} height={58} label="EXECUTION CONTEXT" tone="ink" step={11} />
+      <PlateModule x={110} y={538} width={132} height={26} label="Request Context" tone="blue" step={12} center />
       <PlateModule x={286} y={538} width={112} height={26} label="Policy Bind" tone="red" step={12} center />
       <PlateModule x={424} y={538} width={112} height={26} label="Execution Bind" tone="red" step={12} center />
       <PlateModule x={562} y={538} width={112} height={26} label="Response Bind" tone="red" step={12} center />
-      <PlateModule x={718} y={538} width={132} height={26} label="Response Tokens" tone="blue" step={12} center />
+      <PlateModule x={718} y={538} width={132} height={26} label="Minimal Record" tone="blue" step={12} center />
       <Link d="M 242 551 H 286" id={id} tone="blue" step={13} />
       <Link d="M 398 551 H 424" id={id} tone="ink" step={13} />
       <Link d="M 536 551 H 562" id={id} tone="ink" step={13} />
@@ -1331,6 +1451,9 @@ function DiagramPair({ kind, language }: { kind: TechnologyMotionKind; language:
   }
   if (kind === "document") {
     return <><DocumentSvg language={language} mobile={false} /><DocumentSvg language={language} mobile /></>;
+  }
+  if (kind === "image") {
+    return <><ImageSvg language={language} mobile={false} /><ImageSvg language={language} mobile /></>;
   }
   return <><LayerSvg language={language} mobile={false} /><LayerSvg language={language} mobile /></>;
 }

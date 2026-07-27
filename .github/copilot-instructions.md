@@ -2,7 +2,7 @@
 
 Read `AGENTS.md` and `.viore/architecture-contract.md` before editing public
 technology or product copy. The active public-safe Viore architecture contract
-is `2026-07-26.3`.
+is `2026-07-27.2`.
 
 Distinguish repository implementation, product integration, deployment and
 runtime claims. Do not expose provider, model, prompt, routing, token,

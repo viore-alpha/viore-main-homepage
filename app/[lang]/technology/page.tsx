@@ -39,13 +39,19 @@ const techArticles = {
     {
       id: "technology-alphadocument",
       headline: "AlphaDocument — Deterministic Document-to-Artifact Engine",
-      description: "디지털 문서를 구조와 출처가 보존된 Document Artifact로 변환하는 구현과 제품 통합 진행 상태를 소개합니다.",
+      description: "디지털 문서를 구조와 출처가 보존된 Document Artifact로 변환하는 구현과 제품 출시 검토 상태를 소개합니다.",
       about: ["Document Artifact", "document provenance", "deterministic extraction"],
+    },
+    {
+      id: "technology-alphaimage",
+      headline: "AlphaImage — Deterministic Image Artifact Compiler",
+      description: "허용된 정적 이미지의 표현과 좌표를 정규화하고 원본, 기존 주석과 무결성을 재사용 가능한 Image Artifact로 연결하는 구현 기술을 소개합니다.",
+      about: ["Image Artifact", "image coordinate normalization", "annotation provenance"],
     },
     {
       id: "technology-alphalayer",
       headline: "AlphaLayer — Protected Inference Gateway",
-      description: "선택된 보호 텍스트 경로에서 검증한 AlphaLayer의 외부 AI 실행 통제 경계를 소개합니다.",
+      description: "선택된 보호 텍스트 경로에서 목적, 정보 최소화, 정책 변환, 응답 무결성과 최소 실행 기록을 연결하는 AlphaLayer의 운영 경계를 소개합니다.",
       about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
     },
   ],
@@ -65,13 +71,19 @@ const techArticles = {
     {
       id: "technology-alphadocument",
       headline: "AlphaDocument — Deterministic Document-to-Artifact Engine",
-      description: "Explore the implemented document-to-artifact engine and its product integration in progress.",
+      description: "Explore the implemented document-to-artifact engine and its product release review status.",
       about: ["Document Artifact", "document provenance", "deterministic extraction"],
+    },
+    {
+      id: "technology-alphaimage",
+      headline: "AlphaImage — Deterministic Image Artifact Compiler",
+      description: "Explore the implemented technology that normalizes supported static images and binds representations, coordinate transforms, existing annotations, and integrity in reusable Image Artifacts.",
+      about: ["Image Artifact", "image coordinate normalization", "annotation provenance"],
     },
     {
       id: "technology-alphalayer",
       headline: "AlphaLayer — Protected Inference Gateway",
-      description: "Explore AlphaLayer's verified runtime boundary for selected protected text paths.",
+      description: "Explore AlphaLayer's operating boundary for selected protected text paths, connecting purpose, minimization, policy transformation, response integrity, and minimal execution records.",
       about: ["Protected Inference Gateway", "purpose-aware protection", "AI execution assurance"],
     },
   ],

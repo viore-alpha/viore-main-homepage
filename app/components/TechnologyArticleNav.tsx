@@ -8,12 +8,14 @@ const ARTICLES = {
     { id: "technology-alphaevidence", label: "AlphaEvidence" },
     { id: "technology-alphadoc-engine", label: "AlphaDoc Engine" },
     { id: "technology-alphadocument", label: "AlphaDocument" },
+    { id: "technology-alphaimage", label: "AlphaImage" },
     { id: "technology-alphalayer", label: "AlphaLayer" },
   ],
   en: [
     { id: "technology-alphaevidence", label: "AlphaEvidence" },
     { id: "technology-alphadoc-engine", label: "AlphaDoc Engine" },
     { id: "technology-alphadocument", label: "AlphaDocument" },
+    { id: "technology-alphaimage", label: "AlphaImage" },
     { id: "technology-alphalayer", label: "AlphaLayer" },
   ],
 } as const;

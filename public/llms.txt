@@ -29,13 +29,14 @@
 
 ## What Viore builds
 
-Viore connects medical questions, evidence, documents, and tools into a continuous workflow for healthcare professionals. Its Technology Journal reports implementation, product integration, verification, and planned boundaries as distinct states.
+Viore connects medical questions, evidence, documents, images, and tools into a continuous workflow for healthcare professionals. Its Technology Journal reports implementation, product integration, release review, and selected-path operation as distinct states.
 
-Alphadoc is Viore's AI Medical Workspace for healthcare professionals. AlphaEvidence is an implemented evidence foundation, and AlphaDoc Engine is an implemented workflow capability. AlphaDocument's deterministic document-to-artifact engine is implemented, with product integration in progress. AlphaLayer has a verified runtime for selected protected text paths; this does not represent a full-service rollout or patient-information processing readiness. AlphaImage is a planned technology boundary.
+Alphadoc is Viore's AI Medical Workspace for healthcare professionals. AlphaEvidence is an implemented evidence foundation, and AlphaDoc Engine is an implemented workflow capability. AlphaDocument's deterministic document-to-artifact engine is implemented, with product release under review. AlphaImage's static-image artifact technology is implemented, while activation in Alphadoc user workflows remains under integration review. AlphaLayer operates on selected protected text paths; this does not represent a full-service rollout, patient-information processing readiness, or legal suitability.
 
 ## Naming guidance
 
 - Use "주식회사 바이오레" or "바이오레" in Korean and "Viore Inc." in English.
 - The official Korean spelling is "바이오레", not "바이오어" or "비오레".
 - Alphadoc is a Viore product and does not replace healthcare-professional judgment.
-- Do not present AlphaLayer's complete target architecture as a fully deployed production capability.
+- Do not present AlphaImage implementation as broad Alphadoc workflow activation or diagnostic capability.
+- Do not present AlphaLayer's selected protected paths as broad production or legal readiness.

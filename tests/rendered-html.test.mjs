@@ -161,8 +161,9 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
   assert.doesNotMatch(llms, /vioreai\.com\/ko\/company/);
   assert.match(llms, /Korean knowledge: https:\/\/vioreai\.com\/ko\/knowledge/);
   assert.match(llms, /English knowledge: https:\/\/vioreai\.com\/en\/knowledge/);
-  assert.match(llms, /AlphaDocument's deterministic document-to-artifact engine is implemented, with product integration in progress/);
-  assert.match(llms, /AlphaLayer has a verified runtime for selected protected text paths/);
+  assert.match(llms, /AlphaDocument's deterministic document-to-artifact engine is implemented, with product release under review/);
+  assert.match(llms, /AlphaImage's static-image artifact technology is implemented, while activation in Alphadoc user workflows remains under integration review/);
+  assert.match(llms, /AlphaLayer operates on selected protected text paths/);
   assert.doesNotMatch(llms, /Council:|\/council/);
 
   const manifest = JSON.parse(manifestText);
@@ -1001,7 +1002,7 @@ test("server-renders an accessible, expanding Technology journal with its curren
 
   assert.equal((html.match(/<h1\b/g) ?? []).length, 1);
   assert.match(html, /<html lang="ko-KR"/);
-  assert.match(html, /<title>바이오레 기술 \| 의료 근거·문서·AI 실행을 잇는 기술<\/title>/);
+  assert.match(html, /<title>바이오레 기술 \| 의료 근거·문서·이미지·AI 실행을 잇는 기술<\/title>/);
   assert.match(html, />Journal/);
   assert.doesNotMatch(html, />Tech Blog</);
   assert.match(html, /우리만의 선형을/);
@@ -1018,25 +1019,29 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(html, /Medical Workflow Orchestration/);
   assert.match(html, /문서 파일을 재사용 가능한 아티팩트로/);
   assert.match(html, /Deterministic Document-to-Artifact Engine/);
-  assert.match(html, /보호 원칙을 실행 구조에 담습니다/);
+  assert.match(html, /정적 이미지를 검증 가능한 아티팩트로/);
+  assert.match(html, /Deterministic Image Artifact Compiler/);
+  assert.match(html, /선택된 보호 경로에서 실제로 작동합니다/);
   assert.match(html, /Protected Inference Gateway/);
   for (const id of [
     "technology-alphaevidence",
     "technology-alphadoc-engine",
     "technology-alphadocument",
+    "technology-alphaimage",
     "technology-alphalayer",
   ]) {
     assert.match(html, new RegExp(`<article id="${id}"`));
   }
   assert.match(html, /구현된 기반/);
   assert.match(html, /구현된 기능/);
-  assert.match(html, /구현 · 통합 진행 중/);
-  assert.match(html, /선택 경로 검증/);
+  assert.match(html, /구현 · 출시 검토 중/);
+  assert.match(html, /구현 · 통합 검토 중/);
+  assert.match(html, /구현 · 선택 경로 운영 중/);
   assert.doesNotMatch(html, /DEVELOPED &amp; INTEGRATED/);
   assert.match(html, /2026년 7월 21일/);
   assert.match(html, /2026년 7월 27일 업데이트/);
   assert.match(html, /2026-07-27/);
-  assert.match(html, /전체 서비스 적용, 환자정보 처리 준비 또는 법적 적합성 확인을 의미하지 않습니다/);
+  assert.match(html, /전체 서비스 적용·환자정보 처리 준비·법적 적합성 확인을 뜻하지 않습니다/);
   assert.doesNotMatch(html, /IN PRODUCTION|CONTROLLED WORKFLOWS|ARCHITECTURE IN DEVELOPMENT/);
   assert.doesNotMatch(html, /현재 범위|주장하지 않는 범위|한계|LIMITATION|CLAIM BOUNDARY|STATUS NOTE/);
   assert.match(html, /data-snapshot-state="live"/);
@@ -1049,11 +1054,12 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(html, /사용자 검토와 판단/);
   assert.match(html, /TechArticle/);
   assert.match(html, /CollectionPage/);
-  assert.equal((html.match(/<figcaption>/g) ?? []).length, 5);
+  assert.equal((html.match(/<figcaption>/g) ?? []).length, 6);
   assert.match(html, /technology-raw-diagram-overview/);
   assert.match(html, /technology-raw-diagram-evidence/);
   assert.match(html, /technology-raw-diagram-engine/);
   assert.match(html, /technology-raw-diagram-document/);
+  assert.match(html, /technology-raw-diagram-image/);
   assert.match(html, /technology-raw-diagram-layer/);
   assert.doesNotMatch(html, /개발 지시 — 비공개|개발 계약 — 비공개|내부 근거 지도/);
 
@@ -1066,11 +1072,13 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(englishHtml, /AlphaEvidence DB, the data layer that carries evidence lineage/);
   assert.match(englishHtml, /Medical work starts with purpose/);
   assert.match(englishHtml, /From document files to reusable artifacts/);
-  assert.match(englishHtml, /Protection principles built into execution/);
+  assert.match(englishHtml, /From static images to verifiable artifacts/);
+  assert.match(englishHtml, /Protection operating on selected paths/);
   assert.match(englishHtml, /IMPLEMENTED FOUNDATION/);
   assert.match(englishHtml, /IMPLEMENTED CAPABILITY/);
-  assert.match(englishHtml, /IMPLEMENTED · INTEGRATION IN PROGRESS/);
-  assert.match(englishHtml, /SELECTED PATH VERIFIED/);
+  assert.match(englishHtml, /IMPLEMENTED · RELEASE IN REVIEW/);
+  assert.match(englishHtml, /IMPLEMENTED · INTEGRATION IN REVIEW/);
+  assert.match(englishHtml, /IMPLEMENTED · SELECTED PATHS ACTIVE/);
   assert.doesNotMatch(englishHtml, /우리만의 선형|살아 있는 근거의 중심|보안을 설정이 아니라/);
   assert.match(englishHtml, /"inLanguage":"en-US"/);
 });
@@ -1112,10 +1120,14 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(motion, /CAPABILITY FABRIC/);
   assert.match(motion, /PROTECTED EXECUTION/);
   assert.match(motion, /Document Artifact/);
+  assert.match(motion, /Image Artifact/);
+  assert.match(motion, /REPRESENTATION NORMALIZATION/);
+  assert.match(motion, /COORDINATES \+ LINEAGE/);
   assert.match(motion, /Evidence Packet/);
   assert.match(motion, /ARTIFACT LINEAGE/);
   assert.match(motion, /REVIEW_REQUIRED/);
-  assert.match(motion, /PAYLOAD-FREE ASSURANCE/);
+  assert.match(motion, /MINIMAL EXECUTION RECORD/);
+  assert.doesNotMatch(motion, /Request Tokens|Response Tokens|PAYLOAD-FREE ASSURANCE/);
   assert.match(motion, /<ViewportMotion/);
   assert.match(motion, /deferChildren/);
   assert.match(motion, /is-enhanced/);
@@ -1144,6 +1156,9 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(css, /\.technology-paper-svg \.diagram-boundary/);
   assert.match(css, /\.technology-paper-svg \.diagram-token/);
   assert.match(css, /\.technology-paper-svg \.diagram-module\.is-dashed/);
+  assert.match(css, /\.technology-status-release-in-review::before,/);
+  assert.match(css, /\.technology-status-integration-in-review::before/);
+  assert.match(css, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/);
   assert.doesNotMatch(css, /diagram-paper-grain|diagram-orbit/);
   assert.doesNotMatch(css, /#e7efe9|raw-paper-mint|raw-paper-lilac|radial-gradient\(circle at 50% -8%/);
   assert.match(css, /\.site-header\.site-header-dark/);
@@ -1201,8 +1216,13 @@ test("classifies fresh and stale AlphaEvidence snapshots at the fixed boundary",
 });
 
 test("redirects legacy Technology detail routes to the matching article anchor", async () => {
-  const response = await render("/ko/technology/alphaevidence");
+  const [response, imageResponse] = await Promise.all([
+    render("/ko/technology/alphaevidence"),
+    render("/ko/technology/alphaimage"),
+  ]);
 
   assert.equal(response.status, 308);
+  assert.equal(imageResponse.status, 308);
   assert.match(response.headers.get("location") ?? "", /\/ko\/technology#technology-alphaevidence$/);
+  assert.match(imageResponse.headers.get("location") ?? "", /\/ko\/technology#technology-alphaimage$/);
 });

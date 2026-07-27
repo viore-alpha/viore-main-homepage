@@ -1,13 +1,13 @@
 {
   "schemaVersion": "viore.repository-architecture-snapshot.v1",
-  "contractVersion": "2026-07-26.3",
+  "contractVersion": "2026-07-27.2",
   "canonicalRepository": "viore-alpha/viore-architecture",
   "distributionProfile": "public-safe",
   "publicClaimBoundary": {
     "alphaevidence": "implemented-foundation",
     "alphadoc-engine": "implemented-capability-layer",
-    "alphadocument": "implemented-integration-in-progress",
-    "alphaimage": "planned",
+    "alphadocument": "implemented-production-release-in-review",
+    "alphaimage": "implemented-runtime-public-claim-restricted",
     "alphalayer": "selected-protected-path-runtime-verified-public-claim-restricted"
   },
   "forbiddenPublicClaims": [
