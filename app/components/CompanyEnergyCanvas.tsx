@@ -2,11 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// Soft glow is produced once per frame with a single GPU blur pass (a blurred
-// colour underlay for this light-background/multiply design) instead of
-// per-stroke shadowBlur, which keeps the glow while cutting cost.
-const GLOW_BLUR_PX = 6;
-const GLOW_STRENGTH = 0.5;
+const FRAME_INTERVAL = 1000 / 30;
 type EnergyFamily = 0 | 1 | 2;
 type EnergyCanvasQuality = "full" | "balanced";
 
@@ -25,23 +21,20 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const mainContext = canvas?.getContext("2d", { alpha: true });
-    // Strands are drawn to an offscreen buffer at full device resolution so the
-    // visible canvas can composite a soft glow underlay plus a crisp pass.
-    const scene = document.createElement("canvas");
-    const context = scene.getContext("2d", { alpha: true });
-    if (!canvas || !mainContext || !context) return;
+    const context = canvas?.getContext("2d", { alpha: true });
+    if (!canvas || !context) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     let width = 1;
     let height = 1;
     let frame = 0;
-    let renderScale = 1;
+    let lastFrame = 0;
     let isIntersecting = false;
     let primaryGradient: CanvasGradient | null = null;
     let counterGradient: CanvasGradient | null = null;
     let goldGradient: CanvasGradient | null = null;
     const balanced = quality === "balanced";
+    const frameInterval = balanced ? 1000 / 24 : FRAME_INTERVAL;
 
     const traceStrand = (index: number, count: number, seconds: number, family: EnergyFamily) => {
       const position = count === 1 ? 0 : index / (count - 1);
@@ -175,6 +168,12 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
           ? 0.055
           : Math.min(1, (accent ? 0.78 : 0.21) * shimmer * densityCompensation);
         context.lineWidth = haze ? 18 : accent ? 2.35 : 0.76 + (index % 4) * 0.11;
+        if (haze || accent) {
+          context.shadowColor = family === 2 ? "rgba(248, 183, 53, .24)" : "rgba(255, 93, 31, .3)";
+          context.shadowBlur = haze ? 20 : 8;
+        } else {
+          context.shadowBlur = 0;
+        }
         context.stroke();
       }
     };
@@ -197,18 +196,6 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       strokeBundle(compact ? (balanced ? 11 : 14) : (balanced ? 17 : 22), seconds, 2, goldGradient);
 
       context.restore();
-
-      // Composite the offscreen scene onto the visible canvas: a soft blurred
-      // colour underlay for the glow, then the crisp lines on top.
-      mainContext.setTransform(1, 0, 0, 1, 0, 0);
-      mainContext.clearRect(0, 0, canvas.width, canvas.height);
-      mainContext.globalCompositeOperation = "source-over";
-      mainContext.filter = `blur(${(GLOW_BLUR_PX * renderScale).toFixed(2)}px)`;
-      mainContext.globalAlpha = GLOW_STRENGTH;
-      mainContext.drawImage(scene, 0, 0);
-      mainContext.filter = "none";
-      mainContext.globalAlpha = 1;
-      mainContext.drawImage(scene, 0, 0);
     };
 
     const releaseCanvas = () => {
@@ -219,8 +206,6 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       goldGradient = null;
       if (canvas.width !== 1) canvas.width = 1;
       if (canvas.height !== 1) canvas.height = 1;
-      if (scene.width !== 1) scene.width = 1;
-      if (scene.height !== 1) scene.height = 1;
     };
 
     const resize = () => {
@@ -228,9 +213,8 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       const bounds = canvas.getBoundingClientRect();
       width = Math.max(1, Math.round(bounds.width));
       height = Math.max(1, Math.round(bounds.height));
-      // Render at full device resolution (capped at 2x) for crisp lines.
-      const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
-      renderScale = pixelRatio;
+      const pixelRatioCap = width < 700 ? 1 : balanced ? 1.25 : 1.5;
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, pixelRatioCap);
       const renderWidth = Math.round(width * pixelRatio);
       const renderHeight = Math.round(height * pixelRatio);
       const sizeChanged = canvas.width !== renderWidth || canvas.height !== renderHeight;
@@ -238,8 +222,6 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
       if (sizeChanged) {
         canvas.width = renderWidth;
         canvas.height = renderHeight;
-        scene.width = renderWidth;
-        scene.height = renderHeight;
         context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
         primaryGradient = makeGradient(0);
         counterGradient = makeGradient(1);
@@ -255,13 +237,17 @@ export function CompanyEnergyCanvas({ quality = "full" }: { quality?: EnergyCanv
     };
 
     const animate = (timestamp: number) => {
-      draw(timestamp / 1000);
+      if (timestamp - lastFrame >= frameInterval) {
+        draw(timestamp / 1000);
+        lastFrame = timestamp;
+      }
       frame = window.requestAnimationFrame(animate);
     };
 
     const syncMotion = () => {
       window.cancelAnimationFrame(frame);
       frame = 0;
+      lastFrame = 0;
 
       if (!isIntersecting || document.hidden) {
         releaseCanvas();

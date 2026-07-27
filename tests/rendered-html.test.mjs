@@ -627,8 +627,8 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(deferredViewportMotionSource, /new IntersectionObserver/);
   assert.match(deferredViewportMotionSource, /data-motion-mounted=\{mounted \? "true" : "false"\}/);
   assert.match(deferredViewportMotionSource, /media\.addEventListener\("change", syncMotionPreference\)/);
-  assert.match(energyCanvasSource, /const GLOW_BLUR_PX = 6/);
-  assert.match(energyCanvasSource, /mainContext\.filter = `blur/);
+  assert.match(energyCanvasSource, /const pixelRatioCap = width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
+  assert.match(energyCanvasSource, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
   assert.match(energyCanvasSource, /frame = window\.requestAnimationFrame\(animate\)/);
   assert.match(html, /"@type":"SoftwareApplication"/);
   assert.match(html, /"@id":"https:\/\/alphadoc\.ai\/#software"/);
@@ -781,6 +781,17 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.ap-alphadocs-phone \{[\s\S]*?aspect-ratio: 393\/852;/);
   assert.match(productCss, /\.ap-community-poll \{[\s\S]*?background:#f6f9ff;/);
   assert.match(productCss, /\.ap-final-cta\.is-playing \.ap-final-logo-stage::before/);
+  assert.match(productCss, /\.ap-final-cta \{[^}]*grid-template-columns: 1fr;[^}]*grid-template-rows: auto auto;[^}]*align-content: center;[^}]*justify-items: center;[^}]*gap: 28px;/);
+  assert.match(productCss, /\.ap-final-screen \{ width: 100%; height: auto;[^}]*place-items: center;/);
+  assert.match(productCss, /\.ap-final-logo-stage \{[^}]*width: min\(38vw,460px\);/);
+  assert.match(productCss, /\.ap-final-copy \{ width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; \}/);
+  assert.match(productCss, /\.ap-final-copy \.ap-hero-actions \{ justify-content: center; \}/);
+  assert.match(productCss, /\.ap-final-cta \{ min-height:100svh; padding:56px 20px 72px; grid-template-rows:auto auto; align-content:center; align-items:start; gap:18px; \}/);
+  assert.match(productCss, /\.ap-final-logo-stage \{ width:180px; \}/);
+  assert.match(productCss, /\.ap-final-logo-stage::after,\.ap-final-screen \.ap-final-logo \{ width:72%; max-width:none; \}/);
+  assert.match(productCss, /\.ap-final-copy \{ width:100%; display:flex; flex-direction:column; align-items:center; text-align:center; \}/);
+  assert.match(productCss, /\.ap-final-copy \.ap-hero-actions \{ align-items:center; \}/);
+  assert.doesNotMatch(productCss, /\.ap-final-screen \{ height: 430px;/);
   assert.doesNotMatch(productCss, /ap-real-cursor-ring/);
   assert.doesNotMatch(productCss, /\.ap-eyebrow|\.ap-fragmented|\.ap-workflow|\.ap-ui-badge|\.ap-hero-replay/);
 
@@ -814,10 +825,10 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(energyCanvas, /prefers-reduced-motion: reduce/);
   assert.match(energyCanvas, /globalCompositeOperation = "multiply"/);
   assert.match(energyCanvas, /let isIntersecting = false/);
-  assert.match(energyCanvas, /const GLOW_BLUR_PX = 6/);
-  assert.match(energyCanvas, /const GLOW_STRENGTH = 0\.5/);
+  assert.match(energyCanvas, /const FRAME_INTERVAL = 1000 \/ 30/);
+  assert.match(energyCanvas, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
   assert.match(energyCanvas, /const releaseCanvas = \(\) =>/);
-  assert.match(energyCanvas, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(energyCanvas, /width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
   assert.match(energyCanvas, /seconds \* \(0\.72 \+ family \* 0\.08\)/);
   assert.match(content, /title: "의료계의\\n새로운 선형을 그리다\."/);
   assert.match(content, /연결하기 위한 선\\n그것이 바이오레 입니다/);
@@ -837,12 +848,11 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.doesNotMatch(companyBackdrop, /<img|\.png/);
   assert.match(companyBackdrop, /requestAnimationFrame/);
   assert.match(companyBackdrop, /prefers-reduced-motion: reduce/);
-  assert.match(companyBackdrop, /const BLOOM_BLUR_PX = 7/);
+  assert.match(companyBackdrop, /const FRAME_INTERVAL = 1000 \/ 20/);
   assert.match(companyBackdrop, /let isIntersecting = false/);
   assert.match(companyBackdrop, /gradientProgress = progress/);
   assert.match(companyBackdrop, /compact \? 32 : 48/);
-  assert.match(companyBackdrop, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
-  assert.match(companyBackdrop, /const BLOOM_STRENGTH = 0\.62/);
+  assert.match(companyBackdrop, /width < 700 \? 1 : 1\.15/);
   assert.match(companyBackdrop, /const releaseCanvas = \(\) =>/);
   assert.match(companyBackdrop, /entry\.intersectionRatio >= 0\.01/);
   assert.match(companyBackdrop, /\{ rootMargin: "0px", threshold: \[0, 0\.01\] \}/);
@@ -850,7 +860,7 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(companyBackdrop, /RED_PALETTE/);
   assert.match(companyBackdrop, /\[255, 126, 29\]/);
   assert.match(companyBackdrop, /Math\.pow\(localProgress, 2\.6\)/);
-  assert.match(companyBackdrop, /lateralScale = compact \? 0\.64 : 1/);
+  assert.match(companyBackdrop, /const lateralScale = 0\.64/);
   assert.match(companyBackdrop, /initialSpread = width \* spreadScale \* lateralScale/);
   assert.match(companyBackdrop, /curveScale = flowScale \* lateralScale/);
   assert.match(companyBackdrop, /spreadScale = family === 0 \? 0\.38 : family === 1 \? 0\.31 : 0\.43/);
