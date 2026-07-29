@@ -458,7 +458,7 @@ test("redirects legacy Knowledge while keeping the former Council route unavaila
 });
 
 test("server-renders the Alphadoc product story from real product UI", async () => {
-  const [response, css, productCss, productSource, heroMotionSource, workspaceSource, featureRailSource, featureCardSource, featureMotionSource, phoneDemoSource, viewportMotionSource, deferredViewportMotionSource, energyCanvasSource] = await Promise.all([
+  const [response, css, productCss, productSource, heroMotionSource, workspaceSource, featureRailSource, featureCardSource, featureMotionSource, phoneDemoSource, viewportMotionSource, deferredViewportMotionSource, energyCanvasSource, threadRenderQualitySource] = await Promise.all([
     render("/ko/product/alphadoc"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/product.css", import.meta.url), "utf8"),
@@ -472,6 +472,7 @@ test("server-renders the Alphadoc product story from real product UI", async () 
     readFile(new URL("../app/components/useViewportMotion.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ViewportMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/CompanyEnergyCanvas.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/threadRenderQuality.ts", import.meta.url), "utf8"),
   ]);
   assert.equal(response.status, 200);
 
@@ -627,8 +628,18 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(deferredViewportMotionSource, /new IntersectionObserver/);
   assert.match(deferredViewportMotionSource, /data-motion-mounted=\{mounted \? "true" : "false"\}/);
   assert.match(deferredViewportMotionSource, /media\.addEventListener\("change", syncMotionPreference\)/);
-  assert.match(energyCanvasSource, /const pixelRatioCap = width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
-  assert.match(energyCanvasSource, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
+  assert.match(energyCanvasSource, /const GLOW_BLUR_PX = 6/);
+  assert.match(energyCanvasSource, /const GLOW_REFRESH_SECONDS = 1 \/ 20/);
+  assert.match(energyCanvasSource, /const DRAW_BUDGET_MS = 20/);
+  assert.match(energyCanvasSource, /renderTier < 2/);
+  assert.match(energyCanvasSource, /getThreadRenderTier/);
+  assert.match(threadRenderQualitySource, /sharedThreadRenderTier/);
+  assert.match(energyCanvasSource, /glowContext\.filter = `blur/);
+  assert.match(energyCanvasSource, /className="company-energy-glow-canvas"/);
+  assert.match(energyCanvasSource, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(energyCanvasSource, /glowScale = Math\.min\(pixelRatio, 1\)/);
+  assert.match(energyCanvasSource, /for \(let widthGroup = 0; widthGroup < 4; widthGroup \+= 1\)/);
+  assert.doesNotMatch(energyCanvasSource, /const FRAME_INTERVAL|const frameInterval|pixelRatioCap|shadowBlur/);
   assert.match(energyCanvasSource, /frame = window\.requestAnimationFrame\(animate\)/);
   assert.match(html, /"@type":"SoftwareApplication"/);
   assert.match(html, /"@id":"https:\/\/alphadoc\.ai\/#software"/);
@@ -818,17 +829,20 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   ]);
 
   assert.match(page, /href="#company-story"/);
-  assert.match(page, /<CompanyEnergyCanvas quality="balanced" \/>/);
+  assert.match(page, /<CompanyEnergyCanvas quality="balanced" activationThreshold=\{0\.5\} \/>/);
   assert.doesNotMatch(page, /CompanyEnergyField/);
   assert.doesNotMatch(page, /CompanyLinearityVisual/);
   assert.match(energyCanvas, /requestAnimationFrame/);
   assert.match(energyCanvas, /prefers-reduced-motion: reduce/);
   assert.match(energyCanvas, /globalCompositeOperation = "multiply"/);
   assert.match(energyCanvas, /let isIntersecting = false/);
-  assert.match(energyCanvas, /const FRAME_INTERVAL = 1000 \/ 30/);
-  assert.match(energyCanvas, /const frameInterval = balanced \? 1000 \/ 24 : FRAME_INTERVAL/);
+  assert.match(energyCanvas, /const GLOW_BLUR_PX = 6/);
+  assert.match(energyCanvas, /const GLOW_STRENGTH = 0\.5/);
+  assert.match(energyCanvas, /const GLOW_REFRESH_SECONDS = 1 \/ 20/);
   assert.match(energyCanvas, /const releaseCanvas = \(\) =>/);
-  assert.match(energyCanvas, /width < 700 \? 1 : balanced \? 1\.25 : 1\.5/);
+  assert.match(energyCanvas, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(energyCanvas, /hasRegularStrands/);
+  assert.doesNotMatch(energyCanvas, /const FRAME_INTERVAL|const frameInterval|pixelRatioCap|shadowBlur/);
   assert.match(energyCanvas, /seconds \* \(0\.72 \+ family \* 0\.08\)/);
   assert.match(content, /title: "의료계의\\n새로운 선형을 그리다\."/);
   assert.match(content, /연결하기 위한 선\\n그것이 바이오레 입니다/);
@@ -845,17 +859,25 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(page, /<CompanyNetworkBackdrop \/>/);
   assert.doesNotMatch(page, /viore-company-terminal-pin-dark\.png|company-pin-alpha|company-pin-mask-boost/);
   assert.match(companyBackdrop, /className="company-convergence-canvas"/);
+  assert.match(companyBackdrop, /className="company-convergence-bloom-canvas"/);
   assert.doesNotMatch(companyBackdrop, /<img|\.png/);
   assert.match(companyBackdrop, /requestAnimationFrame/);
   assert.match(companyBackdrop, /prefers-reduced-motion: reduce/);
-  assert.match(companyBackdrop, /const FRAME_INTERVAL = 1000 \/ 20/);
+  assert.match(companyBackdrop, /const BLOOM_BLUR_PX = 7/);
+  assert.match(companyBackdrop, /const BLOOM_STRENGTH = 0\.62/);
+  assert.match(companyBackdrop, /const BLOOM_REFRESH_SECONDS = 1 \/ 20/);
+  assert.match(companyBackdrop, /const DRAW_BUDGET_MS = 20/);
+  assert.match(companyBackdrop, /renderTier < 2/);
   assert.match(companyBackdrop, /let isIntersecting = false/);
   assert.match(companyBackdrop, /gradientProgress = progress/);
   assert.match(companyBackdrop, /compact \? 32 : 48/);
-  assert.match(companyBackdrop, /width < 700 \? 1 : 1\.15/);
+  assert.match(companyBackdrop, /const pixelRatio = Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(companyBackdrop, /bloomScale = Math\.min\(pixelRatio, 1\)/);
+  assert.match(companyBackdrop, /hasRegularStrands/);
+  assert.doesNotMatch(companyBackdrop, /const FRAME_INTERVAL|pixelRatioCap|shadowBlur/);
   assert.match(companyBackdrop, /const releaseCanvas = \(\) =>/);
-  assert.match(companyBackdrop, /entry\.intersectionRatio >= 0\.01/);
-  assert.match(companyBackdrop, /\{ rootMargin: "0px", threshold: \[0, 0\.01\] \}/);
+  assert.match(companyBackdrop, /rect\.top <= window\.innerHeight \* 0\.5/);
+  assert.match(companyBackdrop, /\{ rootMargin: "0px", threshold: 0 \}/);
   assert.match(companyBackdrop, /ORANGE_PALETTE/);
   assert.match(companyBackdrop, /RED_PALETTE/);
   assert.match(companyBackdrop, /\[255, 126, 29\]/);
@@ -865,10 +887,12 @@ test("carries the hero energy-line language into a slow scroll-linked convergenc
   assert.match(companyBackdrop, /curveScale = flowScale \* lateralScale/);
   assert.match(companyBackdrop, /spreadScale = family === 0 \? 0\.38 : family === 1 \? 0\.31 : 0\.43/);
   assert.match(companyBackdrop, /index \* 0\.13 \+ family \* 1\.7/);
-  assert.match(companyBackdrop, /context\.lineWidth = haze \? 18 : accent \? 2\.35 : 0\.76/);
+  assert.match(companyBackdrop, /context\.lineWidth = 18/);
+  assert.match(companyBackdrop, /context\.lineWidth = 0\.76 \+ widthGroup \* 0\.11/);
+  assert.match(companyBackdrop, /context\.lineWidth = 2\.35/);
   assert.match(companyBackdrop, /join\.offsetTop - window\.innerHeight \* 0\.15/);
   assert.match(companyBackdrop, /--company-convergence-progress/);
-  assert.match(companyBackdrop, /globalCompositeOperation = "screen"/);
+  assert.match(companyBackdrop, /globalCompositeOperation = "source-over"/);
   assert.match(css, /\.company-network-backdrop \{[^}]*position: absolute;[^}]*inset: 0;/);
   assert.match(css, /\.company-network-viewport \{[^}]*position: sticky;[^}]*height: 100svh;/);
   assert.match(css, /\.company-network-viewport::after \{[^}]*opacity: calc\(\.82 - var\(--company-convergence-progress\) \* \.82\)/);
