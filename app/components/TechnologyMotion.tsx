@@ -1485,25 +1485,28 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
 
   return (
     <DiagramSvg id={id} kind="seal" language={language} mobile={false} width={960} height={600}>
-      <Boundary x={24} y={70} width={210} height={300} label="SENDER" tone="ink" step={1} />
-      <PlateModule x={40} y={110} width={178} height={40} label="Compose" tone="blue" step={2} center />
-      <PlateModule x={40} y={168} width={178} height={48} label={["Seal with", "recipient key"]} tone="red" step={3} center />
-      <TokenStrip x={80} y={252} count={6} tone="blue" step={4} />
-      <MicroLabel x={129} y={306} anchor="middle" tone="muted" step={4}>sealed on device</MicroLabel>
+      {/* 상단 3열(SENDER·SERVER·RECIPIENT)은 좌우 여백이 같도록 뷰박스 중심(x=480)에
+          맞춰 배치한다: 69 → 891, 좌우 여백 각 69. 하단 USER-KEY BACKUP 밴드(120→840)도
+          같은 중심을 공유한다. 열 간격은 36으로 균등. */}
+      <Boundary x={69} y={70} width={210} height={300} label="SENDER" tone="ink" step={1} />
+      <PlateModule x={85} y={110} width={178} height={40} label="Compose" tone="blue" step={2} center />
+      <PlateModule x={85} y={168} width={178} height={48} label={["Seal with", "recipient key"]} tone="red" step={3} center />
+      <TokenStrip x={125} y={252} count={6} tone="blue" step={4} />
+      <MicroLabel x={174} y={306} anchor="middle" tone="muted" step={4}>sealed on device</MicroLabel>
 
-      <Boundary x={270} y={44} width={330} height={360} label="SERVER" tone="red" step={5} emphasized />
-      <MicroLabel x={435} y={78} anchor="middle" tone="red" step={5}>CANNOT READ CONTENT</MicroLabel>
-      <PlateModule x={294} y={92} width={282} height={38} label="Encrypted Envelope" tone="red" step={6} center />
-      <PlateModule x={294} y={148} width={282} height={46} label={["Bound to conversation,", "sender & message order"]} tone="red" step={6} center />
-      <Boundary x={294} y={214} width={282} height={96} label="CIPHERTEXT ONLY" tone="red" step={7} solid />
-      <PlateModule x={312} y={248} width={246} height={40} label="Sealed message store" tone="red" step={8} center />
-      <PlateModule x={294} y={330} width={282} height={40} label="Delivery metadata (minimal)" tone="ink" step={9} center />
+      <Boundary x={315} y={44} width={330} height={360} label="SERVER" tone="red" step={5} emphasized />
+      <MicroLabel x={480} y={78} anchor="middle" tone="red" step={5}>CANNOT READ CONTENT</MicroLabel>
+      <PlateModule x={339} y={92} width={282} height={38} label="Encrypted Envelope" tone="red" step={6} center />
+      <PlateModule x={339} y={148} width={282} height={46} label={["Bound to conversation,", "sender & message order"]} tone="red" step={6} center />
+      <Boundary x={339} y={214} width={282} height={96} label="CIPHERTEXT ONLY" tone="red" step={7} solid />
+      <PlateModule x={357} y={248} width={246} height={40} label="Sealed message store" tone="red" step={8} center />
+      <PlateModule x={339} y={330} width={282} height={40} label="Delivery metadata (minimal)" tone="ink" step={9} center />
 
-      <Boundary x={636} y={70} width={210} height={300} label="RECIPIENT" tone="ink" step={10} />
-      <PlateModule x={652} y={110} width={178} height={48} label={["Open with", "own key"]} tone="red" step={11} center />
-      <PlateModule x={652} y={176} width={178} height={40} label="Read & verify" tone="blue" step={11} center />
-      <TokenStrip x={690} y={252} count={6} tone="blue" step={12} />
-      <MicroLabel x={741} y={306} anchor="middle" tone="muted" step={12}>opens only here</MicroLabel>
+      <Boundary x={681} y={70} width={210} height={300} label="RECIPIENT" tone="ink" step={10} />
+      <PlateModule x={697} y={110} width={178} height={48} label={["Open with", "own key"]} tone="red" step={11} center />
+      <PlateModule x={697} y={176} width={178} height={40} label="Read & verify" tone="blue" step={11} center />
+      <TokenStrip x={735} y={252} count={6} tone="blue" step={12} />
+      <MicroLabel x={786} y={306} anchor="middle" tone="muted" step={12}>opens only here</MicroLabel>
 
       <Boundary x={120} y={440} width={720} height={120} label="USER-KEY BACKUP" tone="blue" step={13} />
       <PlateModule x={150} y={482} width={180} height={44} label="Sealed key backup" tone="blue" step={14} center />
@@ -1511,12 +1514,12 @@ function SealSvg({ language, mobile }: { language: Language; mobile: boolean }) 
       <PlateModule x={600} y={482} width={200} height={44} label="New-device restore" tone="blue" step={14} center strong />
       <MicroLabel x={480} y={548} anchor="middle" tone="muted" step={15}>past messages restored across devices</MicroLabel>
 
-      <Link d="M 234 188 H 270" id={id} tone="blue" step={5} />
-      <Link d="M 600 154 H 636" id={id} tone="blue" step={10} />
+      <Link d="M 279 188 H 315" id={id} tone="blue" step={5} />
+      <Link d="M 645 154 H 681" id={id} tone="blue" step={10} />
       <Link d="M 330 504 H 360" id={id} tone="ink" step={15} />
       <Link d="M 560 504 H 600" id={id} tone="ink" step={15} />
-      <Link d="M 129 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
-      <Link d="M 741 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
+      <Link d="M 174 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
+      <Link d="M 786 440 V 370" id={id} tone="blue" step={15} dashed startArrow />
     </DiagramSvg>
   );
 }
