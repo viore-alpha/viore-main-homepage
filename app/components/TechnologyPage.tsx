@@ -403,21 +403,15 @@ function TechnologyFigure({
   language,
   number,
   kind,
-  title,
   caption,
 }: {
   language: Language;
   number: string;
   kind: TechnologyMotionKind;
-  title: string;
   caption: string;
 }) {
   return (
     <figure className={`technology-figure technology-figure-${kind}`}>
-      <div className="technology-figure-heading" aria-hidden="true">
-        <span>FIG. {number}</span>
-        <p>{title}</p>
-      </div>
       <TechnologyMotion kind={kind} language={language} />
       <figcaption>
         <strong>{sharedCopy[language].figure} {number}</strong>
@@ -481,7 +475,6 @@ export function TechnologyPage({
           language={language}
           number="01"
           kind="overview"
-          title={language === "ko" ? "Viore technology constellation" : "Viore technology constellation"}
           caption={language === "ko"
             ? "바이오레는 근거, 문서·이미지, 업무 실행, 외부 AI 통제와 1:1 대화 보호를 서로 다른 기술로 나눕니다. 각 기술은 검증된 범위에서만 알파닥과 연결됩니다."
             : "Viore separates evidence, documents and images, work orchestration, external AI control, and one-to-one conversation protection into distinct technologies. Each connects to Alphadoc only within its verified scope."}
@@ -506,7 +499,6 @@ export function TechnologyPage({
               language={language}
               number="02"
               kind="evidence"
-              title={articles.evidence.figureTitle}
               caption={articles.evidence.figureCaption}
             />
             <section className="technology-data-section">
@@ -531,7 +523,6 @@ export function TechnologyPage({
               language={language}
               number="03"
               kind="engine"
-              title={articles.engine.figureTitle}
               caption={articles.engine.figureCaption}
             />
           </div>
@@ -552,7 +543,6 @@ export function TechnologyPage({
               language={language}
               number="04"
               kind="document"
-              title={articles.document.figureTitle}
               caption={articles.document.figureCaption}
             />
           </div>
@@ -573,7 +563,6 @@ export function TechnologyPage({
               language={language}
               number="05"
               kind="image"
-              title={articles.image.figureTitle}
               caption={articles.image.figureCaption}
             />
           </div>
@@ -594,7 +583,6 @@ export function TechnologyPage({
               language={language}
               number="06"
               kind="layer"
-              title={articles.layer.figureTitle}
               caption={articles.layer.figureCaption}
             />
           </div>
@@ -615,7 +603,6 @@ export function TechnologyPage({
               language={language}
               number="07"
               kind="seal"
-              title={articles.seal.figureTitle}
               caption={articles.seal.figureCaption}
             />
           </div>

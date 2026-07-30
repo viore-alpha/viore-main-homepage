@@ -550,22 +550,6 @@
   margin: 64px 0;
 }
 
-.technology-figure-heading {
-  padding: 0 0 12px;
-  display: grid;
-  grid-template-columns: 88px minmax(0, 1fr);
-  gap: 22px;
-  color: var(--technology-dim);
-  font: 590 9px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-}
-
-.technology-figure-heading p {
-  margin: 0;
-  color: var(--technology-muted);
-}
-
 .technology-figure figcaption {
   margin-top: 14px;
   padding-top: 13px;
@@ -1063,7 +1047,7 @@
     transform .7s cubic-bezier(.22, 1, .36, 1) calc(var(--flow-order, 0) * 64ms);
 }
 
-/* Viore research-system plates: one visual grammar, five distinct architectures. */
+/* Viore research-system plates: one visual grammar, seven distinct architectures. */
 .technology-raw-diagram {
   --diagram-paper: #f7f6f1;
   --diagram-paper-raised: #fcfbf7;
@@ -1105,7 +1089,16 @@
 .technology-paper-svg .diagram-version-node,
 .technology-paper-svg .diagram-document-page,
 .technology-paper-svg .diagram-document-shadow,
-.technology-paper-svg .diagram-document-chart {
+.technology-paper-svg .diagram-document-chart,
+.technology-paper-svg .diagram-lineage-spine,
+.technology-paper-svg .diagram-image-frame,
+.technology-paper-svg .diagram-image-grid,
+.technology-paper-svg .diagram-image-annotation,
+.technology-paper-svg .diagram-coordinate-axis,
+.technology-paper-svg .diagram-external-zone,
+.technology-paper-svg .diagram-trust-boundary,
+.technology-paper-svg .diagram-browser,
+.technology-paper-svg .diagram-separate-lane {
   vector-effect: non-scaling-stroke;
 }
 
@@ -1141,7 +1134,10 @@
 
 .technology-paper-svg .diagram-domain-label,
 .technology-paper-svg .diagram-panel-title,
-.technology-paper-svg .diagram-micro-label {
+.technology-paper-svg .diagram-micro-label,
+.technology-paper-svg .diagram-zone-label,
+.technology-paper-svg .diagram-annotation,
+.technology-paper-svg .diagram-footnote {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   letter-spacing: .055em;
 }
@@ -1192,6 +1188,34 @@
   font-weight: 650;
 }
 
+.technology-paper-svg .diagram-architecture-label {
+  fill: var(--diagram-ink);
+  font-size: 11.5px;
+  font-weight: 590;
+  letter-spacing: -.018em;
+}
+
+.technology-paper-svg .diagram-zone-label {
+  fill: var(--diagram-muted);
+  font-size: 8.2px;
+  font-weight: 720;
+  letter-spacing: .075em;
+}
+
+.technology-paper-svg .diagram-annotation {
+  fill: var(--diagram-muted);
+  font-size: 10.5px;
+  font-weight: 560;
+  letter-spacing: -.012em;
+}
+
+.technology-paper-svg .diagram-footnote {
+  fill: var(--diagram-muted);
+  font-size: 9.8px;
+  font-weight: 520;
+  letter-spacing: -.01em;
+}
+
 .technology-paper-svg .diagram-panel {
   fill: rgba(255, 255, 255, .38);
   stroke: var(--diagram-line);
@@ -1238,44 +1262,6 @@
   fill: var(--diagram-muted);
   font-size: 7.5px;
   font-weight: 650;
-}
-
-.technology-paper-svg .diagram-public-kicker,
-.technology-paper-svg .diagram-public-node-eyebrow,
-.technology-paper-svg .diagram-public-note {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  letter-spacing: .055em;
-}
-
-.technology-paper-svg .diagram-public-kicker {
-  fill: var(--diagram-muted);
-  font-size: 9px;
-  font-weight: 680;
-}
-
-.technology-paper-svg .diagram-public-principle {
-  fill: var(--diagram-ink);
-  font-size: 20px;
-  font-weight: 620;
-  letter-spacing: -.035em;
-}
-
-.technology-paper-svg .diagram-public-node-eyebrow {
-  font-size: 7.5px;
-  font-weight: 720;
-}
-
-.technology-paper-svg .diagram-public-node-title {
-  fill: var(--diagram-ink);
-  font-size: 16px;
-  font-weight: 580;
-  letter-spacing: -.025em;
-}
-
-.technology-paper-svg .diagram-public-note {
-  fill: var(--diagram-muted);
-  font-size: 10.5px;
-  font-weight: 560;
 }
 
 .technology-paper-svg .diagram-text-ink {
@@ -1370,9 +1356,21 @@
   stroke: var(--diagram-blue);
 }
 
+.technology-paper-svg .diagram-version-node-red {
+  fill: color-mix(in srgb, var(--diagram-red) 46%, white);
+  stroke: var(--diagram-red);
+}
+
 .technology-paper-svg .diagram-version-node-muted {
   fill: color-mix(in srgb, var(--diagram-muted) 22%, white);
   stroke: var(--diagram-muted);
+}
+
+.technology-paper-svg .diagram-lineage-spine {
+  fill: none;
+  stroke: color-mix(in srgb, var(--diagram-blue) 72%, var(--diagram-line));
+  stroke-width: 1.15;
+  stroke-linecap: round;
 }
 
 .technology-paper-svg .diagram-document-shadow {
@@ -1407,6 +1405,83 @@
   stroke-width: 1;
 }
 
+.technology-paper-svg .diagram-image-frame {
+  fill: color-mix(in srgb, var(--diagram-ink) 2.5%, var(--diagram-paper-raised));
+  stroke: color-mix(in srgb, var(--diagram-ink) 58%, var(--diagram-line));
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-image-grid {
+  stroke: color-mix(in srgb, var(--diagram-line) 62%, transparent);
+  stroke-width: .7;
+}
+
+.technology-paper-svg .diagram-image-annotation {
+  fill: color-mix(in srgb, var(--diagram-red) 10%, transparent);
+  stroke: var(--diagram-red);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.technology-paper-svg .diagram-image-annotation.is-normalized {
+  fill: color-mix(in srgb, var(--diagram-blue) 10%, transparent);
+  stroke: var(--diagram-blue);
+}
+
+.technology-paper-svg .diagram-coordinate-origin {
+  fill: var(--diagram-paper-raised);
+  stroke: var(--diagram-red);
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-coordinate-axis {
+  stroke: color-mix(in srgb, var(--diagram-ink) 56%, var(--diagram-line));
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-external-zone {
+  fill: color-mix(in srgb, var(--diagram-red) 2.5%, var(--diagram-paper));
+  stroke: color-mix(in srgb, var(--diagram-red) 45%, var(--diagram-line));
+  stroke-width: 1;
+  stroke-dasharray: 5 4;
+}
+
+.technology-paper-svg .diagram-trust-boundary {
+  fill: none;
+  stroke: var(--diagram-red);
+  stroke-width: 1.35;
+  stroke-dasharray: 7 5;
+}
+
+.technology-paper-svg .diagram-browser {
+  fill: rgba(255, 255, 255, .34);
+  stroke: var(--diagram-line);
+  stroke-width: 1;
+}
+
+.technology-paper-svg .diagram-browser-blue {
+  stroke: color-mix(in srgb, var(--diagram-blue) 58%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-browser-red {
+  stroke: color-mix(in srgb, var(--diagram-red) 58%, var(--diagram-line));
+}
+
+.technology-paper-svg .diagram-browser-muted {
+  stroke: var(--diagram-muted);
+}
+
+.technology-paper-svg .diagram-browser-dot {
+  fill: color-mix(in srgb, var(--diagram-muted) 52%, white);
+}
+
+.technology-paper-svg .diagram-separate-lane {
+  fill: none;
+  stroke: var(--diagram-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
 .technology-raw-diagram.is-enhanced .technology-svg-step {
   opacity: 0;
   transform: translateY(5px);
@@ -1434,17 +1509,18 @@
     box-shadow: 0 16px 38px rgba(0, 0, 0, .2);
   }
 
-  .technology-paper-svg .diagram-public-principle {
-    font-size: 17px;
+  .technology-paper-svg .diagram-architecture-label {
+    font-size: 11.5px;
   }
 
-  .technology-paper-svg .diagram-public-node-title {
-    font-size: 14px;
+  .technology-paper-svg .diagram-annotation {
+    font-size: 10.5px;
+    letter-spacing: -.01em;
   }
 
-  .technology-paper-svg .diagram-public-note {
-    font-size: 9.5px;
-    letter-spacing: .02em;
+  .technology-paper-svg .diagram-footnote {
+    font-size: 10px;
+    letter-spacing: -.01em;
   }
 }
 
@@ -2015,7 +2091,6 @@
     margin: 52px 0;
   }
 
-  .technology-figure-heading,
   .technology-figure figcaption {
     grid-template-columns: 70px minmax(0, 1fr);
     gap: 12px;
@@ -2241,7 +2316,6 @@
     gap: 5px;
   }
 
-  .technology-figure-heading,
   .technology-figure figcaption {
     grid-template-columns: 1fr;
     gap: 5px;

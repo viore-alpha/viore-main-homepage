@@ -1153,12 +1153,13 @@ test("keeps the public architecture contract aligned with the bounded AlphaSeal 
   assert.match(copilot, /is `2026-07-28\.1`/);
 });
 
-test("implements the AlphaEvidence public snapshot as a bounded server contract", async () => {
-  const [dataSource, route, snapshot, motion, viewportMotion, nav, chrome, css] = await Promise.all([
+test("implements the AlphaEvidence public snapshot and distinct public diagrams as bounded server contracts", async () => {
+  const [dataSource, route, snapshot, motion, technologyPage, viewportMotion, nav, chrome, css] = await Promise.all([
     readFile(new URL("../app/alphaevidence-snapshot.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/api/technology/alphaevidence-snapshot/route.ts", import.meta.url), "utf8"),
     readFile(new URL("../app/components/AlphaEvidenceSnapshot.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TechnologyMotion.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/TechnologyPage.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/ViewportMotion.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/TechnologyArticleNav.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/components/SiteChrome.tsx", import.meta.url), "utf8"),
@@ -1184,16 +1185,30 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.match(motion, /<title/);
   assert.match(motion, /<desc/);
   assert.doesNotMatch(motion, /<iframe|raw-paper-mint/);
-  assert.match(motion, /function PublicNode/);
-  assert.match(motion, /function DiagramNote/);
-  assert.match(motion, /data-diagram-level="public-outcome"/);
+  for (const diagram of [
+    "OverviewDiagram",
+    "EvidenceDiagram",
+    "EngineDiagram",
+    "DocumentDiagram",
+    "ImageDiagram",
+    "LayerDiagram",
+    "SealDiagram",
+  ]) {
+    assert.match(motion, new RegExp(`function ${diagram}`));
+  }
+  assert.match(motion, /data-diagram-architecture=\{kind\}/);
   assert.match(motion, /technology-paper-svg-mobile/);
-  assert.match(motion, /VIORE · TECHNOLOGY JOURNAL/);
-  assert.doesNotMatch(motion, /PUBLIC CLAIM SCOPE|PUBLIC PIPELINE/);
-  assert.match(motion, /근거가 남는/);
+  assert.match(motion, /diagram-lineage-spine/);
+  assert.match(motion, /diagram-image-frame/);
+  assert.match(motion, /diagram-trust-boundary/);
+  assert.match(motion, /diagram-browser/);
+  assert.doesNotMatch(motion, /VIORE · TECHNOLOGY JOURNAL|PUBLIC CLAIM SCOPE|PUBLIC PIPELINE/);
+  assert.doesNotMatch(motion, /function PublicNode|function DiagramNote|data-diagram-level="public-outcome"/);
+  assert.match(motion, /출처와 변화가 남는 근거/);
   assert.match(motion, /등록된 목적과/);
-  assert.match(motion, /일반 저장 경로의/);
+  assert.match(motion, /일반 저장 경로/);
   assert.doesNotMatch(motion, /CAPABILITY FABRIC|Release Identity|Policy Transform|MINIMAL EXECUTION RECORD|Request Tokens|Response Tokens|PAYLOAD-FREE ASSURANCE|non-extractable|Biometric passkey/);
+  assert.doesNotMatch(technologyPage, /technology-figure-heading/);
   assert.match(motion, /<ViewportMotion/);
   assert.match(motion, /deferChildren/);
   assert.match(motion, /is-enhanced/);
@@ -1219,9 +1234,12 @@ test("implements the AlphaEvidence public snapshot as a bounded server contract"
   assert.doesNotMatch(css, /Pretendard Variable/);
   assert.match(css, /--diagram-paper: #f7f6f1/);
   assert.match(css, /\.technology-paper-svg-mobile/);
-  assert.match(css, /\.technology-paper-svg \.diagram-public-principle/);
-  assert.match(css, /\.technology-paper-svg \.diagram-public-node-title/);
-  assert.match(css, /\.technology-paper-svg \.diagram-public-note/);
+  assert.match(css, /\.technology-paper-svg \.diagram-architecture-label/);
+  assert.match(css, /\.technology-paper-svg \.diagram-lineage-spine/);
+  assert.match(css, /\.technology-paper-svg \.diagram-image-frame/);
+  assert.match(css, /\.technology-paper-svg \.diagram-trust-boundary/);
+  assert.match(css, /\.technology-paper-svg \.diagram-browser/);
+  assert.doesNotMatch(css, /diagram-public-principle|diagram-public-node-title|diagram-public-note/);
   assert.match(css, /\.technology-status-release-in-review::before,/);
   assert.match(css, /\.technology-status-integration-in-review::before/);
   assert.doesNotMatch(css, /diagram-paper-grain|diagram-orbit/);
