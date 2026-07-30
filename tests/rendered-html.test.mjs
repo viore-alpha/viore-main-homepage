@@ -31,7 +31,7 @@ test("server-renders independent Korean and English homepage metadata", async ()
   assert.match(html, /<link rel="canonical" href="https:\/\/vioreai\.com\/ko"/);
   assert.match(html, /<link rel="alternate" hrefLang="en-US" href="https:\/\/vioreai\.com\/en"/);
   assert.match(html, /<meta property="og:title" content="바이오레, 새로운 선형을 그리다\."/);
-  assert.match(html, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-ko-v1\.png"/);
+  assert.match(html, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-white-v3\.png"/);
   assert.match(html, /<meta property="og:image:width" content="1200"/);
   assert.match(html, /<meta property="og:image:height" content="630"/);
   assert.match(html, /<meta name="twitter:title" content="바이오레, 새로운 선형을 그리다\."/);
@@ -45,7 +45,7 @@ test("server-renders independent Korean and English homepage metadata", async ()
   assert.match(englishHtml, /<html lang="en-US"/);
   assert.match(englishHtml, /<title>Viore, Drawing a New Linearity in Medicine\.<\/title>/);
   assert.match(englishHtml, /<meta property="og:title" content="Viore, Drawing a New Linearity in Medicine\."/);
-  assert.match(englishHtml, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-en-v1\.png"/);
+  assert.match(englishHtml, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-white-v3\.png"/);
   assert.doesNotMatch(englishHtml, /<title>바이오레,/);
 });
 
@@ -133,13 +133,12 @@ test("keeps the inactive language option legible over the translucent header", a
 });
 
 test("ships aligned crawler files and brand thumbnail dimensions", async () => {
-  const [robots, sitemapResponse, llms, manifestText, koreanSocialImage, englishSocialImage, squareImage] = await Promise.all([
+  const [robots, sitemapResponse, llms, manifestText, socialLogoImage, squareImage] = await Promise.all([
     readFile(new URL("../public/robots.txt", import.meta.url), "utf8"),
     render("/sitemap.xml"),
     readFile(new URL("../public/llms.txt", import.meta.url), "utf8"),
     readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8"),
-    readFile(new URL("../public/brand/viore-social-card-ko-v1.png", import.meta.url)),
-    readFile(new URL("../public/brand/viore-social-card-en-v1.png", import.meta.url)),
+    readFile(new URL("../public/brand/viore-social-card-white-v3.png", import.meta.url)),
     readFile(new URL("../public/brand/viore-v-square-white-v2.png", import.meta.url)),
   ]);
   assert.equal(sitemapResponse.status, 200);
@@ -175,8 +174,7 @@ test("ships aligned crawler files and brand thumbnail dimensions", async () => {
     width: buffer.readUInt32BE(16),
     height: buffer.readUInt32BE(20),
   });
-  assert.deepEqual(pngSize(koreanSocialImage), { width: 1200, height: 630 });
-  assert.deepEqual(pngSize(englishSocialImage), { width: 1200, height: 630 });
+  assert.deepEqual(pngSize(socialLogoImage), { width: 1200, height: 630 });
   assert.deepEqual(pngSize(squareImage), { width: 1024, height: 1024 });
 
   const optimizedTexture = await render("/media/viore-paper-texture-dark-v2.webp");
