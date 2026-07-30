@@ -5,8 +5,8 @@ export const SITE_ORIGIN = "https://vioreai.com";
 export const SITE_NAME = "바이오레 | Viore";
 export const SQUARE_LOGO_PATH = "/brand/viore-v-square-white-v2.png";
 export const SOCIAL_IMAGE_PATHS: Record<Language, string> = {
-  ko: "/brand/viore-social-card-ko-v1.png",
-  en: "/brand/viore-social-card-en-v1.png",
+  ko: "/brand/viore-social-card-white-v3.png",
+  en: "/brand/viore-social-card-white-v3.png",
 };
 export const SOCIAL_IMAGE_PATH = SOCIAL_IMAGE_PATHS.ko;
 
@@ -162,9 +162,7 @@ export function buildSiteMetadata(lang: Language): Metadata {
           url: socialImagePath,
           width: 1200,
           height: 630,
-          alt: lang === "ko"
-            ? "바이오레, 새로운 선형을 그리다."
-            : "Viore, Drawing a New Linearity in Medicine.",
+          alt: lang === "ko" ? "흰 배경의 바이오레 로고" : "Viore logo on a white background",
           type: "image/png",
         },
       ],
@@ -217,9 +215,7 @@ export function buildPageMetadata({
           url: socialImagePath,
           width: 1200,
           height: 630,
-          alt: lang === "ko"
-            ? "바이오레, 새로운 선형을 그리다."
-            : "Viore, Drawing a New Linearity in Medicine.",
+          alt: lang === "ko" ? "흰 배경의 바이오레 로고" : "Viore logo on a white background",
           type: "image/png",
         },
       ],
