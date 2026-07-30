@@ -40,12 +40,18 @@ test("server-renders independent Korean and English homepage metadata", async ()
   assert.match(html, /<meta name="naver-site-verification"/);
   assert.match(html, /id="viore-home-structured-data"/);
   assert.match(html, /"legalName":"주식회사 바이오레"/);
+  assert.match(html, /class="footer-company-primary"><strong>주식회사 바이오레<\/strong><span>대표 고석진<\/span><span>사업자등록번호 709-88-03418<\/span>/);
+  assert.match(html, /class="footer-company-address"><span>경기도 성남시 분당구 대왕판교로 660,/);
+  assert.match(html, /href="mailto:biz@vioreai\.com">biz@vioreai\.com<\/a>/);
+  assert.doesNotMatch(html, /131111-0078435/);
   assert.doesNotMatch(html, /\[object Object\]/);
 
   assert.match(englishHtml, /<html lang="en-US"/);
   assert.match(englishHtml, /<title>Viore, Drawing a New Linearity in Medicine\.<\/title>/);
   assert.match(englishHtml, /<meta property="og:title" content="Viore, Drawing a New Linearity in Medicine\."/);
   assert.match(englishHtml, /<meta property="og:image" content="https:\/\/vioreai\.com\/brand\/viore-social-card-white-v3\.png"/);
+  assert.match(englishHtml, /class="footer-company-primary"><strong>Viore Inc\.<\/strong><span>Representative Seokjin Ko<\/span><span>Business Registration No\. 709-88-03418<\/span>/);
+  assert.match(englishHtml, /B101-102 and 104, Building A, 660 Daewangpangyo-ro/);
   assert.doesNotMatch(englishHtml, /<title>바이오레,/);
 });
 
