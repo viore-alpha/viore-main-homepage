@@ -190,21 +190,22 @@
   letter-spacing: -.019em;
 }
 
+.technology-intro-copy > h2 {
+  max-width: 680px;
+  margin: 0 0 20px;
+  color: var(--technology-ink);
+  font-size: clamp(27px, 3vw, 38px);
+  font-weight: 620;
+  line-height: 1.2;
+  letter-spacing: -.045em;
+}
+
 .technology-intro-copy > p {
   margin: 0;
 }
 
 .technology-intro-copy > p + p {
   margin-top: 18px;
-}
-
-.technology-intro-copy .technology-intro-emphasis {
-  margin: 38px 0;
-  color: var(--technology-ink);
-  font-size: clamp(25px, 2.7vw, 34px);
-  font-weight: 610;
-  line-height: 1.3;
-  letter-spacing: -.045em;
 }
 
 .technology-intro-copy blockquote {
@@ -470,7 +471,8 @@
   background: transparent;
 }
 
-.technology-status-selected-path-active {
+.technology-status-selected-path-active,
+.technology-status-supported-path-implemented {
   color: var(--technology-blue);
 }
 
@@ -1238,6 +1240,44 @@
   font-weight: 650;
 }
 
+.technology-paper-svg .diagram-public-kicker,
+.technology-paper-svg .diagram-public-node-eyebrow,
+.technology-paper-svg .diagram-public-note {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: .055em;
+}
+
+.technology-paper-svg .diagram-public-kicker {
+  fill: var(--diagram-muted);
+  font-size: 9px;
+  font-weight: 680;
+}
+
+.technology-paper-svg .diagram-public-principle {
+  fill: var(--diagram-ink);
+  font-size: 20px;
+  font-weight: 620;
+  letter-spacing: -.035em;
+}
+
+.technology-paper-svg .diagram-public-node-eyebrow {
+  font-size: 7.5px;
+  font-weight: 720;
+}
+
+.technology-paper-svg .diagram-public-node-title {
+  fill: var(--diagram-ink);
+  font-size: 16px;
+  font-weight: 580;
+  letter-spacing: -.025em;
+}
+
+.technology-paper-svg .diagram-public-note {
+  fill: var(--diagram-muted);
+  font-size: 10.5px;
+  font-weight: 560;
+}
+
 .technology-paper-svg .diagram-text-ink {
   fill: var(--diagram-ink);
 }
@@ -1393,9 +1433,22 @@
     border-radius: 10px;
     box-shadow: 0 16px 38px rgba(0, 0, 0, .2);
   }
+
+  .technology-paper-svg .diagram-public-principle {
+    font-size: 17px;
+  }
+
+  .technology-paper-svg .diagram-public-node-title {
+    font-size: 14px;
+  }
+
+  .technology-paper-svg .diagram-public-note {
+    font-size: 9.5px;
+    letter-spacing: .02em;
+  }
 }
 
-/* Evidence snapshot: live numbers stay table-first and plainly qualified. */
+/* Evidence snapshot: public counts stay table-first and plainly qualified. */
 .technology-data-section {
   margin: 58px 0 0 !important;
   padding-top: 56px;
@@ -1535,6 +1588,14 @@
   font-weight: 550;
   letter-spacing: -.055em;
   font-variant-numeric: tabular-nums;
+}
+
+.alphaevidence-snapshot-note {
+  max-width: 720px;
+  margin: 14px 0 0 !important;
+  color: var(--technology-dim);
+  font-size: 11px;
+  line-height: 1.65;
 }
 
 .alphaevidence-snapshot-unavailable {
@@ -1801,6 +1862,10 @@
     right: auto;
     z-index: 70;
     width: 100%;
+    border-bottom: 1px solid var(--technology-line);
+    background: color-mix(in srgb, var(--technology-page) 96%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -1832,7 +1897,7 @@
 
   .technology-article-nav ol {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .technology-article-nav a {
@@ -1900,7 +1965,7 @@
 
   .technology-article-nav ol {
     width: max-content;
-    grid-template-columns: repeat(5, minmax(126px, auto));
+    grid-template-columns: repeat(6, minmax(126px, auto));
   }
 
   .technology-post {

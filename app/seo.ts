@@ -38,14 +38,14 @@ export const HOME_SEO: Record<
 export const PAGE_SEO = {
   technology: {
     ko: {
-      title: "바이오레 기술 | 의료 근거·문서·이미지·AI 실행을 잇는 기술",
+      title: "바이오레 기술 | 의료 AI를 하나의 기술 체계로",
       description:
-        "AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaImage와 선택된 보호 경로의 AlphaLayer를 통해 의료 근거, 문서·이미지 아티팩트와 AI 실행을 연결하는 바이오레의 기술을 소개합니다.",
+        "바이오레가 AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaImage, AlphaLayer, AlphaSeal을 설계하고 알파닥에 연결하는 원칙과 현재 구현 범위를 소개합니다.",
     },
     en: {
-      title: "Viore Technology | Connected Medical Intelligence",
+      title: "Viore Technology | Medical AI as a Technology System",
       description:
-        "Explore how Viore connects evidence, workflow orchestration, document and image artifacts, and selected protected AI execution paths.",
+        "Explore the principles and current implementation scope behind AlphaEvidence, AlphaDoc Engine, AlphaDocument, AlphaImage, AlphaLayer, AlphaSeal, and their connections to Alphadoc.",
     },
   },
   product: {
