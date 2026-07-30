@@ -188,7 +188,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         title: "One connected Flow\nfor Medicine",
         nodes: [
           { title: "더 직관적인 경험", subtitle: "A more intuitive experience" },
-          { title: "보호를 고려한 설계", subtitle: "Protection-aware design" },
+          { title: "보안을 고려한 설계", subtitle: "Security-aware design" },
           { title: "다양한 의료 도구", subtitle: "A diverse range of medical tools" },
           { title: "빠른 의료 노트 작성", subtitle: "Fast medical note drafting" },
           { title: "쉽게 보는 최신 의료 근거", subtitle: "Clear, up-to-date medical evidence" },
@@ -313,7 +313,7 @@ export const detailContent: Record<Language, Record<PageKey, DetailPage>> = {
         title: "One connected Flow\nfor Medicine",
         nodes: [
           { title: "A more intuitive experience" },
-          { title: "Protection-aware design" },
+          { title: "Security-aware design" },
           { title: "A diverse range of medical tools" },
           { title: "Fast medical note drafting" },
           { title: "Clear, up-to-date medical evidence" },

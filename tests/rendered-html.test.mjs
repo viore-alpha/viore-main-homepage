@@ -251,14 +251,14 @@ test("server-renders the Korean Company story as the homepage", async () => {
   assert.doesNotMatch(html, /기존의 가치를 대체하지 않으며/);
   assert.match(html, /One connected Flow/);
   assert.match(html, /for Medicine/);
-  assert.match(html, /보호를 고려한 설계/);
+  assert.match(html, /보안을 고려한 설계/);
   assert.match(html, /더 직관적인 경험/);
   assert.match(html, /다양한 의료 도구/);
   assert.match(html, /빠른 의료 노트 작성/);
   assert.match(html, /쉽게 보는 최신 의료 근거/);
   assert.match(html, /함께 성장하는 지식 커뮤니티/);
-  assert.ok(html.indexOf("더 직관적인 경험") < html.indexOf("보호를 고려한 설계"));
-  assert.ok(html.indexOf("보호를 고려한 설계") < html.indexOf("다양한 의료 도구"));
+  assert.ok(html.indexOf("더 직관적인 경험") < html.indexOf("보안을 고려한 설계"));
+  assert.ok(html.indexOf("보안을 고려한 설계") < html.indexOf("다양한 의료 도구"));
   assert.ok(html.indexOf("다양한 의료 도구") < html.indexOf("빠른 의료 노트 작성"));
   assert.doesNotMatch(html, /처음부터 설계 기준에 포함된 보안/);
   assert.match(html, /class="company-convergence-canvas"/);
@@ -965,8 +965,8 @@ test("keeps the three connected principles text-only over the continuous company
   assert.doesNotMatch(connections, /padStart|String\(index \+ 1\)/);
   assert.match(connections, /content\.nodes\.map/);
   assert.match(connections, /aria-labelledby="company-connections-title"/);
-  assert.equal((content.match(/더 직관적인 경험|보호를 고려한 설계|다양한 의료 도구|빠른 의료 노트 작성|쉽게 보는 최신 의료 근거|함께 성장하는 지식 커뮤니티/g) ?? []).length, 6);
-  assert.match(content, /Protection-aware design/);
+  assert.equal((content.match(/더 직관적인 경험|보안을 고려한 설계|다양한 의료 도구|빠른 의료 노트 작성|쉽게 보는 최신 의료 근거|함께 성장하는 지식 커뮤니티/g) ?? []).length, 6);
+  assert.match(content, /Security-aware design/);
   assert.match(content, /A more intuitive experience/);
   assert.match(content, /A diverse range of medical tools/);
   assert.match(content, /Fast medical note drafting/);
