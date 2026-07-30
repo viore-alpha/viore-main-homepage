@@ -19,7 +19,7 @@ const sharedCopy = {
     journal: "Journal",
     published: "2026년 7월 21일",
     updated: "2026년 7월 30일 업데이트",
-    hero: <>의료 AI를,<br />하나의 모델이 아닌<br />기술 체계로 만듭니다</>,
+    hero: <>우리만의 선형을<br />만드는 과정</>,
     author: "Viore Team",
     status: "상태",
     verified: "확인 기준",
