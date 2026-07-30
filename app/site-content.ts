@@ -129,7 +129,18 @@ export const siteContent = {
       },
       contact: "Learn more about us",
     },
-    footer: { privacy: "개인정보처리방침", terms: "사이트 이용안내", copyright: "© 2026 Viore Inc. All rights reserved." },
+    footer: {
+      company: {
+        name: "주식회사 바이오레",
+        representative: "대표 고석진",
+        registration: "사업자등록번호 709-88-03418",
+        address: "경기도 성남시 분당구 대왕판교로 660, 유스페이스1 A동 B1 101-102·104호",
+        email: "biz@vioreai.com",
+      },
+      privacy: "개인정보처리방침",
+      terms: "사이트 이용안내",
+      copyright: "© 2026 Viore Inc. All rights reserved.",
+    },
   },
   en: {
     nav: { company: "Company", technology: "Technology", product: "Product", knowledge: "Knowledge", council: "Council", contact: "Contact" },
@@ -156,7 +167,18 @@ export const siteContent = {
       },
       contact: "Learn more about us",
     },
-    footer: { privacy: "Privacy Policy", terms: "Terms of Use", copyright: "© 2026 Viore Inc. All rights reserved." },
+    footer: {
+      company: {
+        name: "Viore Inc.",
+        representative: "Representative Seokjin Ko",
+        registration: "Business Registration No. 709-88-03418",
+        address: "B101-102 and 104, Building A, 660 Daewangpangyo-ro, Bundang-gu, Seongnam, Gyeonggi-do, Korea",
+        email: "biz@vioreai.com",
+      },
+      privacy: "Privacy Policy",
+      terms: "Terms of Use",
+      copyright: "© 2026 Viore Inc. All rights reserved.",
+    },
   },
 } as const;
 
