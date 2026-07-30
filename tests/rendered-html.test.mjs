@@ -1039,9 +1039,8 @@ test("server-renders an accessible, expanding Technology journal with its curren
   assert.match(html, /<title>바이오레 기술 \| 의료 AI를 하나의 기술 체계로<\/title>/);
   assert.match(html, />Journal/);
   assert.doesNotMatch(html, />Tech Blog</);
-  assert.match(html, /의료 AI를,/);
-  assert.match(html, /하나의 모델이 아닌/);
-  assert.match(html, /기술 체계로 만듭니다/);
+  assert.match(html, /우리만의 선형을/);
+  assert.match(html, /만드는 과정/);
   assert.match(html, /Viore Team/);
   assert.match(html, /하나의 답보다, 그 답이 만들어지는 전체 구조를 설계합니다/);
   assert.match(html, /서로 다른 기술은 확인된 지점에서 연결되고/);
