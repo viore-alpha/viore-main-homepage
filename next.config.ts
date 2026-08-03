@@ -5,10 +5,10 @@ const staticAssetCacheHeader = {
   value: "public, max-age=86400, s-maxage=31536000, stale-while-revalidate=604800",
 };
 
-// All site resources are self-hosted (no external fonts, images, or
-// client-side origins); Next.js hydration and React style props require
-// the two 'unsafe-inline' allowances. React additionally requires eval()
-// in development mode only, never in production.
+// Alphadoc product illustrations use the product site's public icon registry.
+// Every other client-side resource remains self-hosted. Next.js hydration and
+// React style props require the two 'unsafe-inline' allowances. React
+// additionally requires eval() in development mode only, never in production.
 const scriptSrc =
   process.env.NODE_ENV === "development"
     ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
@@ -18,7 +18,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   scriptSrc,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  "img-src 'self' data: https://alphadoc.ai",
   "font-src 'self'",
   "connect-src 'self'",
   "object-src 'none'",

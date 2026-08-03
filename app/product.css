@@ -77,6 +77,9 @@
 .ap-motion-submit { padding: 28%; border: 1px solid #d8dce3; background: #eef0f5; color: #9098a6; transition: transform .24s var(--ap-ease),background .2s ease,color .2s ease,border-color .2s ease; }
 .ap-motion-prompts { width: 78%; margin-top: clamp(13px,1.9cqw,22px); display: flex; justify-content: center; gap: clamp(6px,.9cqw,11px); }
 .ap-motion-prompt { min-width: 0; min-height: clamp(28px,3.7cqw,44px); padding: 0 clamp(10px,1.4cqw,17px); flex: 1; display: inline-flex; align-items: center; justify-content: center; border: 1px solid rgba(29,29,31,.12); border-radius: 999px; background: rgba(255,255,255,.78); color: #404146; box-shadow: 0 7px 16px rgba(44,47,54,.08); font-size: clamp(7px,1.08cqw,13px); font-weight: 600; line-height: 1.2; letter-spacing: -.038em; text-align: center; white-space: nowrap; }
+.ap-motion-apps { width: 78%; margin-top: clamp(10px,1.45cqw,17px); display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: clamp(5px,.72cqw,9px); transform: translateY(7px) scale(.985); }
+.ap-motion-app { min-width: 0; aspect-ratio: 1; display: grid; place-items: center; overflow: hidden; border: 1px solid rgba(92,98,109,.13); border-radius: clamp(9px,1.35cqw,16px); background: rgba(255,255,255,.84); box-shadow: 0 7px 18px rgba(38,41,48,.09),inset 0 1px rgba(255,255,255,.9); }
+.ap-motion-app img { width: 72%; height: 72%; display: block; object-fit: contain; }
 .ap-hero-motion.is-submitting .ap-motion-submit { border-color: #1d1d1f; background: linear-gradient(#353537,#171719); color: #fff; transform: scale(.9); }
 .ap-hero-motion.is-submitting .ap-motion-submit svg { transform: translateY(-2px); }
 
@@ -157,6 +160,7 @@
 .ap-hero-motion.is-playing .ap-motion-prompt--1 { animation: ap-motion-ui-in .34s .32s var(--ap-ease) both; }
 .ap-hero-motion.is-playing .ap-motion-prompt--2 { animation: ap-motion-ui-in .34s .39s var(--ap-ease) both; }
 .ap-hero-motion.is-playing .ap-motion-prompt--3 { animation: ap-motion-ui-in .34s .46s var(--ap-ease) both; }
+.ap-hero-motion.is-playing .ap-motion-apps { animation: ap-motion-ui-in .36s .52s var(--ap-ease) both; }
 .ap-hero-motion.is-playing .ap-motion-caret,.ap-hero-motion.is-playing .ap-motion-thinking i { animation-play-state: running; }
 @keyframes ap-motion-headline-in { from { opacity: 0; filter: blur(11px); } to { opacity: 1; filter: blur(0); } }
 @keyframes ap-motion-ui-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -368,10 +372,10 @@
 
 .ap-alphadocs { min-height: 790px; display: grid; grid-template-columns: 1.04fr .96fr; align-items: stretch; border-top: 1px solid var(--ap-line); color: #f5f5f7; background-color: var(--dark-paper-base); background-image: var(--dark-paper-image); background-repeat: repeat; background-size: var(--dark-paper-size); }
 .ap-alphadocs-visual { min-height: 790px; padding: 54px 5vw; display: grid; place-items: center; overflow: hidden; border-right: 1px solid var(--ap-line); background: radial-gradient(circle at 50% 48%,rgba(80,123,177,.16),transparent 43%),radial-gradient(circle at 62% 66%,rgba(109,76,137,.13),transparent 56%); }
-.ap-alphadocs-demo { position: relative; width: min(100%,380px); min-height: 590px; display: grid; place-items: center; isolation: isolate; }
+.ap-alphadocs-demo { --ap-community-cycle:10s; --ap-community-delay:.45s; position: relative; width: min(100%,380px); min-height: 590px; display: grid; place-items: center; isolation: isolate; }
 .ap-community-aura { position: absolute; inset: 13% -8% 8%; z-index: -1; border-radius: 50%; background: radial-gradient(circle at 40% 32%,rgba(147,204,255,.25),transparent 40%),radial-gradient(circle at 69% 70%,rgba(166,127,211,.22),transparent 48%); filter: blur(28px); opacity: .86; }
 .ap-alphadocs-phone { position: relative; width: min(100%,258px); aspect-ratio: 393/852; padding: 6px; border: 1px solid rgba(255,255,255,.38); border-radius: 43px; color: #1d1d1f; background: linear-gradient(135deg,#eee 0%,#82858b 7%,#232428 20%,#0d0e11 55%,#74777d 91%,#dedfe1 100%); box-shadow: 0 42px 82px rgba(0,0,0,.55),0 14px 30px rgba(2,13,28,.5),inset 0 0 0 1px rgba(255,255,255,.2); transform: rotate(-1deg); transform-origin: 50% 72%; }
-.ap-alphadocs-demo.is-playing .ap-alphadocs-phone { animation: ap-community-phone-in 1.05s var(--ap-ease) both; }
+.ap-alphadocs-demo.is-playing .ap-alphadocs-phone { animation: ap-community-phone-in .82s var(--ap-ease) both; }
 .ap-alphadocs-phone::before { content:""; position:absolute; inset:3px; z-index:2; pointer-events:none; border:1px solid rgba(255,255,255,.12); border-radius:42px; }
 .ap-phone-side { position: absolute; z-index: -1; width: 4px; border-radius: 3px 0 0 3px; background: linear-gradient(180deg,#bbbcc0,#33353a 30%,#18191c 72%,#8f9196); box-shadow: -1px 0 1px rgba(255,255,255,.25); }
 .ap-phone-side--left-one { left: -3px; top: 112px; height: 44px; }
@@ -399,7 +403,7 @@
 .ap-community-search { width:29px; height:29px; justify-self:end; display:grid; place-items:center; border:1px solid rgba(255,255,255,.9); border-radius:50%; color:#66686e; background:rgba(255,255,255,.72); box-shadow:0 5px 17px rgba(44,48,56,.1),inset 0 1px rgba(255,255,255,.9); font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif; font-size:13px; line-height:1; filter:grayscale(1); opacity:.68; }
 .ap-community-viewport { position:absolute; z-index:2; top:108px; right:0; bottom:55px; left:0; overflow:hidden; padding:4px 9px 12px; background:#f5f5f7; }
 .ap-community-feed-track { display:grid; gap:8px; }
-.ap-alphadocs-demo.is-playing .ap-community-feed-track { will-change:transform,opacity; animation:ap-community-feed-scroll 14s var(--ap-ease) .7s infinite; }
+.ap-alphadocs-demo.is-playing .ap-community-feed-track { will-change:transform,opacity; animation:ap-community-feed-scroll var(--ap-community-cycle) var(--ap-ease) var(--ap-community-delay) infinite; }
 .ap-community-post { padding:11px 12px 9px; overflow:hidden; border:1px solid rgba(255,255,255,.92); border-radius:17px; background:rgba(255,255,255,.82); box-shadow:0 6px 18px rgba(43,48,58,.065),inset 0 1px rgba(255,255,255,.98); }
 .ap-community-post-head { display:flex; align-items:center; gap:6px; }
 .ap-community-post-head > span:first-child { min-width:0; flex:1; display:flex; align-items:center; gap:4px; }
@@ -439,10 +443,10 @@
 .ap-community-touch { position:absolute; z-index:12; width:26px; height:26px; border:1px solid rgba(255,255,255,.92); border-radius:50%; background:rgba(255,255,255,.38); box-shadow:0 3px 12px rgba(23,25,30,.18),inset 0 0 0 6px rgba(29,29,31,.13); opacity:0; pointer-events:none; }
 .ap-phone-home-indicator { position:absolute; z-index:9; bottom:5px; left:50%; width:116px; height:4px; border-radius:3px; background:#1d1d1f; transform:translateX(-50%); opacity:.84; }
 .ap-community-last-post { margin-bottom:16px; }
-.ap-alphadocs-demo.is-playing .ap-community-touch { animation:ap-community-touch 14s ease .7s infinite; }
-.ap-alphadocs-demo.is-playing .ap-community-like.is-animated { animation:ap-community-like 14s ease .7s infinite; }
-.ap-alphadocs-demo.is-playing .ap-community-poll-option > i { animation:ap-community-poll-fill 14s var(--ap-ease) .7s infinite; }
-.ap-alphadocs-demo.is-playing .ap-community-poll-option > b { animation:ap-community-poll-value 14s ease .7s infinite; }
+.ap-alphadocs-demo.is-playing .ap-community-touch { animation:ap-community-touch var(--ap-community-cycle) ease var(--ap-community-delay) infinite; }
+.ap-alphadocs-demo.is-playing .ap-community-like.is-animated { animation:ap-community-like var(--ap-community-cycle) ease var(--ap-community-delay) infinite; }
+.ap-alphadocs-demo.is-playing .ap-community-poll-option > i { animation:ap-community-poll-fill var(--ap-community-cycle) var(--ap-ease) var(--ap-community-delay) infinite; }
+.ap-alphadocs-demo.is-playing .ap-community-poll-option > b { animation:ap-community-poll-value var(--ap-community-cycle) ease var(--ap-community-delay) infinite; }
 @keyframes ap-community-phone-in { 0% { opacity:0; transform:translateY(24px) rotate(-2.5deg) scale(.97); filter:blur(5px); } 100% { opacity:1; transform:rotate(-1deg); filter:none; } }
 @keyframes ap-community-feed-scroll { 0%,14% { opacity:1; transform:none; } 23%,34% { opacity:1; transform:translateY(-132px); } 44%,57% { opacity:1; transform:translateY(-242px); } 68%,86% { opacity:1; transform:translateY(-352px); } 94%,97% { opacity:1; transform:translateY(-430px); } 98% { opacity:0; transform:translateY(-430px); } 99% { opacity:0; transform:none; } 100% { opacity:1; transform:none; } }
 @keyframes ap-community-touch { 0%,25% { left:78%; top:338px; opacity:0; transform:scale(1); } 27% { left:78%; top:338px; opacity:1; transform:scale(1); } 29% { left:78%; top:338px; opacity:1; transform:scale(.78); } 31%,66% { left:78%; top:338px; opacity:0; transform:scale(1); } 68% { left:29%; top:410px; opacity:1; transform:scale(1); } 70% { left:29%; top:410px; opacity:1; transform:scale(.78); } 72%,100% { left:29%; top:410px; opacity:0; transform:scale(1); } }
@@ -542,6 +546,8 @@
   .ap-motion-search > p { font-size: 10px; line-height: 1.48; }
   .ap-motion-prompts { width: 100%; margin-top: 17px; display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 5px; }
   .ap-motion-prompt { min-height: 34px; padding: 0 5px; font-size: 7px; white-space: normal; }
+  .ap-motion-apps { width: 100%; margin-top: 14px; gap: 5px; }
+  .ap-motion-app { border-radius: 10px; }
   .ap-motion-chat-scroll { padding: 12px 12px 68px; }
   .ap-motion-chat-document { width: 126.59%; transform: scale(.79); }
   .ap-motion-user-bubble { width: 91%; padding: 10px 12px; }
