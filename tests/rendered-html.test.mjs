@@ -837,6 +837,43 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   }
 });
 
+test("server-renders a bounded Alphadoc general-chat section", async () => {
+  const [response, productCss, productSource, motionSource] = await Promise.all([
+    render("/ko/product/alphadoc"),
+    readFile(new URL("../app/product.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/ProductPage.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/components/AlphadocGeneralChatMotion.tsx", import.meta.url), "utf8"),
+  ]);
+  assert.equal(response.status, 200);
+
+  const html = await response.text();
+  assert.match(html, /임상 밖의 질문도 함께/);
+  assert.match(html, /일상의 궁금증은 일반 모드에서/);
+  assert.match(html, /id="general" data-ap-section="true"/);
+  assert.match(html, /href="#general"[^>]*>일반대화/);
+  assert.match(html, /class="ap-general-motion"[^>]*role="img"/);
+  assert.match(html, /드립 커피 원두는 어떻게 보관하면 좋아\?/);
+  assert.match(html, /빛과 공기, 열과 습기를 피하는 게 핵심이에요\./);
+  assert.match(html, /임상 질문을 물어봐 주세요/);
+  assert.match(html, /메시지를 입력하세요/);
+  assert.doesNotMatch(html, /문서와 회의 내용의 핵심 요약|첨부한 표의 통계·변화·이상값 분석|최신 자료 조사와 출처 기반 비교|아이디어를 업무 계획과 체크리스트로 정리/);
+
+  assert.match(productSource, /AlphadocGeneralChatMotion/);
+  assert.match(motionSource, /useViewportMotion<HTMLDivElement>\(0\.16\)/);
+  assert.match(motionSource, /data-motion-active=\{shouldAnimate \? "true" : "false"\}/);
+  assert.match(motionSource, /ALPHADOC_ASSET_ROOT.*https:\/\/alphadoc\.ai/);
+  assert.doesNotMatch(motionSource, /capabilities|answerItems|followups|Gemini|OpenAI|GPT|Claude|provider/i);
+
+  assert.match(productCss, /#general,#clinical,#alphadocs \{ scroll-margin-top: calc\(var\(--header\) \+ 44px\); \}/);
+  assert.match(productCss, /\.ap-general \{[^}]*border-block: 1px solid var\(--ap-line\);/);
+  assert.match(productCss, /\.ap-general-window \{[^}]*aspect-ratio: 16\/9;/);
+  assert.match(productCss, /@keyframes ap-general-mode-switch/);
+  assert.match(productCss, /@keyframes ap-general-type-question/);
+  assert.match(productCss, /@keyframes ap-general-conversation/);
+  assert.match(productCss, /\.ap-general-window \{ min-height:590px; aspect-ratio:auto; \}/);
+  assert.match(productCss, /\.ap-general-motion \* \{ animation:none !important; transition:none !important; \}/);
+});
+
 test("carries the hero energy-line language into a slow scroll-linked convergence", async () => {
   const [page, energyCanvas, companyBackdrop, content, css] = await Promise.all([
     readFile(new URL("../app/components/CompanyPage.tsx", import.meta.url), "utf8"),
