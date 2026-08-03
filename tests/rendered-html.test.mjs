@@ -772,10 +772,12 @@ test("server-renders the Alphadoc product story from real product UI", async () 
   assert.match(productCss, /\.ap-hero-lead \{[\s\S]*?white-space: pre-line;/);
   assert.match(productCss, /\.ap-section-head \{[\s\S]*?grid-template-columns: 1fr;[\s\S]*?align-items: start;/);
   assert.match(productCss, /\.ap-showcase-evidence \{[\s\S]*?background: rgba\(255,255,255,\.018\);/);
+  assert.match(productCss, /--ap-product-motion-cycle: 12s;/);
+  assert.match(productCss, /--ap-product-motion-delay: \.18s;/);
   assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-calendar-palette/);
-  assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-calendar-palette \{ animation: ap-real-palette 12s/);
+  assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-calendar-palette \{ animation: ap-real-palette var\(--ap-product-motion-cycle\) var\(--ap-product-motion-delay\)/);
   assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-wing-art \{ animation: ap-real-wing-flap 3\.8s/);
-  assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-answer-actions \{ animation: ap-real-answer-actions 12s/);
+  assert.match(productCss, /\.ap-workspace-motion\.is-playing \.ap-real-answer-actions \{ animation: ap-real-answer-actions var\(--ap-product-motion-cycle\) var\(--ap-product-motion-delay\)/);
   assert.match(productCss, /@keyframes ap-real-send-glyph \{[^}]*color: #8e97a6;[^}]*opacity: 1;/);
   assert.doesNotMatch(productCss, /@keyframes ap-real-send-glyph \{[^}]*filter:/);
   assert.match(productCss, /@keyframes ap-real-chat-view/);
@@ -856,21 +858,38 @@ test("server-renders a bounded Alphadoc general-chat section", async () => {
   assert.match(html, /빛과 공기, 열과 습기를 피하는 게 핵심이에요\./);
   assert.match(html, /임상 질문을 물어봐 주세요/);
   assert.match(html, /메시지를 입력하세요/);
+  assert.match(html, /class="ap-general-app-header"/);
+  assert.match(html, /class="ap-general-chat-center"/);
+  assert.match(html, /class="ap-general-input-shell"/);
   assert.doesNotMatch(html, /문서와 회의 내용의 핵심 요약|첨부한 표의 통계·변화·이상값 분석|최신 자료 조사와 출처 기반 비교|아이디어를 업무 계획과 체크리스트로 정리/);
 
   assert.match(productSource, /AlphadocGeneralChatMotion/);
   assert.match(motionSource, /useViewportMotion<HTMLDivElement>\(0\.16\)/);
   assert.match(motionSource, /data-motion-active=\{shouldAnimate \? "true" : "false"\}/);
   assert.match(motionSource, /ALPHADOC_ASSET_ROOT.*https:\/\/alphadoc\.ai/);
+  assert.match(motionSource, /brand\/symbol\/alpha\.png/);
+  assert.match(motionSource, /brand\/alphadocs-front\/logo\.svg/);
+  assert.match(motionSource, /brand\/feature-icons\/chat\/attach\/logo\.svg/);
+  assert.match(motionSource, /<ArrowUp aria-hidden="true" strokeWidth=\{2\.7\} \/>/);
+  assert.doesNotMatch(motionSource, /ap-general-topbar|ap-general-answer-mark|copy\.send/);
   assert.doesNotMatch(motionSource, /capabilities|answerItems|followups|Gemini|OpenAI|GPT|Claude|provider/i);
 
   assert.match(productCss, /#general,#clinical,#alphadocs \{ scroll-margin-top: calc\(var\(--header\) \+ 44px\); \}/);
   assert.match(productCss, /\.ap-general \{[^}]*border-block: 1px solid var\(--ap-line\);/);
-  assert.match(productCss, /\.ap-general-window \{[^}]*aspect-ratio: 16\/9;/);
+  assert.match(productCss, /\.ap-general-window \{[^}]*aspect-ratio:\s*16\/9;/);
+  assert.match(productCss, /\.ap-general-mode-control \{[^}]*width:126px;[^}]*height:32px;/);
+  assert.match(productCss, /\.ap-general-composer \{[^}]*grid-template-columns:44px minmax\(0,1fr\);/);
+  assert.match(productCss, /\.ap-general-attach \{[^}]*width:44px;[^}]*height:44px;/);
+  assert.match(productCss, /\.ap-general-input-shell \{[^}]*min-height:44px;/);
+  assert.match(productCss, /\.ap-general-send \{[^}]*width:36px;[^}]*height:36px;/);
+  assert.match(productCss, /\.ap-general-motion\.is-playing \.ap-general-mode-pill \{[^}]*var\(--ap-product-motion-cycle\) var\(--ap-product-motion-delay\)/);
+  assert.match(productCss, /\.ap-general-motion\.is-playing \.ap-general-typed-question \{[^}]*steps\(24,end\)/);
   assert.match(productCss, /@keyframes ap-general-mode-switch/);
   assert.match(productCss, /@keyframes ap-general-type-question/);
-  assert.match(productCss, /@keyframes ap-general-conversation/);
+  assert.match(productCss, /@keyframes ap-general-send-button/);
+  assert.match(productCss, /@keyframes ap-general-answer-in/);
   assert.match(productCss, /\.ap-general-window \{ min-height:590px; aspect-ratio:auto; \}/);
+  assert.match(productCss, /\.ap-general-mode-control \{ width:126px; height:44px;/);
   assert.match(productCss, /\.ap-general-motion \* \{ animation:none !important; transition:none !important; \}/);
 });
 
