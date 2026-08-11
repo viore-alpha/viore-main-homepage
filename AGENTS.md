@@ -7,7 +7,7 @@
 - 기술·제품·회사 소개를 수정하기 전에
   [`.viore/architecture-contract.md`](.viore/architecture-contract.md)의
   `public-safe` 계약을 읽는다.
-- 현재 계약 버전은 `2026-07-28.1`이며 내부 단일 진실 원본은 비공개
+- 현재 계약 버전은 `2026-08-11.1`이며 내부 단일 진실 원본은 비공개
   `viore-alpha/viore-architecture` 저장소다.
 - 공개 카피는 저장소 구현, 제품 통합, 배포와 운영 상태를 서로 섞지 않는다.
 - AlphaImage는 구현된 정적 이미지 artifact 기술로 표현하되 Alphadoc 사용자

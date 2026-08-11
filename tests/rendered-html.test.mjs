@@ -1211,7 +1211,7 @@ test("keeps the public architecture contract aligned with the bounded AlphaSeal 
   ]);
   const contract = JSON.parse(jsonText);
 
-  assert.equal(contract.contractVersion, "2026-07-28.1");
+  assert.equal(contract.contractVersion, "2026-08-11.1");
   assert.equal(
     contract.publicClaimBoundary.alphaseal,
     "implemented-active-supported-one-to-one-content-encryption-public-claim-restricted",
@@ -1222,8 +1222,8 @@ test("keeps the public architecture contract aligned with the bounded AlphaSeal 
   assert.ok(contract.forbiddenPublicClaims.includes("alphaseal-patient-data-suitability"));
   assert.match(markdown, /AlphaSeal: 지원되는 1:1 대화 본문/);
   assert.match(markdown, /그룹 대화, 완전한 순방향\s+비밀성, 메타데이터 비공개 또는 환자정보 적합성/);
-  assert.match(agents, /현재 계약 버전은 `2026-07-28\.1`/);
-  assert.match(copilot, /is `2026-07-28\.1`/);
+  assert.match(agents, /현재 계약 버전은 `2026-08-11\.1`/);
+  assert.match(copilot, /is `2026-08-11\.1`/);
 });
 
 test("implements the AlphaEvidence public snapshot and distinct public diagrams as bounded server contracts", async () => {
