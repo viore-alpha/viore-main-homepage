@@ -1,6 +1,6 @@
 # Viore Public Architecture Claim Contract
 
-**Contract version:** `2026-07-28.1`
+**Contract version:** `2026-08-11.1`
 **Distribution profile:** public-safe
 
 ## Public-safe portfolio
